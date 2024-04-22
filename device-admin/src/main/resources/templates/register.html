@@ -15,15 +15,37 @@
     <!-- 避免IE使用兼容模式 -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="../static/favicon.ico" th:href="@{favicon.ico}"/>
-    <style type="text/css">label.error { position:inherit;  }</style>
+    <style type="text/css">label.error { position:inherit;  }
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* 水平居中 */
+        margin-top: 50px; /* 距离顶部的距离 */
+    }
+
+    .header-container img {
+        margin-right: 10px; /* 调整图片与文字之间的间距 */
+        width: 100px; /* 设置图片宽度 */
+        height: auto; /* 让高度自适应宽度变化 */
+    }
+
+    .header-container h1 {
+        margin: 0; /* 移除标题的默认边距 */
+        font-family: 楷体;
+        color: white; /* 设置字体颜色为黑色 */
+    }
+    </style>
 </head>
 <body class="signin">
+<div class="header-container">
+    <img alt="logo" src="../static/ruoyi.png" th:src="@{/ruoyi.png}">
+    <h1><strong>实验室设备借用与维护管理系统</strong></h1>
+</div>
     <div class="signinpanel">
-        <div class="row">
+        <div class="row" style=" transform: translateY(-100px);">
             <div class="col-sm-7">
                 <div class="signin-info">
                     <div class="logopanel m-b">
-                        <h1><img alt="[ 若依 ]" src="../static/ruoyi.png" th:src="@{/ruoyi.png}"></h1>
                     </div>
                     <div class="m-b"></div>
                     <h4>欢迎使用 <strong>实验设备借用与维护管理系统</strong></h4>
@@ -39,8 +61,8 @@
             </div>
             <div class="col-sm-5">
                 <form id="registerForm" autocomplete="off">
-                    <h4 class="no-margins">注册：</h4>
-                    <p class="m-t-md">你若不离不弃，我必生死相依</p>
+                    <h4 class="no-margins" style="font-family: Comic Sans MS;font-size: 17px">R E G I S T E R :</h4>
+                    <p class="m-t-md" style="font-family: 楷体 ;font-size: 18px">手握科技,点亮未来!</p>
                     <input type="text"     name="username" class="form-control uname"         placeholder="用户名"   maxlength="20" />
                     <input type="password" name="password" class="form-control pword"         placeholder="密码"     maxlength="20" />
                     <input type="password" name="confirmPassword" class="form-control pword"  placeholder="确认密码" maxlength="20" />
@@ -63,8 +85,8 @@
             </div>
         </div>
         <div class="signup-footer">
-            <div class="pull-left">
-                &copy; 2018-2024 All Rights Reserved. RuoYi <br>
+            <div class="pull-left" style=" transform: translateY(-90px);">
+                中北大学 @ 1913040236 周帅 实验室设备借用与维护管理系统<br>
             </div>
         </div>
     </div>
