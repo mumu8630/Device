@@ -25,7 +25,7 @@ class TaskControllerTest {
     DeviceUserTaskListMapper deviceUserTaskListMapper;
     @Test
     void getTaskList() {
-        List<DeviceUserTaskList> deviceUserTaskList = deviceUserTaskListMapper.selectByUserId(1);
+        List<DeviceUserTaskList> deviceUserTaskList = deviceUserTaskListMapper.selectByUserId(1l);
         System.out.println(deviceUserTaskList);
     }
 

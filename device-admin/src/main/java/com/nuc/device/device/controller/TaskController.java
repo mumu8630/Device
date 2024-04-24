@@ -1,5 +1,6 @@
 package com.nuc.device.device.controller;
 
+import com.nuc.device.common.core.domain.entity.SysUser;
 import com.nuc.device.device.domin.DeviceUserTaskList;
 import com.nuc.device.device.service.IDeviceUserTaskListService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+
+import static com.nuc.device.common.utils.ShiroUtils.getSysUser;
 
 /**
  * 此类中编写用户首页的任务列表
@@ -26,11 +29,12 @@ public class TaskController {
     IDeviceUserTaskListService deviceUserTaskListService;
 
     @GetMapping ("/task")
-    public String getTaskList(@RequestParam("userId") Integer userId, Model model) {
-
-        List<DeviceUserTaskList> deviceUserTaskLists = deviceUserTaskListService.selectByUserId(userId);
-        model.addAttribute("tasks",deviceUserTaskLists);
-        return "/main";
+    public String getTaskList(Model model) {
+        SysUser user = getSysUser();
+        Long userId = user.getUserId();
+        List<DeviceUserTaskList> tasks = deviceUserTaskListService.selectByUserId(userId);
+        model.addAttribute("tasks", tasks);
+        return "/task";
     }
     @PostMapping("/deleteTask")
     public String deleteTask(@RequestParam("taskId") Integer taskId,Model model) {

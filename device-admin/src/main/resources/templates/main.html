@@ -9,8 +9,76 @@
     <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
     <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
     <link href="../static/css/style.min.css" th:href="@{/css/style.min.css}" rel="stylesheet"/>
+    <style>
+        .card-list {
+            list-style-type: none;
+            padding: 0;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin : 0;
+            max-width: 300px;
+        }
+
+        .card-item {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .card {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.3s ease;
+            width: 250px;
+            height: 80px;
+            padding: 10px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f1c40f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .icon {
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .card-content h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .card-content p {
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+        }
+
+    </style>
 </head>
 <!--首页展示页面-->
+
 <body class="gray-bg">
     <div class="row border-bottom white-bg dashboard-header">
         <div class="col-sm-12">
@@ -27,32 +95,56 @@
             </blockquote>
         </div>
 		<hr>
-        <div class="col-sm-3">
-			<div class="ibox">
-				<div class="ibox-content"   >
-					<h4>任务列表</h4>
-					<p class="small"><i class="fa fa-hand-o-up"></i> 合理的规划 自律的自己</p>
-					<div class="input-group">
-						<input type="text" id="task" placeholder="添加新任务" class="input input-sm form-control">
-						<span class="input-group-btn">
-							<button type="button" class="btn btn-sm btn-white" onclick="addTask()"> <i class="fa fa-plus"></i> 添加</button>
-						</span>
-					</div>
-					<ul class="sortable-list connectList agile-list" id="taskList" style="padding: 0px; margin-bottom : 0px">
-						<li class="warning-element" th:each="task:${tasks}">
-							<span th:text="${task.taskDescription}"></span>
-							<div class="agile-detail">
-								<a href="javascript:;" class="pull-right btn btn-xs btn-white" th:onclick="'deleteTaskByTestId(' + ${task.taskId} +')'">删除</a>
-								<!-- 根据 taskStatus 来设置按钮样式和文字 -->
-								<a th:if="${task.taskStatus == '未完成'}" href="javascript:;" class="pull-right btn btn-xs btn-white" th:onclick="'updateTaskStatus('+ ${task.taskId}+')'">去完成</a>
-								<a th:if="${task.taskStatus == '已完成'}" href="javascript:;" class="pull-right btn btn-xs btn-primary"  th:onclick="'updateTaskStatus('+ ${task.taskId}+')'">已完成</a>
-								<i class="fa fa-clock-o"></i> <span th:text="${#dates.format(task.taskCreateTime, 'yyyy-MM-dd')}"></span>
-							</div>
-						</li>
-					</ul>
-				</div>
-			</div>
+        <div class="col-sm-3" >
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="alert alert-info">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <h4>
+                                提示!
+                            </h4> <strong>警告!</strong> 请注意你的个人隐私安全.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ul class="card-list">
+                <li class="card-item">
+                    <a href="#" class="card">
+                        <div class="card-icon">
+                            <i class="icon icon-home"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>首页</h3>
+                            <p>访问网站首页</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="card-item">
+                    <a href="#" class="card">
+                        <div class="card-icon">
+                            <i class="icon icon-file"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>资料管理</h3>
+                            <p>管理您的个人资料</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="card-item">
+                    <a href="#" class="card">
+                        <div class="card-icon">
+                            <i class="icon icon-cog"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>系统管理</h3>
+                            <p>管理系统设置</p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
         </div>
+        <div></div>
         <div class="col-sm-5">
 			<br>
 			<br>
@@ -134,33 +226,6 @@
 									<div class="panel-body">
 									   <ol>
 									        <li>操作日志新增消耗时间属性</li>
-									        <li>日志管理使用索引提升查询性能</li>
-									        <li>日志注解支持排除指定的请求参数</li>
-									        <li>新增监控页面图标显示</li>
-									        <li>新增支持登录IP黑名单限制</li>
-									        <li>更新fontawesome图标示例</li>
-									        <li>屏蔽定时任务bean违规的字符</li>
-									        <li>支持自定义隐藏属性列过滤子对象</li>
-									        <li>连接池Druid支持新的配置connectTimeout和socketTimeout</li>
-									        <li>升级jquery到最新版v3.6.3</li>
-									        <li>升级layui到最新版本2.7.6</li>
-									        <li>升级jasny-bootstrap到最新版4.0.0</li>
-									        <li>升级oshi到最新版本6.4.1</li>
-									        <li>升级druid到最新版本1.2.16</li>
-									        <li>修复异步表格树子项排序问题</li>
-									        <li>修复冻结列不支持IE浏览器的问题</li>
-									        <li>修复主子表使用suggest插件无法新增问题</li>
-									        <li>修复菜单栏快速点击导致展开折叠样式问题</li>
-									        <li>修复用户多角色数据权限可能出现权限抬升的情况</li>
-									        <li>修复异步加载表格树重置列表父节点展开异常问题</li>
-									        <li>修复页签属性refresh为undefined时页面被刷新问题</li>
-									        <li>移除apache/commons-fileupload依赖</li>
-									        <li>优化前端属性提醒说明</li>
-									        <li>优化用户导入更新时需获取用户编号问题</li>
-									        <li>优化主子表根据序号删除方法加入表格ID参数</li>
-									        <li>优化导出Excel时设置dictType属性重复查缓存问题</li>
-									        <li>优化在线用户服务缓存改为从Bean容器获取不使用自动装配</li>
-									        <li>优化表格示例行拖拽后列表底部总记录条数变成了undefined问题</li>
 									        <li>其他细节优化</li>
 										</ol>
 									</div>
@@ -206,50 +271,58 @@
 	            content: html
 	        });
 	    });
+
 	    //Echarts图表代码
 		var myChart = echarts.init(document.getElementById('main-chart'));
-		var option;
-		option = {
-			title: {
-				text: '实验室热门设备图表',
-				subtext: 'Fake Data',
-				left: 'center'
-			},
-			tooltip: {
-				trigger: 'item'
-			},
-			legend: {
-				orient: 'vertical',
-				left: 'left'
-			},
-			series: [
-				{
-					name: 'Access From',
-					type: 'pie',
-					radius: '50%',
-					data: [
-						{ value: 1048, name: '酒精灯' },
-						{ value: 735, name: '试管' },
-						{ value: 580, name: '烧杯' },
-						{ value: 484, name: '砝码' },
-						{ value: 300, name: '游标卡尺' }
-					],
-					emphasis: {
-						itemStyle: {
-							shadowBlur: 10,
-							shadowOffsetX: 0,
-							shadowColor: 'rgba(0, 0, 0, 0.5)'
-						}
-					}
-				}
-			]
-		};
+
+        // 发送 AJAX 请求获取数据
+        fetch('/device/findAllDevice')
+            .then(response => response.json())
+            .then(data => {
+                // 渲染 ECharts
+                renderChart(data);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        // 渲染 ECharts
+        function renderChart(data) {
+            // 使用获取到的数据设置 ECharts 配置项
+            var option = {
+                title: {
+                    text: '实验室热门设备图表',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left'
+                },
+                series: [
+                    {
+                        name: 'Access From',
+                        type: 'pie',
+                        radius: '50%',
+                        data: data,
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
 
 		if (option && typeof option === 'object') {
 			myChart.setOption(option);
 		}
 
 		window.addEventListener('resize', myChart.resize);
+    }
 
     </script>
 	<!--新增任务-->
@@ -357,6 +430,7 @@
 		}
 		}
 	</script>
+<!--卡片-->
 
 
 </body>

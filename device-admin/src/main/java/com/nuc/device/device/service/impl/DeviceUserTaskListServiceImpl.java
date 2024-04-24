@@ -20,7 +20,7 @@ public class DeviceUserTaskListServiceImpl implements IDeviceUserTaskListService
     private DeviceUserTaskListMapper deviceUserTaskListMapper;
 
     @Override
-    public List<DeviceUserTaskList> selectByUserId(Integer userId) {
+    public List<DeviceUserTaskList> selectByUserId(Long userId) {
         return deviceUserTaskListMapper.selectByUserId(userId);
     }
 

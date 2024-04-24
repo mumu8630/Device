@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface IDeviceUserTaskListService {
 //    查询所有任务
-    List<DeviceUserTaskList> selectByUserId(Integer userId);
+    List<DeviceUserTaskList> selectByUserId(Long userId);
     //删除任务
     int deleteByPrimaryKey(Integer taskId);
     //新增任务

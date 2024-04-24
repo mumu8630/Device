@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuc.device.device.mapper.DeviceUserTaskListMapper">
+  <resultMap id="BaseResultMap" type="com.nuc.device.device.domin.DeviceUserTaskList">
+    <!--@mbg.generated-->
+    <!--@Table device_user_task_list-->
+    <id column="task_id" jdbcType="INTEGER" property="taskId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="task_description" jdbcType="LONGVARCHAR" property="taskDescription" />
+    <result column="task_status" jdbcType="OTHER" property="taskStatus" />
+    <result column="task_create_time" jdbcType="TIMESTAMP" property="taskCreateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    task_id, user_id, task_description, task_status, task_create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from device_user_task_list
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from device_user_task_list
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="task_id" keyProperty="taskId" parameterType="com.nuc.device.device.domin.DeviceUserTaskList" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into device_user_task_list (user_id, task_description, task_status, 
+      task_create_time)
+    values (#{userId,jdbcType=INTEGER}, #{taskDescription,jdbcType=LONGVARCHAR}, #{taskStatus,jdbcType=OTHER}, 
+      #{taskCreateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="task_id" keyProperty="taskId" parameterType="com.nuc.device.device.domin.DeviceUserTaskList" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into device_user_task_list
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="taskDescription != null">
+        task_description,
+      </if>
+      <if test="taskStatus != null">
+        task_status,
+      </if>
+      <if test="taskCreateTime != null">
+        task_create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="taskDescription != null">
+        #{taskDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="taskStatus != null">
+        #{taskStatus,jdbcType=OTHER},
+      </if>
+      <if test="taskCreateTime != null">
+        #{taskCreateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nuc.device.device.domin.DeviceUserTaskList">
+    <!--@mbg.generated-->
+    update device_user_task_list
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="taskDescription != null">
+        task_description = #{taskDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="taskStatus != null">
+        task_status = #{taskStatus,jdbcType=OTHER},
+      </if>
+      <if test="taskCreateTime != null">
+        task_create_time = #{taskCreateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nuc.device.device.domin.DeviceUserTaskList">
+    <!--@mbg.generated-->
+    update device_user_task_list
+    set user_id = #{userId,jdbcType=INTEGER},
+      task_description = #{taskDescription,jdbcType=LONGVARCHAR},
+      task_status = #{taskStatus,jdbcType=OTHER},
+      task_create_time = #{taskCreateTime,jdbcType=TIMESTAMP}
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List" />
+    from device_user_task_list
+    where user_id = #{userId}
+</select>
+
+</mapper>
