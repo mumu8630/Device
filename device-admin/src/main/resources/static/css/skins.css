@@ -14,13 +14,20 @@
 
 /** 蓝色主题 skin-blue **/
 .navbar, .skin-blue .navbar {
-	background-color: #3c8dbc
+	background-color: var(--primary-color);
+	border-color: var(--primary-color-dark);
+}
+:root {
+	/* 主色调 */
+	--primary-color: #0077b6;
+	--primary-color-light: #00a0e3;
+	--primary-color-dark: #005b8a;
 }
 
 .skin-blue .navbar-default .nav>li.selected>a,
 .skin-blue .navbar-default .nav>li.selected>a:focus {
-	background-color: #1890ff;
-    color: rgba(255,255,255,1);
+	background-color: #416f9a80;
+	color: rgb(12 123 221 / 86%);
 }
 
 .skin-blue .navbar .nav>li>a {
@@ -67,14 +74,15 @@
 	}
 }
 
+/*侧边栏 logo位置颜色*/
 .skin-blue .logo {
-	background-color: #367fa9;
+	background-color: #405567;
 	color: #fff;
 	border-bottom: 0 solid transparent
 }
 
 .skin-blue .logo:hover {
-	background-color: #357ca5
+	background-color: rgba(64, 85, 103, 0.84);
 }
 
 .skin-blue li.user-header {

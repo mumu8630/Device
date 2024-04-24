@@ -1,6 +1,6 @@
-package com.nuc.device.device.service;
+package com.nuc.device.task.service;
 
-import com.nuc.device.device.domin.DeviceUserTaskList;
+import com.nuc.device.task.domin.DeviceUserTaskList;
 
 import java.util.List;
 

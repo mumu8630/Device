@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuc.device.equipment.mapper.DeviceEquipmentMapper">
+
+    <resultMap type="DeviceEquipment" id="DeviceEquipmentResult">
+        <result property="equipmentId"    column="equipment_id"    />
+        <result property="name"    column="name"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="model"    column="model"    />
+        <result property="manufacturer"    column="manufacturer"    />
+        <result property="purchaseDate"    column="purchase_date"    />
+        <result property="warrantyPeriod"    column="warranty_period"    />
+        <result property="totalQuantity"    column="total_quantity"    />
+        <result property="borrowedQuantity"    column="borrowed_quantity"    />
+        <result property="maintenanceQuantity"    column="maintenance_quantity"    />
+        <result property="idleQuantity"    column="idle_quantity"    />
+    </resultMap>
+
+    <sql id="selectDeviceEquipmentVo">
+        select equipment_id, name, type_id, type_name, model, manufacturer, purchase_date, warranty_period, total_quantity, borrowed_quantity, maintenance_quantity, idle_quantity from device_equipment
+    </sql>
+     <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    equipment_id, `name`, type_id, model, manufacturer, purchase_date, warranty_period,
+    total_quantity, borrowed_quantity, maintenance_quantity, idle_quantity
+  </sql>
+
+    <select id="selectDeviceEquipmentList" parameterType="DeviceEquipment" resultMap="DeviceEquipmentResult">
+        <include refid="selectDeviceEquipmentVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="idleQuantity != null "> and idle_quantity &gt;= #{idleQuantity}</if>
+        </where>
+    </select>
+
+    <select id="selectDeviceEquipmentByEquipmentId" parameterType="Long" resultMap="DeviceEquipmentResult">
+        <include refid="selectDeviceEquipmentVo"/>
+        where equipment_id = #{equipmentId}
+    </select>
+
+    <insert id="insertDeviceEquipment" parameterType="DeviceEquipment" useGeneratedKeys="true" keyProperty="equipmentId">
+        insert into device_equipment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="typeName != null and typeName != ''">type_name,</if>
+            <if test="model != null">model,</if>
+            <if test="manufacturer != null">manufacturer,</if>
+            <if test="purchaseDate != null">purchase_date,</if>
+            <if test="warrantyPeriod != null">warranty_period,</if>
+            <if test="totalQuantity != null">total_quantity,</if>
+            <if test="borrowedQuantity != null">borrowed_quantity,</if>
+            <if test="maintenanceQuantity != null">maintenance_quantity,</if>
+            <if test="idleQuantity != null">idle_quantity,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="typeName != null and typeName != ''">#{typeName},</if>
+            <if test="model != null">#{model},</if>
+            <if test="manufacturer != null">#{manufacturer},</if>
+            <if test="purchaseDate != null">#{purchaseDate},</if>
+            <if test="warrantyPeriod != null">#{warrantyPeriod},</if>
+            <if test="totalQuantity != null">#{totalQuantity},</if>
+            <if test="borrowedQuantity != null">#{borrowedQuantity},</if>
+            <if test="maintenanceQuantity != null">#{maintenanceQuantity},</if>
+            <if test="idleQuantity != null">#{idleQuantity},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDeviceEquipment" parameterType="DeviceEquipment">
+        update device_equipment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="typeId != null">type_id = #{typeId},</if>
+            <if test="typeName != null and typeName != ''">type_name = #{typeName},</if>
+            <if test="model != null">model = #{model},</if>
+            <if test="manufacturer != null">manufacturer = #{manufacturer},</if>
+            <if test="purchaseDate != null">purchase_date = #{purchaseDate},</if>
+            <if test="warrantyPeriod != null">warranty_period = #{warrantyPeriod},</if>
+            <if test="totalQuantity != null">total_quantity = #{totalQuantity},</if>
+            <if test="borrowedQuantity != null">borrowed_quantity = #{borrowedQuantity},</if>
+            <if test="maintenanceQuantity != null">maintenance_quantity = #{maintenanceQuantity},</if>
+            <if test="idleQuantity != null">idle_quantity = #{idleQuantity},</if>
+        </trim>
+        where equipment_id = #{equipmentId}
+    </update>
+
+    <delete id="deleteDeviceEquipmentByEquipmentId" parameterType="Long">
+        delete from device_equipment where equipment_id = #{equipmentId}
+    </delete>
+
+    <delete id="deleteDeviceEquipmentByEquipmentIds" parameterType="String">
+        delete from device_equipment where equipment_id in
+        <foreach item="equipmentId" collection="array" open="(" separator="," close=")">
+            #{equipmentId}
+        </foreach>
+    </delete>
+
+    <select id="selectAllDevice" resultMap="DeviceEquipmentResult">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List" />
+    from device_equipment
+</select>
+</mapper>

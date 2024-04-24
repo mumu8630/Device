@@ -1,4 +1,4 @@
-package com.nuc.device.device.domin;
+package com.nuc.device.task.domin;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -23,7 +23,7 @@ public class DeviceUserTaskList {
     /**
      * 用户id
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 任务描述

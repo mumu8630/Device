@@ -19,7 +19,7 @@
           <input type="text" id="task" placeholder="添加新任务" class="input input-sm form-control">
           <span class="input-group-btn">
 							<button type="button" class="btn btn-sm btn-white" onclick="addTask()"> <i class="fa fa-plus"></i> 添加</button>
-						</span>
+          </span>
         </div>
         <ul class="sortable-list connectList agile-list" id="taskList" style="padding: 0px; margin-bottom : 0px">
           <li class="warning-element" th:each="task:${tasks}">

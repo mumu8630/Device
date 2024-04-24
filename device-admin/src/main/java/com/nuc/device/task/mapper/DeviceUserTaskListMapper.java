@@ -1,7 +1,6 @@
-package com.nuc.device.device.mapper;
+package com.nuc.device.task.mapper;
 
-import com.nuc.device.device.domin.DeviceUserTaskList;
-import com.nuc.device.device.enums.TaskStatusEnum;
+import com.nuc.device.task.domin.DeviceUserTaskList;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

@@ -1,4 +1,4 @@
-package com.nuc.device.device.enums;
+package com.nuc.device.task.enums;
 
 /**
  * TODO 类描述

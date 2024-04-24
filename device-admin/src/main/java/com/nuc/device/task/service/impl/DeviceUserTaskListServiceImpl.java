@@ -1,9 +1,9 @@
-package com.nuc.device.device.service.impl;
+package com.nuc.device.task.service.impl;
 
-import com.nuc.device.device.domin.DeviceUserTaskList;
-import com.nuc.device.device.enums.TaskStatusEnum;
-import com.nuc.device.device.mapper.DeviceUserTaskListMapper;
-import com.nuc.device.device.service.IDeviceUserTaskListService;
+import com.nuc.device.task.domin.DeviceUserTaskList;
+import com.nuc.device.task.enums.TaskStatusEnum;
+import com.nuc.device.task.mapper.DeviceUserTaskListMapper;
+import com.nuc.device.task.service.IDeviceUserTaskListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

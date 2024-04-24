@@ -1,8 +1,8 @@
-package com.nuc.device.device.controller;
+package com.nuc.device.task.controller;
 
-import com.nuc.device.device.domin.DeviceUserTaskList;
-import com.nuc.device.device.enums.TaskStatusEnum;
-import com.nuc.device.device.mapper.DeviceUserTaskListMapper;
+import com.nuc.device.task.domin.DeviceUserTaskList;
+import com.nuc.device.task.enums.TaskStatusEnum;
+import com.nuc.device.task.mapper.DeviceUserTaskListMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

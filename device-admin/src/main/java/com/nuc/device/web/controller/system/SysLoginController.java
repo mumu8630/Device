@@ -31,7 +31,7 @@ public class SysLoginController extends BaseController
     /**
      * 是否开启记住我功能
      */
-    @Value("${shiro.rememberMe.enabled: false}")
+    @Value("${shiro.rememberMe.enabled: true}")
     private boolean rememberMe;
 
     @Autowired
