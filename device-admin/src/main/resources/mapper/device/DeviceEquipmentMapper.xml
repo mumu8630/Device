@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nuc.device.equipment.mapper.DeviceEquipmentMapper">
-
+    
     <resultMap type="DeviceEquipment" id="DeviceEquipmentResult">
         <result property="equipmentId"    column="equipment_id"    />
         <result property="name"    column="name"    />
@@ -30,18 +30,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectDeviceEquipmentList" parameterType="DeviceEquipment" resultMap="DeviceEquipmentResult">
         <include refid="selectDeviceEquipmentVo"/>
-        <where>
+        <where>  
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="typeName != null  and typeName != ''"> and type_name = #{typeName}</if>
             <if test="idleQuantity != null "> and idle_quantity &gt;= #{idleQuantity}</if>
         </where>
     </select>
-
+    
     <select id="selectDeviceEquipmentByEquipmentId" parameterType="Long" resultMap="DeviceEquipmentResult">
         <include refid="selectDeviceEquipmentVo"/>
         where equipment_id = #{equipmentId}
     </select>
-
+        
     <insert id="insertDeviceEquipment" parameterType="DeviceEquipment" useGeneratedKeys="true" keyProperty="equipmentId">
         insert into device_equipment
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -95,16 +95,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteDeviceEquipmentByEquipmentIds" parameterType="String">
-        delete from device_equipment where equipment_id in
+        delete from device_equipment where equipment_id in 
         <foreach item="equipmentId" collection="array" open="(" separator="," close=")">
             #{equipmentId}
         </foreach>
     </delete>
 
-    <select id="selectAllDevice" resultMap="DeviceEquipmentResult">
+ <select id="selectHotDevice" resultMap="DeviceEquipmentResult">
     <!--@mbg.generated-->
     select
     <include refid="Base_Column_List" />
     from device_equipment
+    ORDER BY borrowed_quantity DESC limit 0,6
 </select>
 </mapper>

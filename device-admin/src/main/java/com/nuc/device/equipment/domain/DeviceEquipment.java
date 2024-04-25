@@ -8,10 +8,10 @@ import com.nuc.device.common.annotation.Excel;
 import com.nuc.device.common.core.domain.BaseEntity;
 
 /**
- * 设备查询对象 device_equipment
+ * 设备信息对象 device_equipment
  * 
  * @author mumu
- * @date 2024-04-24
+ * @date 2024-04-25
  */
 public class DeviceEquipment extends BaseEntity
 {

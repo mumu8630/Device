@@ -9,10 +9,10 @@ import com.nuc.device.equipment.service.IDeviceEquipmentService;
 import com.nuc.device.common.core.text.Convert;
 
 /**
- * 设备查询Service业务层处理
+ * 设备信息Service业务层处理
  * 
  * @author mumu
- * @date 2024-04-24
+ * @date 2024-04-25
  */
 @Service
 public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService 
@@ -21,10 +21,10 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
     private DeviceEquipmentMapper deviceEquipmentMapper;
 
     /**
-     * 查询设备查询
+     * 查询设备信息
      * 
-     * @param equipmentId 设备查询主键
-     * @return 设备查询
+     * @param equipmentId 设备信息主键
+     * @return 设备信息
      */
     @Override
     public DeviceEquipment selectDeviceEquipmentByEquipmentId(Long equipmentId)
@@ -33,10 +33,10 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
     }
 
     /**
-     * 查询设备查询列表
+     * 查询设备信息列表
      * 
-     * @param deviceEquipment 设备查询
-     * @return 设备查询
+     * @param deviceEquipment 设备信息
+     * @return 设备信息
      */
     @Override
     public List<DeviceEquipment> selectDeviceEquipmentList(DeviceEquipment deviceEquipment)
@@ -45,9 +45,9 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
     }
 
     /**
-     * 新增设备查询
+     * 新增设备信息
      * 
-     * @param deviceEquipment 设备查询
+     * @param deviceEquipment 设备信息
      * @return 结果
      */
     @Override
@@ -57,9 +57,9 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
     }
 
     /**
-     * 修改设备查询
+     * 修改设备信息
      * 
-     * @param deviceEquipment 设备查询
+     * @param deviceEquipment 设备信息
      * @return 结果
      */
     @Override
@@ -69,9 +69,9 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
     }
 
     /**
-     * 批量删除设备查询
+     * 批量删除设备信息
      * 
-     * @param equipmentIds 需要删除的设备查询主键
+     * @param equipmentIds 需要删除的设备信息主键
      * @return 结果
      */
     @Override
@@ -81,9 +81,9 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
     }
 
     /**
-     * 删除设备查询信息
+     * 删除设备信息信息
      * 
-     * @param equipmentId 设备查询主键
+     * @param equipmentId 设备信息主键
      * @return 结果
      */
     @Override
@@ -93,7 +93,7 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
     }
 
     @Override
-    public List<DeviceEquipment> findAllDevice() {
-        return deviceEquipmentMapper.selectAllDevice();
+    public List<DeviceEquipment> findHotDevice() {
+        return deviceEquipmentMapper.selectHotDevice();
     }
 }

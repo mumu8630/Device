@@ -77,7 +77,6 @@
     </style>
 </head>
 <!--首页展示页面-->
-
 <body class="gray-bg">
     <div class="row border-bottom white-bg dashboard-header">
         <div class="col-sm-12">
@@ -109,7 +108,7 @@
             </div>
             <ul class="card-list">
                 <li class="card-item">
-                    <a href="#" class="card">
+                    <a href="javascript:void(0)"  class="card" onclick="openDeviceTab()" >
                         <div class="card-icon">
                             <div class="icon-wrapper">
                                 <img src="../static/device_manage.png" th:src="@{/device_manage.png}" alt="设备查询" class="icon">
@@ -277,6 +276,7 @@
     <script th:src="@{/js/jquery-ui-1.10.4.min.js}"></script>
     <!--Echarts图表-->
     <script type="text/javascript">
+
 	    $('#pay-qrcode').click(function(){
 	        var html=$(this).html();
 	        parent.layer.open({
@@ -293,7 +293,7 @@
 		var myChart = echarts.init(document.getElementById('main-chart'));
 
         // 发送 AJAX 请求获取数据
-        fetch('/device/equipment/findAllDevice')
+        fetch('/device/equipment/findHotDevice')
             .then(response => response.json())
             .then(data => {
                 // 渲染 ECharts
@@ -306,30 +306,39 @@
         function renderChart(data) {
             // 使用获取到的数据设置 ECharts 配置项
             var option = {
+                grid: {
+                    top: '1%' // 设置图形距离容器上边缘的距离为 20%
+                },
                 title: {
                     text: '实验室热门设备图表',
+
                     left: 'center'
                 },
-                tooltip: {
-                    trigger: 'item'
-                },
                 legend: {
-                    orient: 'vertical',
-                    left: 'left'
+                    top: 'bottom', // 图例在底部
+                    show:false,
                 },
+
                 series: [
                     {
                         name: '已被借阅数量',
                         type: 'pie',
-                        radius: '50%',
-                        data: data,
+                        radius: ['5%', '70%'],
+                        center: ['50%', '60%'],
+                        // size: '40%',
+                        roseType: 'radius',
+                        itemStyle: {
+                            borderRadius: 8
+                        },
+                        label: {
+                            show: true
+                        },
                         emphasis: {
-                            itemStyle: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            label: {
+                                show: true
                             }
-                        }
+                        },
+                        data: data,
                     }
                 ]
             };
@@ -477,8 +486,14 @@
             $(".sortable-list").sortable({connectWith: ".connectList"}).disableSelection();
         });
     </script>
-
-
+    <!--页内跳转标签 必须有下列th标签-->
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "device";
+        function openDeviceTab() {
+            $.modal.openTab('设备信息', prefix + "/equipment");
+        }
+    </script>
 
 </body>
 </html>
