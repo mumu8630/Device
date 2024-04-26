@@ -29,7 +29,6 @@ public class SysOperLogServiceImpl implements ISysOperLogService
     @Override
     public void insertOperlog(SysOperLog operLog)
     {
-
         operLogMapper.insertOperlog(operLog);
     }
 
@@ -76,6 +75,11 @@ public class SysOperLogServiceImpl implements ISysOperLogService
     public void cleanOperLog()
     {
         operLogMapper.cleanOperLog();
+    }
+
+    @Override
+    public List<SysOperLog> selectOperLogByOperName(String loginName) {
+        return operLogMapper.selectListByOperName(loginName);
     }
 
 }

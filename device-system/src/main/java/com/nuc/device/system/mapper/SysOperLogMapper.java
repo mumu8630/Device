@@ -48,4 +48,5 @@ public interface SysOperLogMapper
      */
     public void cleanOperLog();
 
+    List<SysOperLog> selectListByOperName(String loginName);
 }

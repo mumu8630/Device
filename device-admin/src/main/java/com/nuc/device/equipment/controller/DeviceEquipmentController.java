@@ -134,11 +134,11 @@ public class DeviceEquipmentController extends BaseController
     @ResponseBody
     public List<Map<String, Object>> findAllDevice() {
         List<DeviceEquipment> allDevice = deviceEquipmentService.findHotDevice();
-        List<Map<String, Object>> chartData = Date2Echarts(allDevice);
+        List<Map<String, Object>> chartData = Data2Echarts(allDevice);
         return chartData;
     }
 
-    private List<Map<String, Object>> Date2Echarts(List<DeviceEquipment> allDevice) {
+    private List<Map<String, Object>> Data2Echarts(List<DeviceEquipment> allDevice) {
         List<Map<String, Object>> chartData = new ArrayList<>();
         for (DeviceEquipment equipment : allDevice) {
             // 提取需要的信息

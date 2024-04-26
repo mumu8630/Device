@@ -119,5 +119,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			sysdate()
  		)
 	</insert>
+	<select id="selectLogType" resultType="java.lang.String">
+	select dict_label from sys_dict_data where dict_type = 'sys_oper_type' and dict_value = #{dictValue}
+</select>
 	
 </mapper> 

@@ -82,5 +82,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="cleanOperLog">
         truncate table sys_oper_log
     </update>
+    <select id="selectListByOperName" resultMap="SysOperLogResult">
+        <include refid="selectOperLogVo"/>
+        <where>
+            oper_name = #{operName}
+        </where>
+</select>
 
 </mapper> 

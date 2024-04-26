@@ -110,4 +110,9 @@ public class SysDictDataServiceImpl implements ISysDictDataService
         }
         return row;
     }
+
+    @Override
+    public String selectLogType(Integer businessType) {
+        return dictDataMapper.selectLogType(businessType);
+    }
 }
