@@ -28,7 +28,7 @@ public class TaskController {
     IDeviceUserTaskListService deviceUserTaskListService;
 
     @GetMapping ("/tasks")
-    public List<DeviceUserTaskList> getTaskList(Model model) {
+    public List<DeviceUserTaskList> getTaskList() {
         SysUser user = getSysUser();
         Long userId = user.getUserId();
         List<DeviceUserTaskList> tasks = deviceUserTaskListService.selectByUserId(userId);

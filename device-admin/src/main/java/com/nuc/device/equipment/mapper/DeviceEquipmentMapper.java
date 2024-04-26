@@ -2,6 +2,7 @@ package com.nuc.device.equipment.mapper;
 
 import java.util.List;
 import com.nuc.device.equipment.domain.DeviceEquipment;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 设备信息Mapper接口
@@ -9,6 +10,7 @@ import com.nuc.device.equipment.domain.DeviceEquipment;
  * @author mumu
  * @date 2024-04-25
  */
+@Mapper
 public interface DeviceEquipmentMapper 
 {
     /**
@@ -60,4 +62,8 @@ public interface DeviceEquipmentMapper
     public int deleteDeviceEquipmentByEquipmentIds(String[] equipmentIds);
 
     List<DeviceEquipment> selectHotDevice();
+
+    String selectEquipmentNameByEquipmentId(Long equipmentId);
+
+    String selectTypeNameByEquipmentId(Long equipmentId);
 }

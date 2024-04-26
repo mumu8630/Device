@@ -39,6 +39,7 @@ public class DeviceEquipmentController extends BaseController
     private IDeviceEquipmentService deviceEquipmentService;
 
     @RequiresPermissions("device:equipment:view")
+    @Log(title = "查询设备信息", businessType = BusinessType.QUERY)
     @GetMapping()
     public String equipment()
     {
@@ -62,7 +63,7 @@ public class DeviceEquipmentController extends BaseController
      * 导出设备查询列表
      */
     @RequiresPermissions("device:equipment:export")
-    @Log(title = "设备查询", businessType = BusinessType.EXPORT)
+    @Log(title = "导出设备信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(DeviceEquipment deviceEquipment)
@@ -73,7 +74,7 @@ public class DeviceEquipmentController extends BaseController
     }
 
     /**
-     * 新增设备查询
+     * 新增设备
      */
     @GetMapping("/add")
     public String add()
@@ -82,10 +83,10 @@ public class DeviceEquipmentController extends BaseController
     }
 
     /**
-     * 新增保存设备查询
+     * 新增保存设备
      */
     @RequiresPermissions("device:equipment:add")
-    @Log(title = "设备查询", businessType = BusinessType.INSERT)
+    @Log(title = "新增设备信息", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(DeviceEquipment deviceEquipment)
@@ -94,7 +95,7 @@ public class DeviceEquipmentController extends BaseController
     }
 
     /**
-     * 修改设备查询
+     * 修改设备
      */
     @RequiresPermissions("device:equipment:edit")
     @GetMapping("/edit/{equipmentId}")
@@ -106,10 +107,10 @@ public class DeviceEquipmentController extends BaseController
     }
 
     /**
-     * 修改保存设备查询
+     * 修改保存设备
      */
     @RequiresPermissions("device:equipment:edit")
-    @Log(title = "设备查询", businessType = BusinessType.UPDATE)
+    @Log(title = "修改并保存设备信息", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(DeviceEquipment deviceEquipment)
@@ -118,10 +119,10 @@ public class DeviceEquipmentController extends BaseController
     }
 
     /**
-     * 删除设备查询
+     * 删除设备
      */
     @RequiresPermissions("device:equipment:remove")
-    @Log(title = "设备查询", businessType = BusinessType.DELETE)
+    @Log(title = "删除设备信息", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
     public AjaxResult remove(String ids)

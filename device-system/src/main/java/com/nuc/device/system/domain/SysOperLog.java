@@ -12,6 +12,7 @@ import com.nuc.device.common.core.domain.BaseEntity;
  * 
  * @author ruoyi
  */
+
 public class SysOperLog extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -87,206 +88,186 @@ public class SysOperLog extends BaseEntity
     @Excel(name = "消耗时间", suffix = "毫秒")
     private Long costTime;
 
-    public Long getOperId()
-    {
+    private Long userId;
+
+    public SysOperLog() {
+    }
+
+    public SysOperLog(Long operId, String title, Integer businessType, Integer[] businessTypes, String method, String requestMethod, Integer operatorType, String operName, String deptName, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Date operTime, Long costTime, Long userId) {
+        this.operId = operId;
+        this.title = title;
+        this.businessType = businessType;
+        this.businessTypes = businessTypes;
+        this.method = method;
+        this.requestMethod = requestMethod;
+        this.operatorType = operatorType;
+        this.operName = operName;
+        this.deptName = deptName;
+        this.operUrl = operUrl;
+        this.operIp = operIp;
+        this.operLocation = operLocation;
+        this.operParam = operParam;
+        this.jsonResult = jsonResult;
+        this.status = status;
+        this.errorMsg = errorMsg;
+        this.operTime = operTime;
+        this.costTime = costTime;
+        this.userId = userId;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Long getOperId() {
         return operId;
     }
 
-    public void setOperId(Long operId)
-    {
+    public void setOperId(Long operId) {
         this.operId = operId;
     }
 
-    public String getTitle()
-    {
+    public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title)
-    {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public Integer getBusinessType()
-    {
+    public Integer getBusinessType() {
         return businessType;
     }
 
-    public void setBusinessType(Integer businessType)
-    {
+    public void setBusinessType(Integer businessType) {
         this.businessType = businessType;
     }
 
-    public Integer[] getBusinessTypes()
-    {
+    public Integer[] getBusinessTypes() {
         return businessTypes;
     }
 
-    public void setBusinessTypes(Integer[] businessTypes)
-    {
+    public void setBusinessTypes(Integer[] businessTypes) {
         this.businessTypes = businessTypes;
     }
 
-    public String getMethod()
-    {
+    public String getMethod() {
         return method;
     }
 
-    public void setMethod(String method)
-    {
+    public void setMethod(String method) {
         this.method = method;
     }
 
-    public String getRequestMethod()
-    {
+    public String getRequestMethod() {
         return requestMethod;
     }
 
-    public void setRequestMethod(String requestMethod)
-    {
+    public void setRequestMethod(String requestMethod) {
         this.requestMethod = requestMethod;
     }
 
-    public Integer getOperatorType()
-    {
+    public Integer getOperatorType() {
         return operatorType;
     }
 
-    public void setOperatorType(Integer operatorType)
-    {
+    public void setOperatorType(Integer operatorType) {
         this.operatorType = operatorType;
     }
 
-    public String getOperName()
-    {
+    public String getOperName() {
         return operName;
     }
 
-    public void setOperName(String operName)
-    {
+    public void setOperName(String operName) {
         this.operName = operName;
     }
 
-    public String getDeptName()
-    {
+    public String getDeptName() {
         return deptName;
     }
 
-    public void setDeptName(String deptName)
-    {
+    public void setDeptName(String deptName) {
         this.deptName = deptName;
     }
 
-    public String getOperUrl()
-    {
+    public String getOperUrl() {
         return operUrl;
     }
 
-    public void setOperUrl(String operUrl)
-    {
+    public void setOperUrl(String operUrl) {
         this.operUrl = operUrl;
     }
 
-    public String getOperIp()
-    {
+    public String getOperIp() {
         return operIp;
     }
 
-    public void setOperIp(String operIp)
-    {
+    public void setOperIp(String operIp) {
         this.operIp = operIp;
     }
 
-    public String getOperLocation()
-    {
+    public String getOperLocation() {
         return operLocation;
     }
 
-    public void setOperLocation(String operLocation)
-    {
+    public void setOperLocation(String operLocation) {
         this.operLocation = operLocation;
     }
 
-    public String getOperParam()
-    {
+    public String getOperParam() {
         return operParam;
     }
 
-    public void setOperParam(String operParam)
-    {
+    public void setOperParam(String operParam) {
         this.operParam = operParam;
     }
 
-    public String getJsonResult()
-    {
+    public String getJsonResult() {
         return jsonResult;
     }
 
-    public void setJsonResult(String jsonResult)
-    {
+    public void setJsonResult(String jsonResult) {
         this.jsonResult = jsonResult;
     }
 
-    public Integer getStatus()
-    {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status)
-    {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
-    public String getErrorMsg()
-    {
+    public String getErrorMsg() {
         return errorMsg;
     }
 
-    public void setErrorMsg(String errorMsg)
-    {
+    public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
     }
 
-    public Date getOperTime()
-    {
+    public Date getOperTime() {
         return operTime;
     }
 
-    public void setOperTime(Date operTime)
-    {
+    public void setOperTime(Date operTime) {
         this.operTime = operTime;
     }
 
-    public Long getCostTime()
-    {
+    public Long getCostTime() {
         return costTime;
     }
 
-    public void setCostTime(Long costTime)
-    {
+    public void setCostTime(Long costTime) {
         this.costTime = costTime;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("operId", getOperId())
-            .append("title", getTitle())
-            .append("businessType", getBusinessType())
-            .append("businessTypes", getBusinessTypes())
-            .append("method", getMethod())
-            .append("requestMethod", getRequestMethod())
-            .append("operatorType", getOperatorType())
-            .append("operName", getOperName())
-            .append("deptName", getDeptName())
-            .append("operUrl", getOperUrl())
-            .append("operIp", getOperIp())
-            .append("operLocation", getOperLocation())
-            .append("operParam", getOperParam())
-            .append("status", getStatus())
-            .append("errorMsg", getErrorMsg())
-            .append("operTime", getOperTime())
-            .append("costTime", getCostTime())
-            .toString();
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

@@ -108,4 +108,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     from device_equipment
     ORDER BY borrowed_quantity DESC limit 0,6
 </select>
+<select id="selectEquipmentNameByEquipmentId" resultType="java.lang.String">
+select name from device_equipment where equipment_id = #{equipmentId}
+</select>
+<select id="selectTypeNameByEquipmentId" resultType="java.lang.String">
+select type_name from device_equipment where equipment_id = #{equipmentId}
+</select>
 </mapper>

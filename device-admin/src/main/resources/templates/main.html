@@ -121,7 +121,7 @@
                     </a>
                 </li>
                 <li class="card-item">
-                    <a href="#" class="card">
+                   <a href="javascript:void(0)"  class="card" onclick="openOrderTab()" >
                         <div class="card-icon">
                             <div class="icon-wrapper">
                                 <img src="../static/order.png" th:src="@{/order.png}" alt="订单管理" class="icon">
@@ -134,8 +134,9 @@
                     </a>
                 </li>
                 <li class="card-item">
-                    <a href="#" class="card">
-                        <div class="card-icon">
+                    <a href="javascript:void(0)"  class="card" onclick="openHistoryTab()" >
+
+                    <div class="card-icon">
                             <div class="icon-wrapper">
                                 <img src="../static/footprints.png" th:src="@{/footprints.png}" alt="足迹管理" class="icon" >
                             </div>
@@ -492,6 +493,12 @@
         var prefix = ctx + "device";
         function openDeviceTab() {
             $.modal.openTab('设备信息', prefix + "/equipment");
+        }
+        function openOrderTab() {
+            $.modal.openTab('订单信息', prefix + "/order");
+        }
+        function openLogTab() {
+            $.modal.openTab('用户足迹', prefix + "/log");
         }
     </script>
 
