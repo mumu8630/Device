@@ -29,7 +29,7 @@ public class SysOperLogServiceImpl implements ISysOperLogService
     @Override
     public void insertOperlog(SysOperLog operLog)
     {
-        operLog.setUserId(getSysUser().getUserId());
+
         operLogMapper.insertOperlog(operLog);
     }
 
@@ -78,8 +78,4 @@ public class SysOperLogServiceImpl implements ISysOperLogService
         operLogMapper.cleanOperLog();
     }
 
-    @Override
-    public List<SysOperLog> selectOperLogByUserId(Long userId) {
-        return operLogMapper.selectOperLogByUserId(userId)
-    }
 }

@@ -16,13 +16,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectDeviceOrderVo">
         select order_id, user_id, equipment_id, borrow_date, return_date, status from device_order
     </sql>
+    <sql id="selectDeviceOrderVoNoUser">
+        select order_id, equipment_id, borrow_date, return_date, status from device_order
+    </sql>
 
     <select id="selectDeviceOrderList" parameterType="DeviceOrder" resultMap="DeviceOrderResult">
-        <include refid="selectDeviceOrderVo"/>
+        <include refid="selectDeviceOrderVoNoUser"/>
         <where>  
             <if test="borrowDate != null "> and borrow_date = #{borrowDate}</if>
             <if test="returnDate != null "> and return_date = #{returnDate}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
+             <if test="userId != null"> and user_id = #{userId}</if>
         </where>
     </select>
     
@@ -71,8 +75,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{orderId}
         </foreach>
     </delete>
- <select id="selectDeviceOrderListByuserId" resultMap="DeviceOrderResult">
-    <include refid="selectDeviceOrderVo"/>
-    where user_id = #{userId}
-</select>
+
 </mapper>

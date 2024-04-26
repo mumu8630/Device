@@ -46,5 +46,4 @@ public interface ISysOperLogService
      */
     public void cleanOperLog();
 
-    List<SysOperLog> selectOperLogByUserId(Long userId);
 }
