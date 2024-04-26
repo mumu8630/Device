@@ -129,10 +129,10 @@ public class DeviceEquipmentController extends BaseController
         return toAjax(deviceEquipmentService.deleteDeviceEquipmentByEquipmentIds(ids));
     }
 
-    @GetMapping("/findAllDevice")
+    @GetMapping("/findHotDevice")
     @ResponseBody
     public List<Map<String, Object>> findAllDevice() {
-        List<DeviceEquipment> allDevice = deviceEquipmentService.findAllDevice();
+        List<DeviceEquipment> allDevice = deviceEquipmentService.findHotDevice();
         List<Map<String, Object>> chartData = Date2Echarts(allDevice);
         return chartData;
     }
