@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>时间轴</title>
+  <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+  <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+  <link href="../static/css/animate.min.css" th:href="@{/css/animate.min.css}" rel="stylesheet"/>
+  <link href="../static/css/style.min.css" th:href="@{/css/style.min.css}" rel="stylesheet"/>
+</head>
+<body class="gray-bg">
+<div class="row animated fadeInRight">
+  <div class="ibox float-e-margins">
+    <div class="text-center float-e-margins p-md">
+      <span>打开/关闭颜色/背景或方向版本: </span>
+      <a href="javascript:;" class="btn btn-xs btn-primary" id="lightVersion">轻型版本</a>
+      <a href="javascript:;" class="btn btn-xs btn-primary" id="darkVersion">黑色版本</a>
+    </div>
+    <div id="ibox-content">
+      <div id="vertical-timeline" class="vertical-container light-timeline">
+        <!-- 时间轴内容将在这里动态生成 -->
+      </div>
+    </div>
+  </div>
+</div>
+<th:block th:include="include :: footer" />
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+    // 定义颜色和图标数组
+    var colors = ['navy-bg', 'blue-bg', 'lazur-bg', 'yellow-bg'];
+    var icons = ['fa-briefcase', 'fa-file-text', 'fa-coffee', 'fa-phone'];
+
+    // 使用 AJAX 请求从服务器获取数据
+    $.ajax({
+    url: '/device/history/list', // 替换为你的后端URL
+    type: 'GET',
+    dataType: 'json',
+    success: function(data) {
+    // 使用获取到的数据
+    data.forEach(function(item, index) {
+    var block = $('<div class="vertical-timeline-block"></div>');
+    var icon = $('<div class="vertical-timeline-icon ' + colors[index % 4] + '"><i class="fa ' + icons[index % 4] + '"></i></div>');
+    var content = $('<div class="vertical-timeline-content"></div>');
+    var title = $('<h2></h2>').text(item.titlr);
+    var description = $('<p></p>').text(item.description);
+    var time = $('<span class="vertical-date"></span>').text(new Date(item.time).toLocaleString());
+
+    content.append(title);
+    content.append(description);
+    content.append(time);
+    block.append(icon);
+    block.append(content);
+
+    $('#vertical-timeline').append(block);
+  });
+  },
+    error: function(jqXHR, textStatus, errorThrown) {
+    console.error('Error fetching data: ' + textStatus, errorThrown);
+  }
+  });
+
+    // 切换时间轴的颜色/背景版本
+    $('#lightVersion').click(function(event) {
+    event.preventDefault();
+    $('#ibox-content').removeClass('ibox-content');
+    $('#vertical-timeline').removeClass('dark-timeline');
+    $('#vertical-timeline').addClass('light-timeline');
+  });
+
+    $('#darkVersion').click(function(event) {
+    event.preventDefault();
+    $('#ibox-content').addClass('ibox-content');
+    $('#vertical-timeline').removeClass('light-timeline');
+    $('#vertical-timeline').addClass('dark-timeline');
+  });
+  });
+</script>
+</body>
+</html>
+```

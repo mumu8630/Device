@@ -34,6 +34,10 @@ public class HistoryController   {
     ISysOperLogService sysOperLogService;
     @Autowired
     ISysDictDataService    sysDictDataService;
+    @GetMapping
+    public String history() {
+        return "/history";
+    }
 
 
     @GetMapping("/list")
