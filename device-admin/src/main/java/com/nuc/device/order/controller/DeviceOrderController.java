@@ -52,10 +52,9 @@ public class DeviceOrderController extends BaseController
     @ResponseBody
     public TableDataInfo list(DeviceOrder deviceOrder)
     {
-        SysUser user = getSysUser();
-        Long userId = user.getUserId();
-        deviceOrder.setUserId(userId);
+
         startPage();
+        deviceOrder.setUserId(getSysUser().getUserId());
         List<DeviceOrder> list = deviceOrderService.selectDeviceOrderList(deviceOrder);
         return getDataTable(list);
     }

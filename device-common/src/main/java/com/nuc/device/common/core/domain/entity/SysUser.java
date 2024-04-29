@@ -194,6 +194,7 @@ public class SysUser extends BaseEntity
     public void setUserType(String userType)
     {
         this.userType = userType;
+
     }
 
     @Email(message = "邮箱格式不正确")

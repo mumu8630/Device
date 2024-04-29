@@ -53,6 +53,9 @@
                 <li>
                     <a class="menuItem" th:href="@{/system/main}"><i class="fa fa-home"></i> <span class="nav-label">首页</span> </a>
                 </li>
+				<li>
+					<a class="menuItem" th:href="@{/system/main}"><i class="fa fa-dashboard"></i> <span class="nav-label">工作台</span> </a>
+				</li>
                 <li th:each="menu : ${menus}">
                 	<a th:class="@{${!#strings.isEmpty(menu.url) && menu.url != '#'} ? ${menu.target}}" th:href="@{${#strings.isEmpty(menu.url)} ? |#| : ${menu.url}}" th:data-refresh="${menu.isRefresh == '0'}">
                 		<i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
@@ -255,7 +258,7 @@
         </div>
 
         <div th:if="${footer}" class="footer">
-            <div class="pull-right">© [[${copyrightYear}]] RuoYi Copyright </div>
+            <div class="pull-right">©实验室设备借用与维护管理系统 </div>
         </div>
     </div>
     <!--右侧部分结束-->

@@ -56,8 +56,10 @@ public class HistoryController   {
             //提取需要的数据
             Map<String, Object> map = new HashMap<>();
             map.put("type",sysOperLog.getBusinessType());
-            map.put("titlr",businessType );
-            map.put("description", "用户"+sysOperLog.getOperName()+"进行了"+businessType+"操作");
+            map.put("title",businessType );
+            map.put("operName", sysOperLog.getOperName());
+            map.put("operId",sysOperLog.getOperId());
+            map.put("description", "进行了"+sysOperLog.getTitle()+"操作");
             map.put("status", sysOperLog.getStatus() == 0 ? "成功" : "失败");
             map.put("time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(sysOperLog.getOperTime()));
             //添加到列表

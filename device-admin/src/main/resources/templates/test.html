@@ -3,101 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>待办事项列表</title>
+    <title>工作台</title>
+    <link href="../../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../../../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link href="../../../static/css/style.min.css" th:href="@{/css/style.min.css}" rel="stylesheet"/>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
-        header {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
+
+        .tabs {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            background-color: #fff;
+            justify-content: center;
+            margin-top: 50px;
         }
-        .completed {
-            text-decoration: line-through;
-        }
-        input[type="text"] {
-            padding: 10px;
-            font-size: 18px;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        input[type="button"] {
-            padding: 10px;
-            font-size: 18px;
-            background-color: #333;
-            color: white;
-            border: none;
+
+        .tab {
+            margin: 0px 20px 20px;
+            padding: 10px 20px;
+            background-color: #ddd;
+            border-radius: 5px 5px 0 0;
             cursor: pointer;
         }
+
+        .tab.active {
+            background-color: #fff;
+        }
+
+        .content {
+            display: none;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .content.active {
+            display: block;
+        }
+        .blue-icon {
+            display: inline-block;
+            width: 5px;
+            height: 15px;
+            background-color: #4ad0db; /* 蓝色背景 */
+            margin-right: 8px; /* 可根据需要调整距离文字的间距 */
+        }
+
+
+
     </style>
 </head>
-<body>
-<header>
-    <h1>待办事项列表</h1>
-</header>
-<div class="container">
-    <input type="text" id="task" placeholder="添加新任务">
-    <input type="button" value="添加任务" onclick="addTask()">
-    <ul id="taskList">
-        <!-- 任务列表将在JavaScript中动态添加 -->
-    </ul>
+<body class="gray-bg">
+
+<div class="tabs">
+    <div class="tab active" data-tab="tab1">设备数量统计</div>
+    <div class="tab" data-tab="tab2">订单统计</div>
+    <div class="tab" data-tab="tab2">设备维护统计</div>
+</div>
+
+<div class="content active" id="tab1">
+    <div class="wrapper wrapper-content" >
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h3> <span class="blue-icon"></span>热门设备借用情况分析</h3>
+                    </div>
+                    <div class="ibox-content">
+                        <div id="deviceCountEcharts" style="height: 300px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h3> <span class="blue-icon"></span>设备剩余数量占比分析</h3>
+                    </div>
+                    <div class="ibox-content">
+                        <div id="deviceCountEcharts" style="height: 300px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h3> <span class="blue-icon"></span>设备最近借用情况统计</h3>
+                    </div>
+                    <div class="ibox-content">
+                        <div id="deviceCountEcharts" style="height: 300px;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="content" id="tab2">
+    <h2>选项卡 2 内容</h2>
+    <p>这是选项卡 2 的内容。</p>
+</div>
+
+<div class="content" id="tab3">
+    <h2>选项卡 3 内容</h2>
+    <p>这是选项卡 3 的内容。</p>
 </div>
 
 <script>
-    function addTask() {
-        const taskInput = document.getElementById('task');
-        const taskText = taskInput.value.trim();
-        if (taskText === '') return;
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.content');
 
-        const taskList = document.getElementById('taskList');
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `
-                <span>${taskText}</span>
-                <input type="checkbox" onchange="toggleTaskComplete(this)">
-                <button onclick="deleteTask(this)">删除</button>
-            `;
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.getAttribute('data-tab');
 
-        taskList.appendChild(listItem);
-        taskInput.value = '';
-    }
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
 
-    function deleteTask(button) {
-        const listItem = button.parentElement;
-        listItem.remove();
-    }
-
-    function toggleTaskComplete(checkbox) {
-        const taskText = checkbox.previousElementSibling;
-        if (checkbox.checked) {
-            taskText.classList.add('completed');
-        } else {
-            taskText.classList.remove('completed');
-        }
-    }
+            contents.forEach(content => {
+                if (content.getAttribute('id') === tabId) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        });
+    });
 </script>
+
 </body>
 </html>

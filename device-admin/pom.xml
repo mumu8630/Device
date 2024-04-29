@@ -43,6 +43,7 @@
             <version>1.6.2</version>
         </dependency>
 
+
         <!-- Mysql驱动包 -->
         <dependency>
             <groupId>mysql</groupId>
@@ -71,8 +72,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <optional>true</optional>
             <version>1.18.4</version>
-            <scope>provided</scope>
         </dependency>
 
     <!--    test-->

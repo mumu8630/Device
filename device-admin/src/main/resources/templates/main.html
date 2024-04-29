@@ -315,6 +315,10 @@
 
                     left: 'center'
                 },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                },
                 legend: {
                     top: 'bottom', // 图例在底部
                     show:false,
@@ -373,15 +377,10 @@
             taskListElement.empty(); // 清空现有列表内容
             tasks.forEach(task => {
                 const listItem = $('<li>').addClass('warning-element');
-
                 // 创建第一行元素：任务描述
                 const taskDescription = $('<span>').text(task.taskDescription);
-
                 // 创建第二行元素：图表、时间和按钮的容器
                 const secondRow = $('<div>').addClass('agile-detail');
-
-
-
                 // 创建时间元素
                 const taskCreateTime = new Date(task.taskCreateTime);
                 const dateString = `${taskCreateTime.getFullYear()}-${taskCreateTime.getMonth() + 1}-${taskCreateTime.getDate()}`;

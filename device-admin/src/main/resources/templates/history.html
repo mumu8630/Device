@@ -8,7 +8,7 @@
   <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
   <link href="../static/css/animate.min.css" th:href="@{/css/animate.min.css}" rel="stylesheet"/>
   <link href="../static/css/style.min.css" th:href="@{/css/style.min.css}" rel="stylesheet"/>
-</head>
+  </head>
 <body class="gray-bg">
 <div class="row animated fadeInRight">
   <div class="ibox float-e-margins">
@@ -24,59 +24,122 @@
     </div>
   </div>
 </div>
-<th:block th:include="include :: footer" />
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<!-- 模态窗口结构 -->
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- 模态窗口的内容将在这里动态填充 -->
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
 <script>
-    $(document).ready(function(){
-    // 定义颜色和图标数组
+  $(document).ready(function(){
+    // 定义颜色数组
     var colors = ['navy-bg', 'blue-bg', 'lazur-bg', 'yellow-bg'];
-    var icons = ['fa-briefcase', 'fa-file-text', 'fa-coffee', 'fa-phone'];
-
     // 使用 AJAX 请求从服务器获取数据
     $.ajax({
-    url: '/device/history/list', // 替换为你的后端URL
-    type: 'GET',
-    dataType: 'json',
-    success: function(data) {
-    // 使用获取到的数据
-    data.forEach(function(item, index) {
-    var block = $('<div class="vertical-timeline-block"></div>');
-    var icon = $('<div class="vertical-timeline-icon ' + colors[index % 4] + '"><i class="fa ' + icons[index % 4] + '"></i></div>');
-    var content = $('<div class="vertical-timeline-content"></div>');
-    var title = $('<h2></h2>').text(item.titlr);
-    var description = $('<p></p>').text(item.description);
-    var time = $('<span class="vertical-date"></span>').text(new Date(item.time).toLocaleString());
-
-    content.append(title);
-    content.append(description);
-    content.append(time);
-    block.append(icon);
-    block.append(content);
-
-    $('#vertical-timeline').append(block);
-  });
-  },
-    error: function(jqXHR, textStatus, errorThrown) {
-    console.error('Error fetching data: ' + textStatus, errorThrown);
-  }
-  });
-
+      url: '/device/history/list', // 替换为你的后端URL
+      type: 'GET',
+      dataType: 'json',
+      success: function(data) {
+        // 使用获取到的数据
+        // 对数据按时间倒序排序
+        data.sort(function(a, b) {
+          return new Date(b.time) - new Date(a.time);
+        });
+        data.forEach(function(item, index) {
+          var block = $('<div class="vertical-timeline-block"></div>');
+          var iconClass = ''; // 初始化icon的class
+          // 根据title的类型来选择icon
+          switch(item.title) {
+            case '查询':
+              iconClass = 'fa-search';
+              break;
+            case '新增':
+              iconClass = 'fa-folder-open';
+              break;
+            case '修改':
+              iconClass = 'fa-edit';
+              break;
+            case '删除':
+              iconClass = 'fa-trash';
+            case '授权':
+              iconClass = 'fa-check-square-o';
+            case '导出':
+              iconClass = 'fa-external-link';
+            case '导入':
+              iconClass = 'fa-upload';
+            case '强退':
+              iconClass = 'fa-sign-out';
+            case '生成代码':
+              iconClass = 'fa-file-code-o';
+            case '清空':
+              iconClass = 'fa-eye-slash';
+              break;
+            case '其他':
+              iconClass = 'fa-spinner';
+              break;
+            default:
+              iconClass = 'fa-spinner'; // 默认icon
+          }
+          var icon = $('<div class="vertical-timeline-icon ' + colors[index % 4] + '"><i class="fa ' + iconClass + '"></i></div>');
+          var content = $('<div class="vertical-timeline-content"></div>');
+          var title = $('<h2></h2>').text(item.title);
+          var opernameLabel = $('<span>用户 </span>'); // 创建包含"用户"两个字的span元素
+          var opername = $('<span></span>').text(item.operName).css('color', '#065ed4'); // 创建包含opername的span元素并设置颜色为蓝色
+          var description = $('<p></p>').text(item.description); // 创建包含description的p元素
+          description.prepend(opername).prepend(opernameLabel); // 将opername和opernameLabel添加到description的前面
+          var time = $('<span class="vertical-date" style="color: #0ba26d"></span>').text(new Date(item.time).toLocaleString());
+          // 修改按钮的创建方式，添加onclick事件处理器
+          var button = $('<a class="btn btn-sm" href="javascript:void(0)" onclick="showDetails(\'' + item.operId + '\')">查看更多</a>').addClass(colors[index % 4] + ' pull-right');
+          content.append(title);
+          content.append(description);
+          content.append(time);
+          content.append($('<div class="clearfix"></div>')); // 清除浮动
+          content.append(button); // 添加按钮到内容块中
+          block.append(icon);
+          block.append(content);
+          // 添加内容块到时间轴中
+          $('#vertical-timeline').append(block);
+        });
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error('Error fetching data: ' + textStatus, errorThrown);
+      }
+    });
+    // 定义showDetails函数，用于在点击"查看更多"按钮时发出请求并显示模态窗口
+    window.showDetails = function(operId) {
+      // 使用AJAX请求获取HTML界面
+      $.ajax({
+        url: '/monitor/operlog/detail/' + operId, // 使用operId构建URL
+        type: 'GET',
+        success: function(response) {
+          // 将返回的HTML内容填充到模态窗口中
+          $('#detailsModal .modal-content').html(response);
+          // 显示模态窗口
+          $('#detailsModal').modal('show');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.error('Error fetching content: ' + textStatus, errorThrown);
+        }
+      });
+    };
     // 切换时间轴的颜色/背景版本
     $('#lightVersion').click(function(event) {
-    event.preventDefault();
-    $('#ibox-content').removeClass('ibox-content');
-    $('#vertical-timeline').removeClass('dark-timeline');
-    $('#vertical-timeline').addClass('light-timeline');
-  });
-
+      event.preventDefault();
+      $('#ibox-content').removeClass('ibox-content');
+      $('#vertical-timeline').removeClass('dark-timeline');
+      $('#vertical-timeline').addClass('light-timeline');
+    });
     $('#darkVersion').click(function(event) {
-    event.preventDefault();
-    $('#ibox-content').addClass('ibox-content');
-    $('#vertical-timeline').removeClass('light-timeline');
-    $('#vertical-timeline').addClass('dark-timeline');
-  });
+      event.preventDefault();
+      $('#ibox-content').addClass('ibox-content');
+      $('#vertical-timeline').removeClass('light-timeline');
+      $('#vertical-timeline').addClass('dark-timeline');
+    });
   });
 </script>
 </body>
 </html>
-```
