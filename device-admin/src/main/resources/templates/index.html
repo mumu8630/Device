@@ -54,7 +54,7 @@
                     <a class="menuItem" th:href="@{/system/main}"><i class="fa fa-home"></i> <span class="nav-label">首页</span> </a>
                 </li>
 				<li>
-					<a class="menuItem" th:href="@{/system/main}"><i class="fa fa-dashboard"></i> <span class="nav-label">工作台</span> </a>
+					<a class="menuItem" th:href="@{/api/workspace}"><i class="fa fa-dashboard"></i> <span class="nav-label">工作台</span> </a>
 				</li>
                 <li th:each="menu : ${menus}">
                 	<a th:class="@{${!#strings.isEmpty(menu.url) && menu.url != '#'} ? ${menu.target}}" th:href="@{${#strings.isEmpty(menu.url)} ? |#| : ${menu.url}}" th:data-refresh="${menu.isRefresh == '0'}">

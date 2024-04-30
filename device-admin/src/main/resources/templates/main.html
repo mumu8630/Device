@@ -278,23 +278,12 @@
     <!--Echarts图表-->
     <script type="text/javascript">
 
-	    $('#pay-qrcode').click(function(){
-	        var html=$(this).html();
-	        parent.layer.open({
-	            title: false,
-	            type: 1,
-	            closeBtn:false,
-	            shadeClose:true,
-	            area: ['600px', '360px'],
-	            content: html
-	        });
-	    });
 
 	    //Echarts图表代码
 		var myChart = echarts.init(document.getElementById('main-chart'));
 
         // 发送 AJAX 请求获取数据
-        fetch('/device/equipment/findHotDevice')
+        fetch('/api/workspace/hotBorrow')
             .then(response => response.json())
             .then(data => {
                 // 渲染 ECharts
