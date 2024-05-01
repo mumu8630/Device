@@ -4,28 +4,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nuc.device.order.mapper.DeviceOrderMapper">
     
-    <resultMap type="DeviceOrder" id="DeviceOrderResult">
+     <resultMap type="DeviceOrder" id="DeviceOrderResult">
         <result property="orderId"    column="order_id"    />
         <result property="userId"    column="user_id"    />
         <result property="equipmentId"    column="equipment_id"    />
         <result property="borrowDate"    column="borrow_date"    />
         <result property="returnDate"    column="return_date"    />
         <result property="status"    column="status"    />
+        <result property="reason"    column="reason"    />
+        <result property="borrowNum"    column="borrow_num"    />
+        <result property="equipmentName"    column="equipment_name"    />
     </resultMap>
 
-    <sql id="selectDeviceOrderVo">
-        select order_id, user_id, equipment_id, borrow_date, return_date, status from device_order
+     <sql id="selectDeviceOrderVo">
+        select order_id, user_id, equipment_id, borrow_date, return_date, status, reason, borrow_num, equipment_name from device_order
     </sql>
     <sql id="selectDeviceOrderVoNoUser">
-        select order_id, equipment_id, borrow_date, return_date, status from device_order
+        select order_id, equipment_id, borrow_date, return_date, status ,borrow_num ,reason , equipment_name from device_order
     </sql>
 
     <select id="selectDeviceOrderList" parameterType="DeviceOrder" resultMap="DeviceOrderResult">
         <include refid="selectDeviceOrderVoNoUser"/>
-        <where>  
+        <where>
+            <if test="equipmentName != null  and equipmentName != ''"> and equipment_name like concat('%', #{equipmentName}, '%')</if>
             <if test="borrowDate != null "> and borrow_date = #{borrowDate}</if>
             <if test="returnDate != null "> and return_date = #{returnDate}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="borrowNum != null" > and borrow_num &gt;= #{borrowNum}</if>
              <if test="userId != null"> and user_id = #{userId}</if>
         </where>
     </select>
@@ -40,27 +45,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null">user_id,</if>
             <if test="equipmentId != null">equipment_id,</if>
+            <if test="equipmentName != null">equipment_name,</if>
             <if test="borrowDate != null">borrow_date,</if>
             <if test="returnDate != null">return_date,</if>
+            <if test="reason != null">reason,</if>
+            <if test="borrowNum != null">borrow_num,</if>
             <if test="status != null">status,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null">#{userId},</if>
             <if test="equipmentId != null">#{equipmentId},</if>
+            <if test="equipmentName != null">#{equipmentName},</if>
             <if test="borrowDate != null">#{borrowDate},</if>
             <if test="returnDate != null">#{returnDate},</if>
+             <if test="reason != null">#{reason},</if>
+            <if test="borrowNum != null">#{borrowNum},</if>
             <if test="status != null">#{status},</if>
          </trim>
     </insert>
 
-    <update id="updateDeviceOrder" parameterType="DeviceOrder">
+     <update id="updateDeviceOrder" parameterType="DeviceOrder">
         update device_order
         <trim prefix="SET" suffixOverrides=",">
             <if test="userId != null">user_id = #{userId},</if>
             <if test="equipmentId != null">equipment_id = #{equipmentId},</if>
+            <if test="equipmentName != null">equipment_name = #{equipmentName},</if>
             <if test="borrowDate != null">borrow_date = #{borrowDate},</if>
             <if test="returnDate != null">return_date = #{returnDate},</if>
             <if test="status != null">status = #{status},</if>
+            <if test="reason != null">reason = #{reason},</if>
+            <if test="borrowNum != null">borrow_num = #{borrowNum},</if>
         </trim>
         where order_id = #{orderId}
     </update>

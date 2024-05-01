@@ -51,4 +51,8 @@ public enum BusinessType
      * 查询
      */
     QUERY,
+    /**
+     * 借用
+     */
+    BORROW
 }

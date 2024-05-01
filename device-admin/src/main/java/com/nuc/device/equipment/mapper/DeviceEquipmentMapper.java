@@ -61,7 +61,6 @@ public interface DeviceEquipmentMapper
      */
     public int deleteDeviceEquipmentByEquipmentIds(String[] equipmentIds);
 
-    List<DeviceEquipment> selectHotDevice();
 
     String selectEquipmentNameByEquipmentId(Long equipmentId);
 

@@ -101,13 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
- <select id="selectHotDevice" resultMap="DeviceEquipmentResult">
-    <!--@mbg.generated-->
-    select
-    <include refid="Base_Column_List" />
-    from device_equipment
-    ORDER BY borrowed_quantity DESC limit 0,6
-</select>
+
 <select id="selectEquipmentNameByEquipmentId" resultType="java.lang.String">
 select name from device_equipment where equipment_id = #{equipmentId}
 </select>

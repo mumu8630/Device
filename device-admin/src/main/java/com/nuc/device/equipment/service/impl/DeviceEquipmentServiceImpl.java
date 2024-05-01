@@ -1,12 +1,24 @@
 package com.nuc.device.equipment.service.impl;
 
+import java.util.Date;
 import java.util.List;
+
+import com.nuc.device.common.utils.DateUtils;
+import com.nuc.device.order.domain.DeviceOrder;
+import com.nuc.device.order.service.IDeviceOrderService;
+import com.nuc.device.record.domin.DeviceBorrowRecord;
+import com.nuc.device.record.service.IDeviceRecordService;
+import com.nuc.device.task.exception.RedisOperationException;
+import com.nuc.device.task.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.nuc.device.equipment.mapper.DeviceEquipmentMapper;
 import com.nuc.device.equipment.domain.DeviceEquipment;
 import com.nuc.device.equipment.service.IDeviceEquipmentService;
 import com.nuc.device.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.nuc.device.common.utils.ShiroUtils.getSysUser;
 
 /**
  * 设备信息Service业务层处理
@@ -19,6 +31,12 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
 {
     @Autowired
     private DeviceEquipmentMapper deviceEquipmentMapper;
+    @Autowired
+    RedisUtil redisUtil;
+    @Autowired
+    IDeviceOrderService deviceOrderService;
+    @Autowired
+    IDeviceRecordService  deviceRecordService;
 
     /**
      * 查询设备信息
@@ -92,8 +110,75 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
         return deviceEquipmentMapper.deleteDeviceEquipmentByEquipmentId(equipmentId);
     }
 
+    /**
+     * 借用设备
+     *
+     * @param deviceEquipment 设备信息
+     * @param needQuantity 需要数量
+     * @param needReason 需要原因
+     * @return 结果
+     */
     @Override
-    public List<DeviceEquipment> findHotDevice() {
-        return deviceEquipmentMapper.selectHotDevice();
+    @Transactional(rollbackFor = Exception.class)
+    public int borrowDevice(DeviceEquipment deviceEquipment, Integer needQuantity, String needReason) {
+        //扣缓存
+        String idleKey = "device:hot:idle";
+        String borrowKey = "device:hot:borrow";
+        try {
+            if (!redisUtil.hasKey(idleKey)) {
+                throw new RedisOperationException("key" + idleKey + "不存在");
+            }
+            if (!redisUtil.hasKey(borrowKey)) {
+                throw new RedisOperationException("key" + borrowKey + "不存在");
+            }
+            if (redisUtil.zGetScore(idleKey, deviceEquipment.getEquipmentId()) < needQuantity) {
+                throw new RedisOperationException("redis中" + deviceEquipment.getName() + "设备闲置数量不足");
+            }
+            //扣缓存
+            Double zincrby = redisUtil.zincrby(idleKey, deviceEquipment.getEquipmentId(), -needQuantity);
+            if (zincrby < 0) {
+                return 0;
+            }
+            //扣数据库
+            DeviceEquipment device = deviceEquipmentMapper.selectDeviceEquipmentByEquipmentId(deviceEquipment.getEquipmentId());
+            if (device.getIdleQuantity() < needQuantity) {
+                return 0;
+            }
+            Integer newBorrowQuantity = device.getBorrowedQuantity() + needQuantity;
+            Integer newIdleQuantity = device.getIdleQuantity() - needQuantity;
+            device.setBorrowedQuantity(newBorrowQuantity);
+            device.setIdleQuantity(newIdleQuantity);
+            int i = deviceEquipmentMapper.updateDeviceEquipment(device);
+            //    加订单
+            DeviceOrder deviceOrder = new DeviceOrder();
+            deviceOrder.setUserId(getSysUser().getUserId());
+            deviceOrder.setEquipmentId(deviceEquipment.getEquipmentId());
+            deviceOrder.setBorrowDate(new Date());
+            deviceOrder.setBorrowNum(needQuantity);
+            deviceOrder.setReason(needReason);
+            deviceOrder.setEquipmentName(deviceEquipment.getName());
+            deviceOrder.setStatus("未归还");
+            int j = deviceOrderService.insertDeviceOrder(deviceOrder);
+            //加历史记录表
+            DeviceBorrowRecord deviceBorrowRecord = new DeviceBorrowRecord();
+            deviceBorrowRecord.setEquipmentId(device.getEquipmentId());
+            deviceBorrowRecord.setEquipmentName(device.getName());
+            deviceBorrowRecord.setBorrowNum(needQuantity);
+            deviceBorrowRecord.setBorrowDate(new Date());
+            deviceBorrowRecord.setBorrowUser(getSysUser().getLoginName());
+            deviceBorrowRecord.setBorrowReason(needReason);
+            deviceBorrowRecord.setBorrowStatus("未归还");
+            //    设置归还时间 默认归还时间为借用时间+7天
+            deviceBorrowRecord.setDeadLine(DateUtils.addDays(new Date(), 7));
+            int x = deviceRecordService.addRecord(deviceBorrowRecord);
+            //    加缓存
+            redisUtil.zincrby(borrowKey, deviceEquipment.getEquipmentId(), needQuantity);
+            return i * j * x;
+
+        } catch (RedisOperationException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
     }
 }

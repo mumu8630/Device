@@ -74,51 +74,6 @@ public class DeviceOrderController extends BaseController
     }
 
     /**
-     * 新增订单信息
-     */
-    @GetMapping("/add")
-    public String add()
-    {
-        return prefix + "/add";
-    }
-
-    /**
-     * 新增保存订单信息
-     */
-    @RequiresPermissions("device:order:add")
-    @Log(title = "新增订单信息", businessType = BusinessType.INSERT)
-    @PostMapping("/add")
-    @ResponseBody
-    public AjaxResult addSave(DeviceOrder deviceOrder)
-    {
-        return toAjax(deviceOrderService.insertDeviceOrder(deviceOrder));
-    }
-
-    /**
-     * 修改订单信息
-     */
-    @RequiresPermissions("device:order:edit")
-    @GetMapping("/edit/{orderId}")
-    public String edit(@PathVariable("orderId") Long orderId, ModelMap mmap)
-    {
-        DeviceOrder deviceOrder = deviceOrderService.selectDeviceOrderByOrderId(orderId);
-        mmap.put("deviceOrder", deviceOrder);
-        return prefix + "/edit";
-    }
-
-    /**
-     * 修改保存订单信息
-     */
-    @RequiresPermissions("device:order:edit")
-    @Log(title = "修改并提交订单信息", businessType = BusinessType.UPDATE)
-    @PostMapping("/edit")
-    @ResponseBody
-    public AjaxResult editSave(DeviceOrder deviceOrder)
-    {
-        return toAjax(deviceOrderService.updateDeviceOrder(deviceOrder));
-    }
-
-    /**
      * 删除订单信息
      */
     @RequiresPermissions("device:order:remove")

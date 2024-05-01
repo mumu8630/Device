@@ -35,6 +35,10 @@ public class DeviceOrder extends BaseEntity
     private String equipmentName;
     /** 设备类型名称 */
     private String typeName;
+    /** 借用缘由 */
+    private String reason;
+    /** 借用数量 */
+    private Integer borrowNum;
 
     /** 借用日期 */
     @JsonFormat(pattern = "yyyy-MM-dd")

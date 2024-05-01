@@ -59,5 +59,13 @@ public interface IDeviceEquipmentService
      */
     public int deleteDeviceEquipmentByEquipmentId(Long equipmentId);
 
-    List<DeviceEquipment> findHotDevice();
+    /**
+     * 借用设备
+     *
+     * @param deviceEquipment 设备信息
+     * @param needQuantity 需要数量
+     * @param needReason 需要原因
+     * @return 结果
+     */
+    int borrowDevice(DeviceEquipment deviceEquipment, Integer needQuantity, String needReason);
 }

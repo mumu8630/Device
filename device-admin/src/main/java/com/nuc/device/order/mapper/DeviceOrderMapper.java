@@ -32,7 +32,7 @@ public interface DeviceOrderMapper
 
     /**
      * 新增订单信息
-     * 
+     *
      * @param deviceOrder 订单信息
      * @return 结果
      */
@@ -40,7 +40,7 @@ public interface DeviceOrderMapper
 
     /**
      * 修改订单信息
-     * 
+     *
      * @param deviceOrder 订单信息
      * @return 结果
      */
@@ -61,5 +61,4 @@ public interface DeviceOrderMapper
      * @return 结果
      */
     public int deleteDeviceOrderByOrderIds(String[] orderIds);
-    List<DeviceOrder> selectDeviceOrderListByuserId( @Param("userId") Long userId);
 }

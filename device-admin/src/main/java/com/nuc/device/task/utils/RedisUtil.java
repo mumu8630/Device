@@ -634,7 +634,7 @@ public class RedisUtil {
 
 	// =========zSetOperations 用法 start============
 
-	public Double zincrby(String key, String member, double score) {
+	public Double zincrby(String key, Long member, double score) {
 		return zSetOperations.incrementScore(key, member, score);
 	}
 
@@ -647,6 +647,9 @@ public class RedisUtil {
 		// 绑定操作
 		return zSetOperations.reverseRangeByScoreWithScores(key, Double.MIN_VALUE, Double.MAX_VALUE,offset,count);
 	}
-
+	//===============获取Score===============================
+	public Double zGetScore(String key, Long member) {
+		return zSetOperations.score(key, member);
+	}
 	// =========zSetOperations 用法 End============
 }

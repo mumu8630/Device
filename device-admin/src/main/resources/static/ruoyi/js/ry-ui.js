@@ -1116,6 +1116,36 @@ var table = {
                     }
                 });
             },
+            //借用信息
+            borrow: function(id) {
+                table.set();
+                if ($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+                    var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+                    if ($.common.isEmpty(row)) {
+                        $.modal.alertWarning("请至少选择一条记录");
+                        return;
+                    }
+                    var url = table.options.borrowUrl.replace("{id}", row[table.options.uniqueId]);
+                    $.modal.open("借用" + table.options.modalName, url);
+                } else {
+                    $.modal.open("借用" + table.options.modalName, $.operate.borrowUrl(id));
+                }
+            },
+            // 借用访问地址
+            borrowUrl: function(id) {
+                var url = "/404.html";
+                if ($.common.isNotEmpty(id)) {
+                    url = table.options.borrowUrl.replace("{id}", id);
+                } else {
+                    var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+                    if (id.length == 0) {
+                        $.modal.alertWarning("请至少选择一条记录");
+                        return;
+                    }
+                    url = table.options.borrowUrl.replace("{id}", id);
+                }
+                return url;
+            },
             // 批量删除信息
             removeAll: function() {
                 table.set();

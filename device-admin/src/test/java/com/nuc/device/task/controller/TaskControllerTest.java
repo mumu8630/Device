@@ -1,16 +1,18 @@
 package com.nuc.device.task.controller;
 
+import com.nuc.device.record.domin.DeviceBorrowRecord;
+import com.nuc.device.record.domin.DeviceBorrowRecordDTO;
+import com.nuc.device.record.service.IDeviceRecordService;
 import com.nuc.device.task.domin.DeviceUserTaskList;
 import com.nuc.device.task.enums.TaskStatusEnum;
 import com.nuc.device.task.mapper.DeviceUserTaskListMapper;
 import com.nuc.device.task.utils.RedisUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -70,6 +72,11 @@ class TaskControllerTest {
         //int i = deviceUserTaskListMapper.updateByPrimaryKey(task);
     }
 
+    /**
+     * redis数据库同步
+     * device:hot:borrow   ---->  borrowed_quantity  借用量
+     * device:hot:idle  -------> idle_quantity  闲置量
+     */
     @Test
     void addRedis(){
             // 连接到本地的 Redis 服务
@@ -82,7 +89,7 @@ class TaskControllerTest {
             for (Map<String, Object> data : dataList) {
                 String member = String.valueOf(data.get("equipment_id")); // 适当地替换成你的数据键
                 String score = String.valueOf(data.get("borrowed_quantity")); // 适当地替换成你的数据值
-                jedis.zadd("device_hot_borrow", Double.parseDouble(score),member); // 示例使用了Redis的String类型
+                jedis.zadd("device:hot:borrow", Double.parseDouble(score),member); // 示例使用了Redis的String类型
             }
             // 关闭Redis连接
             jedis.close();
@@ -99,16 +106,24 @@ class TaskControllerTest {
             });
         }
 
-    @Test
-    void testRedisConnection() {
-        // 测试连接是否成功
-        String testKey = "test_key";
-        String testValue = "test_value";
-        redisTemplate.opsForValue().set(testKey, testValue);
-        String retrievedValue = redisTemplate.opsForValue().get(testKey);
 
-        assert retrievedValue.equals(testValue);
-        System.out.println("Redis连接测试成功！");
+
+
+    @Autowired
+    IDeviceRecordService deviceRecordService;
+    //list之间的复制
+    @Test
+    void recordList() {
+        List<DeviceBorrowRecord> recordList = deviceRecordService.findRecentRecordList();
+        List<DeviceBorrowRecordDTO> recordDTOList = new ArrayList<>();
+        recordList.forEach(record -> {
+            DeviceBorrowRecordDTO recordDTO = new DeviceBorrowRecordDTO();
+            BeanUtils.copyProperties(record, recordDTO);
+            recordDTOList.add(recordDTO);
+        });
+        recordList.forEach(System.out::println);
+        System.out.println("=====================================");
+        recordDTOList.forEach(System.out::println);
     }
-        }
+}
 

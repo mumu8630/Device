@@ -45,10 +45,10 @@ public class DeviceOrderServiceImpl implements IDeviceOrderService
     @Override
     public List<DeviceOrder> selectDeviceOrderList(DeviceOrder deviceOrder)
     {
+
         List<DeviceOrder> deviceOrders = deviceOrderMapper.selectDeviceOrderList(deviceOrder);
         deviceOrders.forEach(userDeviceOrder -> {
             userDeviceOrder.setTypeName(selectTypeNameByEquipmentId(userDeviceOrder.getEquipmentId()));
-            userDeviceOrder.setEquipmentName(selectEquipmentnameByEquipmentId(userDeviceOrder.getEquipmentId()));
         });
         return deviceOrders;
     }
@@ -99,10 +99,6 @@ public class DeviceOrderServiceImpl implements IDeviceOrderService
     public int deleteDeviceOrderByOrderId(Long orderId)
     {
         return deviceOrderMapper.deleteDeviceOrderByOrderId(orderId);
-    }
-
-    private String selectEquipmentnameByEquipmentId(Long equipmentId) {
-        return deviceEquipmentMapper.selectEquipmentNameByEquipmentId(equipmentId);
     }
 
     private String selectTypeNameByEquipmentId(Long equipmentId) {

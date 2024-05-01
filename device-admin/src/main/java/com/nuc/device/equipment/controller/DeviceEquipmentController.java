@@ -5,15 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.nuc.device.order.service.IDeviceOrderService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import com.nuc.device.common.annotation.Log;
 import com.nuc.device.common.enums.BusinessType;
 import com.nuc.device.equipment.domain.DeviceEquipment;
@@ -37,13 +35,15 @@ public class DeviceEquipmentController extends BaseController
 
     @Autowired
     private IDeviceEquipmentService deviceEquipmentService;
+    @Autowired
+    IDeviceOrderService deviceOrderService;
 
     @RequiresPermissions("device:equipment:view")
     @Log(title = "查询设备信息", businessType = BusinessType.QUERY)
     @GetMapping()
     public String equipment()
     {
-        return prefix + "/equipment";
+            return prefix + "/equipment";
     }
 
     /**
@@ -130,29 +130,29 @@ public class DeviceEquipmentController extends BaseController
         return toAjax(deviceEquipmentService.deleteDeviceEquipmentByEquipmentIds(ids));
     }
 
-    @GetMapping("/findHotDevice")
-    @ResponseBody
-    public List<Map<String, Object>> findAllDevice() {
-        List<DeviceEquipment> allDevice = deviceEquipmentService.findHotDevice();
-        List<Map<String, Object>> chartData = Data2Echarts(allDevice);
-        return chartData;
+    /**
+     * 借用设备
+     */
+    @RequiresPermissions("device:equipment:borrow")
+    @GetMapping("/borrow/{equipmentId}")
+    public String borrow(@PathVariable("equipmentId") Long equipmentId, ModelMap mmap)
+    {
+        DeviceEquipment deviceEquipment = deviceEquipmentService.selectDeviceEquipmentByEquipmentId(equipmentId);
+        mmap.put("deviceEquipment", deviceEquipment);
+        return prefix + "/borrow";
     }
-
-    private List<Map<String, Object>> Data2Echarts(List<DeviceEquipment> allDevice) {
-        List<Map<String, Object>> chartData = new ArrayList<>();
-        for (DeviceEquipment equipment : allDevice) {
-            // 提取需要的信息
-            Integer borrowedQuantity = equipment.getBorrowedQuantity();
-            String name = equipment.getName();
-
-            // 创建适合 ECharts 使用的格式
-            Map<String, Object> dataPoint = new HashMap<>();
-            dataPoint.put("value", borrowedQuantity);
-            dataPoint.put("name", name);
-
-            // 添加到列表中
-            chartData.add(dataPoint);
-        }
-        return chartData;
+    /**
+     * 借用设备保存
+     * 扣库存 加订单 扣缓存 加缓存 加历史订单
+     */
+    @RequiresPermissions("device:equipment:borrow")
+    @Log(title = "借用设备", businessType = BusinessType.BORROW)
+    @PostMapping("/borrow")
+    @ResponseBody
+    public AjaxResult borrowSave(Integer needQuantity,
+                                 DeviceEquipment deviceEquipment,
+                                String needReason)
+    {
+        return toAjax(deviceEquipmentService.borrowDevice(deviceEquipment, needQuantity, needReason));
     }
 }
