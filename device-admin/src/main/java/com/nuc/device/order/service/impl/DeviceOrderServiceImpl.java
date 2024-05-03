@@ -1,8 +1,10 @@
 package com.nuc.device.order.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import com.nuc.device.equipment.mapper.DeviceEquipmentMapper;
+import com.nuc.device.record.domain.OrderSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.nuc.device.order.mapper.DeviceOrderMapper;
@@ -99,6 +101,55 @@ public class DeviceOrderServiceImpl implements IDeviceOrderService
     public int deleteDeviceOrderByOrderId(Long orderId)
     {
         return deviceOrderMapper.deleteDeviceOrderByOrderId(orderId);
+    }
+
+    @Override
+    public Long findMinDeadLine(Long userId) {
+        return deviceOrderMapper.selectMinDeadLine(userId);
+    }
+
+    /**
+     * 查询用户借用数量
+     *
+     * @param userId 用户id
+     * @return 结果
+     */
+    @Override
+    public OrderSummary sumBorrowQuantity(Long userId) {
+        return deviceOrderMapper.sumBorrowQuantity(userId);
+    }
+
+    /**
+     * 查询用户归还数量
+     *
+     * @param userId 用户id
+     * @return 结果
+     */
+    @Override
+    public OrderSummary sumReturnQuantity(Long userId) {
+        return deviceOrderMapper.sumReturnQuantity(userId);
+    }
+
+    /**
+     * 查询用户逾期数量
+     *
+     * @param userId 用户id
+     * @return 结果
+     */
+    @Override
+    public OrderSummary sumOverdueQuantity(Long userId) {
+        return deviceOrderMapper.sumOverdueQuantity(userId);
+    }
+
+    /**
+     * 查询用户即将逾期数量
+     *
+     * @param userId 用户id
+     * @return 结果
+     */
+    @Override
+    public OrderSummary sumWillOverdueQuantity(Long userId) {
+        return deviceOrderMapper.sumWillOverdueQuantity(userId);
     }
 
     private String selectTypeNameByEquipmentId(Long equipmentId) {

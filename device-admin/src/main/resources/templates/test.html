@@ -1,138 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>工作台</title>
-    <link href="../../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
-    <link href="../../../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
-    <link href="../../../static/css/style.min.css" th:href="@{/css/style.min.css}" rel="stylesheet"/>
+    <meta charset="utf-8">
+    <title>Stage Speed Gauge - Apache ECharts Demo</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        * {
             margin: 0;
             padding: 0;
         }
-
-        .tabs {
-            display: flex;
-            justify-content: center;
-            margin-top: 50px;
+        #deadLineChart {
+            position: relative;
+            height:300px;
+            overflow: hidden;
         }
-
-        .tab {
-            margin: 0px 20px 20px;
-            padding: 10px 20px;
-            background-color: #ddd;
-            border-radius: 5px 5px 0 0;
-            cursor: pointer;
-        }
-
-        .tab.active {
-            background-color: #fff;
-        }
-
-        .content {
-            display: none;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 0 0 5px 5px;
-        }
-
-        .content.active {
-            display: block;
-        }
-        .blue-icon {
-            display: inline-block;
-            width: 5px;
-            height: 15px;
-            background-color: #4ad0db; /* 蓝色背景 */
-            margin-right: 8px; /* 可根据需要调整距离文字的间距 */
-        }
-
-
 
     </style>
 </head>
-<body class="gray-bg">
-
-<div class="tabs">
-    <div class="tab active" data-tab="tab1">设备数量统计</div>
-    <div class="tab" data-tab="tab2">订单统计</div>
-    <div class="tab" data-tab="tab2">设备维护统计</div>
-</div>
-
-<div class="content active" id="tab1">
-    <div class="wrapper wrapper-content" >
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h3> <span class="blue-icon"></span>热门设备借用情况分析</h3>
-                    </div>
-                    <div class="ibox-content">
-                        <div id="deviceCountEcharts" style="height: 300px;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-4">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h3> <span class="blue-icon"></span>设备剩余数量占比分析</h3>
-                    </div>
-                    <div class="ibox-content">
-                        <div id="deviceCountEcharts" style="height: 300px;"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h3> <span class="blue-icon"></span>设备最近借用情况统计</h3>
-                    </div>
-                    <div class="ibox-content">
-                        <div id="deviceCountEcharts" style="height: 300px;"></div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<div class="content" id="tab2">
-    <h2>选项卡 2 内容</h2>
-    <p>这是选项卡 2 的内容。</p>
-</div>
-
-<div class="content" id="tab3">
-    <h2>选项卡 3 内容</h2>
-    <p>这是选项卡 3 的内容。</p>
-</div>
-
+<body>
+<div id="deadLineChart"></div>
+<script src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/echarts.min.js"></script>
 <script>
-    const tabs = document.querySelectorAll('.tab');
-    const contents = document.querySelectorAll('.content');
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const tabId = tab.getAttribute('data-tab');
-
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-
-            contents.forEach(content => {
-                if (content.getAttribute('id') === tabId) {
-                    content.classList.add('active');
-                } else {
-                    content.classList.remove('active');
-                }
-            });
-        });
+    var dom = document.getElementById('deadLineChart');
+    dom.style.width = '654px'; // 设置容器宽度为600px
+    dom.style.height = '245px'; // 设置容器高度为400px
+    var myChart = echarts.init(dom, null, {
+        renderer: 'canvas',
+        useDirtyRect: false
     });
-</script>
+    // 使用 AJAX 从服务器获取数据
+    fetch('/api/workspace/deadLine') // 假设后端提供了 /api/workspace/deadLine 接口来获取数据
+        .then(response => response.json())
+        .then(data => {
+            // 数据成功获取后，渲染图表
+            renderChart(data);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+    function renderChart(data) {
+        var countdownMinutes = data.minutes; // 后端数据中包含分钟数
+        var countdownSeconds = countdownMinutes * 60;
+        var option = {
+            series: [
+                {
+                    type: 'gauge',
+                    // 调整仪表盘的外观
+                    axisLine: {
+                        lineStyle: {
+                            width: 20, // 调整轴线的宽度
+                            color: [
+                                [0.3, '#fd666d'],
+                                [0.7, '#37a2da'],
+                                [1, '#67e0e3']
+                            ]
+                        }
+                    },
+                    // 调整指针样式
+                    pointer: {
+                        width: 4, // 调整指针的宽度
+                        length: '60%' // 调整指针的长度
+                    },
+                    // 调整刻度线的样式和位置
+                    axisTick: {
+                        distance: -20, // 调整刻度线与轴线的距离
+                        length: 6, // 调整刻度线的长度
+                        lineStyle: {
+                            color: '#fff', // 调整刻度线的颜色
+                            width: 2 // 调整刻度线的宽度
+                        }
+                    },
+                    // 调整分隔线的样式和位置
+                    splitLine: {
+                        distance: -20, // 调整分隔线与轴线的距离
+                        length: 20, // 调整分隔线的长度
+                        lineStyle: {
+                            color: '#fff', // 调整分隔线的颜色
+                            width: 4 // 调整分隔线的宽度
+                        }
+                    },
+                    // 调整轴标签的样式
+                    axisLabel: {
+                        color: 'inherit',
+                        distance: 30, // 调整轴标签与轴线的距离
+                        fontSize: 5 // 调整轴标签的字体大小
+                    },
+                    // 调整详情的样式
+                    detail: {
+                        fontSize: 12, // 调整详情文字的字体大小
+                        formatter: function (value) {
+                            // 将剩余秒数转换为分钟和秒的格式
+                            var minutes = Math.floor(value / 60);
+                            var seconds = value % 60;
+                            return minutes + ':' + (seconds < 10 ? '0' + seconds : seconds);
+                        },
+                        color: 'inherit'
+                    },
+                    max: countdownSeconds, // 设置仪表盘的最大值为倒计时总时长（秒）
+                    // 初始化数据
+                    data: [
+                        {
+                            value: countdownSeconds
+                        }
+                    ]
+                }
+            ]
+        };
+        var timer = setInterval(function () {
+            countdownSeconds -= 10;
+            myChart.setOption({
+                series: [
+                    {
+                        data: [
+                            {
+                                value: countdownSeconds
+                            }
+                        ]
+                    }
+                ]
+            });
+            if (countdownSeconds <= 0) {
+                clearInterval(timer);
+            }
+        }, 1000);
 
+        if (option && typeof option === 'object') {
+            myChart.setOption(option);
+        }
+
+        window.addEventListener('resize', myChart.resize);
+    }
+</script>
 </body>
 </html>

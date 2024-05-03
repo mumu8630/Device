@@ -1,7 +1,9 @@
 package com.nuc.device.order.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.nuc.device.order.domain.DeviceOrder;
+import com.nuc.device.record.domain.OrderSummary;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -61,4 +63,14 @@ public interface DeviceOrderMapper
      * @return 结果
      */
     public int deleteDeviceOrderByOrderIds(String[] orderIds);
+
+    Long selectMinDeadLine(Long userId);
+
+    OrderSummary sumBorrowQuantity(Long userId);
+
+    OrderSummary sumReturnQuantity(Long userId);
+
+    OrderSummary sumOverdueQuantity(Long userId);
+
+    OrderSummary sumWillOverdueQuantity(Long userId);
 }

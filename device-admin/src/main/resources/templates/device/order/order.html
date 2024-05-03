@@ -15,12 +15,8 @@
                             <input type="text" name="equipmentName"/>
                         </li>
                         <li>
-                            <label>借用日期：</label>
-                            <input type="text" class="time-input" placeholder="请选择借用日期" name="borrowDate"/>
-                        </li>
-                        <li>
-                            <label>归还日期：</label>
-                            <input type="text" class="time-input" placeholder="请选择归还日期" name="returnDate"/>
+                            <label>借用数量：</label>
+                            <input type="text" name="borrowNum"/>
                         </li>
                         <li>
                             <label>状态：</label>
@@ -29,6 +25,20 @@
                                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                             </select>
                         </li>
+                        <li>
+                            <label>借用日期：</label>
+                            <input type="text" class="time-input" placeholder="请选择借用日期" name="borrowDate"/>
+                        </li>
+                        <li>
+                            <label>归还日期：</label>
+                            <input type="text" class="time-input" placeholder="请选择归还日期" name="returnDate"/>
+                        </li>
+
+                        <li>
+                            <label>截至日期：</label>
+                            <input type="text" class="time-input" placeholder="请选择截至日期" name="deadDate"/>
+                        </li>
+                        <li>
                         <li>
                             <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                             <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
@@ -99,6 +109,11 @@
                     title: '归还日期',
                     sortable: true,
 
+                },
+                {
+                    field: 'deadDate',
+                    title: '截至日期',
+                    sortable: true,
                 },
                 {
                     field: 'status',

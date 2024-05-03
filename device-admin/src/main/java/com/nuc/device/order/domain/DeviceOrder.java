@@ -39,6 +39,10 @@ public class DeviceOrder extends BaseEntity
     private String reason;
     /** 借用数量 */
     private Integer borrowNum;
+    /** 截至日期 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "截至日期", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date deadDate;
 
     /** 借用日期 */
     @JsonFormat(pattern = "yyyy-MM-dd")

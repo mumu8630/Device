@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,18 +9,17 @@
   <link href="../../../static/css/style.min.css" th:href="@{/css/style.min.css}" rel="stylesheet"/>
   <style>
     body {
+      user-select: none;
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
       margin: 0;
       padding: 0;
     }
-
     .tabs {
       display: flex;
       justify-content: flex-start;
       margin-top: 7px;
     }
-
     .tab {
       margin: 0px 5px;
       padding: 8px 14px;
@@ -28,19 +27,16 @@
       border-radius: 5px;
       cursor: pointer;
     }
-
     .tab.active {
       background-color: #c1d9ff87;
       margin-left: 20px;
     }
-
     .content {
       display: none;
       padding: 10px 20px 20px 20px;
       background-color: #f3f3f4;
       border-radius: 0 0 5px 5px;
     }
-
     .content.active {
       display: block;
     }
@@ -68,7 +64,128 @@
     td {
       text-align: center;
     }
+    .card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 5px 8px 7px 1px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      margin: 20px;
+      padding: 18px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .card-icon {
+      width: 58px;
+      height: 58px;
+      margin-right: 10px;
+      border-radius: 50%; /* 添加此属性使图标变成圆形 */
+      padding: 5px; /* 可以根据需要调整内边距 */
+      /* 如果图标是图片，可以添加以下属性来使图片居中并填充整个圆形 */
+      background-size: cover;
+      background-position: center;
+    }
+    .card-body {
+      display: flex;
+      align-items: center;
+    }
+    .progress-bar {
+      height: 10px;
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      margin-right: 10px;
+      position: relative;
+    }
+    .progress {
+      height: 10px;
 
+      border-radius: 5px;
+    }
+    .progress-percentage {
+      font-size: 18px;
+      margin-left: 30px;
+      font-weight: bold;
+    }
+    .right-bar{
+      width: 195px;
+    }
+    .process-font{
+     width: 175px;
+    }
+    #third-chart {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      color:red;
+    }
+    hr{
+      margin:0px;
+    }
+    .card-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .card2 {
+      width: 150px;
+      height: 245px;
+      background-color: white;
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      text-align: center;
+      padding: 20px;
+      transition: all 0.3s ease-in-out; /* 修改这里，添加ease-in-out效果 */
+      border-radius: 10px; /* 可选，为卡片添加圆角 */
+      margin-left: 20px;
+      margin-top:  -25px;;
+    }
+
+    .card2:hover {
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+      transform: translateY(-15px); /* 添加这行代码，使卡片向上移动 */
+    }
+
+    .card2 img {
+      width:58%;
+      height: auto;
+      border-radius :22%;
+
+    }
+    .card2 h4 {
+      margin-top: 20px;
+      font-size: 17px;
+      color: #333;
+    }
+
+    .card2 h2{
+      margin-top: 27px;
+      font-size: 15px;
+    }
+    .card2 h3{
+      font-size: 14px;
+      font-weight: 300;
+      margin-top: 19px;
+    }
+    .card2 span{
+      font-size: 18px;
+      align-content: center;
+      display: inline-block; /* 将 span 元素转换为块级元素，以便设置宽度和高度 */
+      width: 27px; /* 设置宽度 */
+      height: 27px; /* 设置高度 */
+      border-radius: 50%; /* 将边框半径设置为宽度和高度的一半 */
+    }
+    #deadLineChart {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      margin-left: -100px;
+      position: relative; /* 确保左边的 div 可以使用 z-index */
+      z-index: 1; /* 设置左边的 div 的层叠顺序为 1 */
+    }
 
   </style>
 </head>
@@ -80,12 +197,11 @@
 </div>
 <!--选项1内容-->
 <div class="content active" id="tab1" >
-
   <div class="row">
     <div class="col-sm-4">
       <div class="ibox float-e-margins">
-        <div class="ibox-title">
-          <h5><span class="blue-icon"></span>热门设备借用情况分析 </h5>
+        <div class="ibox-title" style="width: 360px">
+          <h4><span class="blue-icon"></span>热门设备借用情况分析 </h4>
         </div>
         <div class="ibox-content">
           <div id="first-chart" style="width: 320px; height: 200px;"></div>
@@ -94,8 +210,8 @@
     </div>
     <div class="col-sm-4" >
       <div class="ibox float-e-margins">
-        <div class="ibox-title">
-          <h5><span class="blue-icon"></span>设备剩余数量占比分析</h5>
+        <div class="ibox-title" style="width: 360px">
+          <h4><span class="blue-icon"></span>设备剩余数量占比分析</h4>
         </div>
         <div class="ibox-content">
             <div id="second-chart" style="width: 320px; height: 200px;"></div>
@@ -104,8 +220,8 @@
     </div>
     <div class="col-sm-4">
       <div class="ibox float-e-margins">
-        <div class="ibox-title">
-          <h5><span class="blue-icon"></span>设备最近借用情况统计</h5>
+        <div class="ibox-title" style="width: 360px">
+          <h4><span class="blue-icon"></span>设备最近借用情况统计</h4>
         </div>
         <div class="ibox-content">
           <table class="borrowTable" style="width: 320px;height: 200px" >
@@ -126,18 +242,123 @@
       </div>
     </div>
   </div>
+  <div class="row border-bottom white-bg dashboard-header"  style="margin: 20px 2px ">
+   <div class="row">
+     <div class="col-sm-12">
+       <div class="ibox-title" style="width: 360px">
+         <h4><span class="blue-icon"></span>热门设备借用情况分析 </h4>
+       </div>
+       <hr>
+     </div>
+   </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body" >
+          <img src="../../../static/workspace/jieyong.png" alt="借用数量" th:src="@{/workspace/jieyong.png}" class="card-icon" style="background: aliceblue;">
+          <div class="right-bar">
+            <div class="card-header">
+              <span class="process-font">设备借用量:<span th:text="${borrowQuantity}"></span></span>
+              <span class="progress-percentage" style="color: #52bce8" ><span th:text="${borrowProp}"></span>%</span>
+            </div>
+          <div class="progress-bar">
+            <div class="progress" th:style="'width: ' + ${borrowProp} + '%; background-color: #52bce887;'"></div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <img src="../../../static/workspace/kucun.png" alt="库存量" th:src="@{/workspace/kucun.png}" class="card-icon" style="background: aliceblue; filter: hue-rotate(310deg)">
+          <div class="right-bar">
+            <div class="card-header">
+              <span class="process-font">设备库存量:<span th:text="${idleQuantity}"></span></span>
+              <span class="progress-percentage" style="color: #13c8cc"><span th:text="${idleProp}"></span>%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress" th:style="'width: ' + ${idleProp} + '%; background-color: #13c8cc47;'"></div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card">
+
+      <div class="card-body">
+        <img src="../../../static/workspace/weixiu.png" alt="维修数量" th:src="@{/workspace/weixiu.png}" class="card-icon" style="background: aliceblue; filter: hue-rotate(256deg)  ">
+        <div class="right-bar">
+          <div class="card-header">
+            <span class="process-font">设备维护量:<span th:text="${maintenanceQuantity}"></span></span>
+            <span class="progress-percentage" style="color: #46d94df5" ><span th:text="${maintenanceProp}"></span>%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress" th:style="'width: ' + ${maintenanceProp} + '%; background-color: #9bdc9ef5;'"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <div class="row">
+    <div id="third-chart" style="height: 380px"></div>
+  </div>
+</div>
 </div>
 
-<div class="content" id="tab2">
-  <h2>选项卡 2 内容</h2>
-  <p>这是选项卡 2 的内容。</p>
-</div>
+<!--选项2内容-->
+<div class="content " id="tab2">
+  <div class="row card-container">
+    <div class="col-sm-2">
+      <div class="card2">
+        <img src="../../../static/workspace/jieyong.png" alt="借用数量" th:src="@{/workspace/jieyong.png}">
+        <h4>借用设备</h4>
+        <h2>共计<span style="background: #39c4e040" th:text="${userBorrow.getOrderCount()}"></span>笔订单!</h2>
+        <h3>借有<span style="background: #39c4e040" th:text="${userBorrow.getDeviceCount()}"></span>台设备!</h3>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="card2">
+        <img src="../../../static/workspace/guihuan.png" alt="归还数量" th:src="@{/workspace/guihuan.png}">
+        <h4>归还数量</h4>
+        <h2>共计<span style="background: #00f7611c" th:text="${userReturn.getOrderCount()}"></span>笔订单!</h2>
+        <h3>归还<span style="background: #00f7611c" th:text="${userReturn.getDeviceCount()}"></span>台设备!</h3>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="card2">
+        <img src="../../../static/workspace/yuqi.png" alt="逾期数量" th:src="@{/workspace/yuqi.png}">
+        <h4>逾期数量</h4>
+        <h2>共计<span style="background: #f7c6001f" th:text="${userOverdue.getOrderCount()}"></span>笔订单!</h2>
+        <h3>逾期<span style="background: #f7c6001f" th:text="${userOverdue.getDeviceCount()}"></span>台设备!</h3>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="card2" style="margin-right: -62px; position: relative; z-index: 2; /* 设置右边的 div 的层叠顺序为 2，高于左边的 div */">
+        <img src="../../../static/workspace/xuqi.png" alt="即将到期" th:src="@{/workspace/xuqi.png}">
+        <h4>即将到期</h4>
+        <h2>共计<span style="background: #f824311c" th:text="${userWillOverdue.getOrderCount()}"></span>笔订单!</h2>
+        <h3>临期<span style="background: #f824311c" th:text="${userWillOverdue.getDeviceCount()}"></span>台设备!</h3>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div id="deadLineChart" style="width: 740px;height: 285px"></div>
+    </div>
+  </div>
 
+</div>
+<!--选项3内容-->
 <div class="content" id="tab3">
   <h2>选项卡 3 内容</h2>
   <p>这是选项卡 3 的内容。</p>
 </div>
+
 <script th:src="@{/js/echarts.min.js}"></script>
+
+<!--标签-->
 <script>
   const tabs = document.querySelectorAll('.tab');
   const contents = document.querySelectorAll('.content');
@@ -159,158 +380,213 @@
     });
   });
 </script>
-<!--第一个图表-->
+<!--图表-->
 <script type="text/javascript">
-  //Echarts图表代码
   var firstEcharts = echarts.init(document.getElementById('first-chart'));
-
-  // 发送 AJAX 请求获取数据
-  fetch('/api/workspace/hotBorrow')
-          .then(response => response.json())
-          .then(data => {
-            // 渲染 ECharts
-            renderFirstChart(data);
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-          });
-  // 渲染 ECharts
-  function renderFirstChart(data) {
-    // 使用获取到的数据设置 ECharts 配置项
-    var option = {
-      tooltip: {
-        trigger: 'item'
-      },
-
-      legend: {
-        left: '180',  // 将 legend 放在中间
-        top: '30%',       // 距离顶部 5%
-        orient: 'vertical',  // 垂直排列
-        align: 'left',   // legend 在容器内左对齐
-        itemGap: 3  ,   // 图例每项之间的间距
-        itemWidth: 10, // 设置图例标记的宽度
-        itemHeight: 10, // 设置图例标记的高度
-        textStyle: {
-          fontSize: 11
-        }
-      },
-      series: [
-        {
-          name: '热门设备借用情况分析 ',
-          type: 'pie',
-          radius: ['50%', '70%'],
-          center: ['25%', '50%'],
-          avoidLabelOverlap: true,
-          itemStyle: {
-            borderRadius: 4,
-            borderColor: '#fff',
-            borderWidth: 1
-          },
-          label: {
-            show: false,
-            position: 'center'
-          },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: 12,
-              fontWeight: 'bold'
-            }
-          },
-          labelLine: {
-            show: false
-          },
-          data: data,
-        }
-      ]
-    };
-
-    if (option && typeof option === 'object') {
-      firstEcharts.setOption(option);
-    }
-    firstEcharts.setOption({
-      // 设置不允许图表自动调整大小
-      resize: false
-    });
-
-    window.addEventListener('resize', firstEcharts.resize);
-  }
-</script>
-<!--第二个图表-->
-<script type="text/javascript">
-  //Echarts图表代码
   var secondEcharts = echarts.init(document.getElementById('second-chart'));
-  // 发送 AJAX 请求获取数据
-  fetch('/api/workspace/hotIdle')
-          .then(response => response.json())
-          .then(data => {
-            // 渲染 ECharts
-            renderSecondChart(data);
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-          });
-  // 渲染 ECharts
-  function renderSecondChart(data) {
-    // 使用获取到的数据设置 ECharts 配置项
-    var option = {
-      tooltip: {
-        trigger: 'item'
-      },
+  var thirdEcharts = echarts.init(document.getElementById('third-chart'));
 
-      legend: {
-        left: '180',  // 将 legend 放在中间
-        top: '30%',       // 距离顶部 5%
-        orient: 'vertical',  // 垂直排列
-        align: 'left',   // legend 在容器内左对齐
-        itemGap: 3  ,   // 图例每项之间的间距
-        itemWidth: 10, // 设置图例标记的宽度
-        itemHeight: 10, // 设置图例标记的高度
-        textStyle: {
-          fontSize: 11
-        }
-      },
-      series: [
-        {
-          name: '热门设备借用情况分析 ',
-          type: 'pie',
-          radius: ['50%', '70%'],
-          center: ['25%', '50%'],
-          avoidLabelOverlap: true,
-          itemStyle: {
-            borderRadius: 4,
-            borderColor: '#fff',
-            borderWidth: 1
-          },
-          label: {
-            show: false,
-            position: 'center'
-          },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: 12,
-              fontWeight: 'bold'
-            }
-          },
-          labelLine: {
-            show: false
-          },
-          data: data,
-        }
-      ]
-    };
-
-    if (option && typeof option === 'object') {
-      secondEcharts.setOption(option);
-    }
-    secondEcharts.setOption({
-      // 设置不允许图表自动调整大小
-      resize: false
-    });
-
-    window.addEventListener('resize', secondEcharts.resize);
+  // 定义两个获取数据的 Promise 函数
+  function fetchFirstChartData() {
+    return fetch('/api/workspace/hotBorrow')
+            .then(response => response.json())
+            .catch(error => {
+              console.error('Error fetching data for first chart:', error);
+              return []; // 返回空数组以防图表渲染失败
+            });
   }
+
+  function fetchSecondChartData() {
+    return fetch('/api/workspace/hotIdle')
+            .then(response => response.json())
+            .catch(error => {
+              console.error('Error fetching data for second chart:', error);
+              return []; // 返回空数组以防图表渲染失败
+            });
+  }
+  function fetchThirdChartData() {
+    return fetch('/api/workspace/barChart')
+            .then(response => response.json())
+            .catch(error => {
+              console.error('Error fetching data for second chart:', error);
+              return []; // 返回空数组以防图表渲染失败
+            });
+  }
+
+    // 使用 Promise.all 同时获取两个图表的数据
+    Promise.all([fetchFirstChartData(), fetchSecondChartData(),fetchThirdChartData()])
+            .then(([firstData, secondData, thirdData]) => {
+              // 渲染第一个图表
+              renderFirstChart(firstData);
+              // 渲染第二个图表
+              renderSecondChart(secondData);
+              //渲染第三个图表
+                renderThirdChart(thirdData);
+            });
+
+    // 渲染第一个图表
+    function renderFirstChart(data) {
+      // 使用获取到的数据设置 ECharts 配置项
+      var option = {
+        tooltip: {
+          trigger: 'item'
+        },
+
+        legend: {
+          left: '180',  // 将 legend 放在中间
+          top: '30%',       // 距离顶部 5%
+          orient: 'vertical',  // 垂直排列
+          align: 'left',   // legend 在容器内左对齐
+          itemGap: 3  ,   // 图例每项之间的间距
+          itemWidth: 10, // 设置图例标记的宽度
+          itemHeight: 10, // 设置图例标记的高度
+          textStyle: {
+            fontSize: 11
+          }
+        },
+        series: [
+          {
+            name: '热门设备借用情况分析 ',
+            type: 'pie',
+            radius: ['50%', '70%'],
+            center: ['25%', '50%'],
+            avoidLabelOverlap: true,
+            itemStyle: {
+              borderRadius: 4,
+              borderColor: '#fff',
+              borderWidth: 1
+            },
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 12,
+                fontWeight: 'bold'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: data,
+          }
+        ]
+      };
+
+      if (option && typeof option === 'object') {
+        firstEcharts.setOption(option);
+      };
+      firstEcharts.setOption({
+        // 设置不允许图表自动调整大小
+        resize: false
+      });
+
+      window.addEventListener('resize', firstEcharts.resize);
+    }
+    // 渲染第二个图表
+    function renderSecondChart(data) {
+      // 使用获取到的数据设置 ECharts 配置项
+      var option = {
+        tooltip: {
+          trigger: 'item'
+        },
+
+        legend: {
+          left: '180',  // 将 legend 放在中间
+          top: '30%',       // 距离顶部 5%
+          orient: 'vertical',  // 垂直排列
+          align: 'left',   // legend 在容器内左对齐
+          itemGap: 3  ,   // 图例每项之间的间距
+          itemWidth: 10, // 设置图例标记的宽度
+          itemHeight: 10, // 设置图例标记的高度
+          textStyle: {
+            fontSize: 11
+          }
+        },
+        series: [
+          {
+            name: '热门设备借用情况分析 ',
+            type: 'pie',
+            radius: ['50%', '70%'],
+            center: ['25%', '50%'],
+            avoidLabelOverlap: true,
+            itemStyle: {
+              borderRadius: 4,
+              borderColor: '#fff',
+              borderWidth: 1
+            },
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 12,
+                fontWeight: 'bold'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: data,
+          }
+        ]
+      };
+
+      if (option && typeof option === 'object') {
+        secondEcharts.setOption(option);
+      }
+      secondEcharts.setOption({
+        // 设置不允许图表自动调整大小
+        resize: false
+      });
+      window.addEventListener('resize', secondEcharts.resize);
+
+  }
+    //渲染第三个图表
+  function renderThirdChart(data) {
+    // 转换数据格式
+    function transformData(data) {
+      const transformed = [];
+      for (const [product, values] of Object.entries(data)) {
+        transformed.push({
+          product,
+          借用: values.借用,
+          维护: values.维护,
+          闲置: values.闲置
+        });
+      }
+      return {
+        dimensions: ['product', '借用', '维护', '闲置'],
+        source: transformed
+      };
+    }
+    const datasetForECharts = transformData(data);
+
+    // 使用获取到的数据设置 ECharts 配置项
+    var option;
+    option = {
+      color: ['#52bce887', '#13c8cc47', '#9bdc9ef5'], // 这里设置了整个图表的颜色数组
+      legend: {},
+      tooltip: {},
+      dataset: datasetForECharts,
+      xAxis: {type: 'category'},
+      yAxis: {},
+      // Declare several bar series, each will be mapped
+      // to a column of dataset.source by default.
+      series: [{type: 'bar'}, {type: 'bar'}, {type: 'bar'}]
+    };
+    if (option && typeof option === 'object') {
+      thirdEcharts.setOption(option);
+    }
+    window.addEventListener('resize', thirdEcharts.resize);
+  }
+
+
+
 </script>
 <!--表格-->
 <script>
@@ -328,7 +604,11 @@
                       '<td>' + item.equipmentName + '</td>' +
                       '<td>' + item.borrowUser + '</td>' +
                       '<td>' + formattedDate + '</td>' +
-                      '<td style="color: ' + (item.borrowStatus === '未归还' ? '#fab42e' : '#31a314') + '">' + item.borrowStatus + '</td>';
+                      '<td style="color: ' +
+                      (item.borrowStatus === '未归还' ? '#fab42e' :
+                              (item.borrowStatus === '已逾期' ? '#f80909b3'
+                                      : '#31a314')) +
+                      '">' + item.borrowStatus + '</td>';
               row.className = index % 2 === 0 ? 'even-row' : 'odd-row';
               tableBody.appendChild(row);
             });
@@ -337,6 +617,132 @@
             console.error('Error fetching data:', error);
           });
 </script>
-</body>
+<!--仪表盘-->
+<script>
+  var dom = document.getElementById('deadLineChart');
 
+  var myChart = echarts.init(dom, null, {
+    renderer: 'canvas',
+    useDirtyRect: false
+  });
+  // 使用 AJAX 从服务器获取数据
+  fetch('/api/workspace/deadLine') // 假设后端提供了 /api/workspace/deadLine 接口来获取数据
+          .then(response => response.json())
+          .then(data => {
+            // 数据成功获取后，渲染图表
+            renderChart(data);
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
+  function renderChart(data) {
+
+    var countdownMinutes = data.minutes; // 后端数据中包含分钟数
+    var countdownSeconds = countdownMinutes * 60;
+    var option = {
+      series: [
+        {
+          type: 'gauge',
+          // 调整仪表盘的外观
+          radius: '100%',
+          axisLine: {
+            lineStyle: {
+              width: 20, // 调整轴线的宽度
+              color: [
+                [0.3, '#fd666d'],
+                [0.7, 'rgba(238,160,86,0.87)'],
+                [1, '#67e0e3']
+              ]
+            }
+          },
+          // 调整指针样式
+          pointer: {
+            itemStyle: {
+              color: 'auto',
+              width: 4, // 调整指针的宽度
+              length: '60%' // 调整指针的长度
+            },
+          },
+          // 调整刻度线的样式和位置
+          axisTick: {
+            distance: -20, // 调整刻度线与轴线的距离
+            length: 6, // 调整刻度线的长度
+            lineStyle: {
+              color: '#fff', // 调整刻度线的颜色
+              width: 2 // 调整刻度线的宽度
+            }
+          },
+          // 调整分隔线的样式和位置
+          splitLine: {
+            distance: -20, // 调整分隔线与轴线的距离
+            length: 20, // 调整分隔线的长度
+            lineStyle: {
+              color: '#fff', // 调整分隔线的颜色
+              width: 4 // 调整分隔线的宽度
+            }
+          },
+          // 调整轴标签的样式
+          axisLabel: {
+            color: 'inherit',
+            distance: 30, // 调整轴标签与轴线的距离
+            fontSize: 7, // 调整轴标签的字体大小
+            formatter: function (value) {
+              // 将秒数转换为分钟和秒的格式
+              var hours = Math.floor(value / 60);
+              var minutes = value % 60;
+              return hours + 'h ' + minutes + 'min';
+            }
+          },
+          // 调整详情的样式
+          detail: {
+            fontSize: 12, // 调整详情文字的字体大小
+            formatter: function (value) {
+              // 将剩余秒数转换为小时、分钟和秒的格式
+              var hours = Math.floor(value / 3600);
+              var minutes = Math.floor((value % 3600) / 60);
+              var seconds = value % 60;
+              return hours + 'h ' + minutes + 'min ' + seconds + 's';
+            },
+            color: 'inherit'
+          },
+          max: 1440, // 设置仪表盘的最大值为24小时的分钟数
+          // 初始化数据
+          data: [
+            {
+              value: countdownSeconds
+            }
+          ]
+        }
+      ]
+    };
+
+    var timer = setInterval(function () {
+      countdownSeconds -= 1;
+      myChart.setOption({
+        series: [
+          {
+            data: [
+              {
+                value: countdownSeconds
+              }
+            ]
+          }
+        ]
+      });
+      if (countdownSeconds <= 0) {
+        clearInterval(timer);
+      }
+    }, 1000);
+
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  }
+</script>
+
+
+</body>
 </html>

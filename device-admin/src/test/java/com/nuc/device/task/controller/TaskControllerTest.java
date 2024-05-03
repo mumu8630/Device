@@ -1,7 +1,7 @@
 package com.nuc.device.task.controller;
 
-import com.nuc.device.record.domin.DeviceBorrowRecord;
-import com.nuc.device.record.domin.DeviceBorrowRecordDTO;
+import com.nuc.device.record.domain.DeviceBorrowRecord;
+import com.nuc.device.record.domain.DeviceBorrowRecordDTO;
 import com.nuc.device.record.service.IDeviceRecordService;
 import com.nuc.device.task.domin.DeviceUserTaskList;
 import com.nuc.device.task.enums.TaskStatusEnum;

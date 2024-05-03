@@ -1,6 +1,8 @@
 package com.nuc.device.equipment.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.nuc.device.equipment.domain.DeviceEquipment;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -65,4 +67,19 @@ public interface DeviceEquipmentMapper
     String selectEquipmentNameByEquipmentId(Long equipmentId);
 
     String selectTypeNameByEquipmentId(Long equipmentId);
+
+
+    List<Map<String,Object>>  sumBorrowQuantity();
+
+    List<Map<String,Object>> sumMaintenanceQuantity();
+
+    List<Map<String,Object>> sumIdleQuantity();
+
+    Integer sumAllBorrowQuantity();
+
+    Integer sumAllIdleQuantity();
+
+    Integer sumAllMaintenanceQuantity();
+
+    Integer sumAllQuantity();
 }
