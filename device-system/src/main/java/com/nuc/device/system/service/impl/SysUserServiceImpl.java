@@ -234,6 +234,7 @@ public class SysUserServiceImpl implements ISysUserService
         int res = userMapper.insertUser(user);
         Long userId = selectUserByLoginName(user.getLoginName()).getUserId();
         insertUserRole(userId,new Long[]{2L});
+
         return res>0;
     }
 

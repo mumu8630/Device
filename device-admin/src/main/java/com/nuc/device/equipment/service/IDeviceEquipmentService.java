@@ -1,6 +1,9 @@
 package com.nuc.device.equipment.service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 import com.nuc.device.equipment.domain.DeviceEquipment;
 
 /**
@@ -67,5 +70,19 @@ public interface IDeviceEquipmentService
      * @param needReason 需要原因
      * @return 结果
      */
-    int borrowDevice(DeviceEquipment deviceEquipment, Integer needQuantity, String needReason);
+    int borrowDevice(DeviceEquipment deviceEquipment, Integer needQuantity, String needReason, Date deadDate);
+
+    List<Map<String,Object>>  sumBorrowQuantity();
+
+    List<Map<String,Object>> sumMaintenanceQuantity();
+
+    List<Map<String,Object>> sumIdleQuantity();
+
+    Integer selectBorrowQuantity();
+
+    Integer selectIdleQuantity();
+
+    Integer selectMaintenanceQuantity();
+
+    Integer selectTotalQuantity();
 }

@@ -1,7 +1,12 @@
 package com.nuc.device.order.service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 import com.nuc.device.order.domain.DeviceOrder;
+import com.nuc.device.record.domain.OrderSummary;
+import com.nuc.device.task.domin.BorrowDateTimes;
 
 /**
  * 订单信息Service接口
@@ -59,4 +64,19 @@ public interface IDeviceOrderService
      */
     public int deleteDeviceOrderByOrderId(Long orderId);
 
+    Long findMinDeadLine(Long userId);
+
+    OrderSummary sumBorrowQuantity(Long userId);
+
+    OrderSummary sumReturnQuantity(Long userId);
+
+    OrderSummary sumOverdueQuantity(Long userId);
+
+    OrderSummary sumWillOverdueQuantity(Long userId);
+
+    List<BorrowDateTimes> selectBorrowTimes(Long userId);
+
+    DeviceOrder selectNewBorrowOrder(Long userId);
+
+    DeviceOrder initOrder(Long userId);
 }

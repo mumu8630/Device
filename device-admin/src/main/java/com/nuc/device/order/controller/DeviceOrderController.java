@@ -52,7 +52,6 @@ public class DeviceOrderController extends BaseController
     @ResponseBody
     public TableDataInfo list(DeviceOrder deviceOrder)
     {
-
         startPage();
         deviceOrder.setUserId(getSysUser().getUserId());
         List<DeviceOrder> list = deviceOrderService.selectDeviceOrderList(deviceOrder);

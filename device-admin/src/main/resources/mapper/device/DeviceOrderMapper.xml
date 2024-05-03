@@ -3,8 +3,8 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nuc.device.order.mapper.DeviceOrderMapper">
-    
-     <resultMap type="DeviceOrder" id="DeviceOrderResult">
+
+    <resultMap type="DeviceOrder" id="DeviceOrderResult">
         <result property="orderId"    column="order_id"    />
         <result property="userId"    column="user_id"    />
         <result property="equipmentId"    column="equipment_id"    />
@@ -14,67 +14,76 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="reason"    column="reason"    />
         <result property="borrowNum"    column="borrow_num"    />
         <result property="equipmentName"    column="equipment_name"    />
+        <result property="deadDate"    column="dead_date"    />
     </resultMap>
 
-     <sql id="selectDeviceOrderVo">
-        select order_id, user_id, equipment_id, borrow_date, return_date, status, reason, borrow_num, equipment_name from device_order
+
+
+    <sql id="selectDeviceOrderVo">
+        select order_id, user_id, equipment_id, borrow_date, return_date, status, reason, borrow_num, equipment_name, dead_date from device_order
     </sql>
-    <sql id="selectDeviceOrderVoNoUser">
-        select order_id, equipment_id, borrow_date, return_date, status ,borrow_num ,reason , equipment_name from device_order
+     <sql id="selectDeviceOrderVoNoUser">
+        select order_id, equipment_id, borrow_date, return_date, status ,borrow_num ,reason , equipment_name ,dead_date from device_order
     </sql>
 
     <select id="selectDeviceOrderList" parameterType="DeviceOrder" resultMap="DeviceOrderResult">
-        <include refid="selectDeviceOrderVoNoUser"/>
+        <include refid="selectDeviceOrderVo"/>
         <where>
-            <if test="equipmentName != null  and equipmentName != ''"> and equipment_name like concat('%', #{equipmentName}, '%')</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="equipmentId != null "> and equipment_id = #{equipmentId}</if>
             <if test="borrowDate != null "> and borrow_date = #{borrowDate}</if>
             <if test="returnDate != null "> and return_date = #{returnDate}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="borrowNum != null" > and borrow_num &gt;= #{borrowNum}</if>
-             <if test="userId != null"> and user_id = #{userId}</if>
+            <if test="reason != null  and reason != ''"> and reason = #{reason}</if>
+            <if test="borrowNum != null "> and borrow_num &gt;= #{borrowNum}</if>
+            <if test="equipmentName != null  and equipmentName != ''"> and equipment_name like concat('%', #{equipmentName}, '%')</if>
+            <if test="deadDate != null "> and dead_date = #{deadDate}</if>
         </where>
     </select>
-    
+
     <select id="selectDeviceOrderByOrderId" parameterType="Long" resultMap="DeviceOrderResult">
         <include refid="selectDeviceOrderVo"/>
         where order_id = #{orderId}
     </select>
-        
+
     <insert id="insertDeviceOrder" parameterType="DeviceOrder" useGeneratedKeys="true" keyProperty="orderId">
         insert into device_order
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null">user_id,</if>
             <if test="equipmentId != null">equipment_id,</if>
-            <if test="equipmentName != null">equipment_name,</if>
             <if test="borrowDate != null">borrow_date,</if>
             <if test="returnDate != null">return_date,</if>
+            <if test="status != null">status,</if>
             <if test="reason != null">reason,</if>
             <if test="borrowNum != null">borrow_num,</if>
-            <if test="status != null">status,</if>
+            <if test="equipmentName != null">equipment_name,</if>
+            <if test="deadDate != null">dead_date,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null">#{userId},</if>
             <if test="equipmentId != null">#{equipmentId},</if>
-            <if test="equipmentName != null">#{equipmentName},</if>
             <if test="borrowDate != null">#{borrowDate},</if>
             <if test="returnDate != null">#{returnDate},</if>
-             <if test="reason != null">#{reason},</if>
-            <if test="borrowNum != null">#{borrowNum},</if>
             <if test="status != null">#{status},</if>
+            <if test="reason != null">#{reason},</if>
+            <if test="borrowNum != null">#{borrowNum},</if>
+            <if test="equipmentName != null">#{equipmentName},</if>
+            <if test="deadDate != null">#{deadDate},</if>
          </trim>
     </insert>
 
-     <update id="updateDeviceOrder" parameterType="DeviceOrder">
+    <update id="updateDeviceOrder" parameterType="DeviceOrder">
         update device_order
         <trim prefix="SET" suffixOverrides=",">
             <if test="userId != null">user_id = #{userId},</if>
             <if test="equipmentId != null">equipment_id = #{equipmentId},</if>
-            <if test="equipmentName != null">equipment_name = #{equipmentName},</if>
             <if test="borrowDate != null">borrow_date = #{borrowDate},</if>
             <if test="returnDate != null">return_date = #{returnDate},</if>
             <if test="status != null">status = #{status},</if>
             <if test="reason != null">reason = #{reason},</if>
             <if test="borrowNum != null">borrow_num = #{borrowNum},</if>
+            <if test="equipmentName != null">equipment_name = #{equipmentName},</if>
+            <if test="deadDate != null">dead_date = #{deadDate},</if>
         </trim>
         where order_id = #{orderId}
     </update>
@@ -84,10 +93,97 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteDeviceOrderByOrderIds" parameterType="String">
-        delete from device_order where order_id in 
+        delete from device_order where order_id in
         <foreach item="orderId" collection="array" open="(" separator="," close=")">
             #{orderId}
         </foreach>
     </delete>
+   <select id="selectMinDeadLine" resultType="Long">
+   SELECT order_id
+        FROM device_order
+        WHERE dead_date = (
+            SELECT MIN(dead_date)
+            FROM device_order
+            WHERE status = '未归还'
+            AND dead_date > NOW()
+        )
+        AND status = '未归还'
+        AND user_id = #{userId}
+        LIMIT 1;
+    </select>
+
+    <select id="sumBorrowQuantity" resultType="com.nuc.device.record.domain.OrderSummary">
+        SELECT COUNT(order_id) as orderCount,
+                COALESCE(SUM(borrow_num), 0) as deviceCount,
+                GROUP_CONCAT(order_id) as orderList
+        FROM device_order
+        WHERE user_id = #{userId};
+</select>
+<select id="sumReturnQuantity" resultType="com.nuc.device.record.domain.OrderSummary">
+        SELECT COUNT(order_id) as orderCount,
+                COALESCE(SUM(borrow_num), 0) as deviceCount,
+                GROUP_CONCAT(order_id) as orderList
+        FROM device_order
+        WHERE user_id = #{userId}
+        AND status = '已归还';
+</select>
+<select id="sumOverdueQuantity" resultType="com.nuc.device.record.domain.OrderSummary">
+        SELECT COUNT(order_id) as orderCount,
+            COALESCE(SUM(borrow_num), 0) as deviceCount,
+            GROUP_CONCAT(order_id) as orderList
+        FROM device_order
+        WHERE user_id = #{userId}
+        AND status = '已逾期';
+</select>
+<select id="sumWillOverdueQuantity" resultType="com.nuc.device.record.domain.OrderSummary">
+        SELECT COUNT(order_id) as orderCount,
+                COALESCE(SUM(borrow_num), 0) as deviceCount,
+                GROUP_CONCAT(order_id) as orderList
+        FROM device_order
+        WHERE dead_date = (
+            SELECT MIN(dead_date)
+            FROM device_order
+            WHERE status = '未归还'
+            AND dead_date > CURDATE()
+        )
+        AND status = '未归还'
+        AND user_id = #{userId}
+</select>
+<select id="getBorrowTimes" resultType="com.nuc.device.task.domin.BorrowDateTimes">
+ SELECT
+    IFNULL(o.orderCount, 0) as borrowCount,
+    d.allDates as borrowDate
+FROM (
+    SELECT DATE_SUB(CURDATE(), INTERVAL n DAY) as allDates
+    FROM (
+        SELECT 0 as n UNION ALL
+        SELECT 1 UNION ALL
+        SELECT 2 UNION ALL
+        SELECT 3 UNION ALL
+        SELECT 4 UNION ALL
+        SELECT 5 UNION ALL
+        SELECT 6
+    ) as numbers
+) as d
+LEFT JOIN (
+    SELECT
+        COUNT(order_id) as orderCount,
+        DATE(borrow_date) as borrowDate
+    FROM
+        device_order
+    WHERE
+        user_id = #{userId}
+        AND borrow_date BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()
+    GROUP BY
+        DATE(borrow_date)
+) as o ON d.allDates = o.borrowDate
+ORDER BY
+    d.allDates ASC;
+
+</select>
+<select id="selectNewBorrowOrder" resultType="Long">
+ select order_id from device_order
+ WHERE user_id = #{userId} ORDER BY order_id DESC LIMIT 1;
+</select>
 
 </mapper>

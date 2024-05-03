@@ -1,9 +1,6 @@
 package com.nuc.device.equipment.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.nuc.device.order.service.IDeviceOrderService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -142,7 +139,7 @@ public class DeviceEquipmentController extends BaseController
         return prefix + "/borrow";
     }
     /**
-     * 借用设备保存
+     * 借用设备保存 主要！！！
      * 扣库存 加订单 扣缓存 加缓存 加历史订单
      */
     @RequiresPermissions("device:equipment:borrow")
@@ -151,8 +148,9 @@ public class DeviceEquipmentController extends BaseController
     @ResponseBody
     public AjaxResult borrowSave(Integer needQuantity,
                                  DeviceEquipment deviceEquipment,
-                                String needReason)
+                                 String needReason,
+                                 Date deadDate)
     {
-        return toAjax(deviceEquipmentService.borrowDevice(deviceEquipment, needQuantity, needReason));
+        return toAjax(deviceEquipmentService.borrowDevice(deviceEquipment, needQuantity, needReason,deadDate));
     }
 }

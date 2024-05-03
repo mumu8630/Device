@@ -1,0 +1,302 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+body {
+    user-select: none;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+.tabs {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 7px;
+}
+.tab {
+    margin: 0px 5px;
+    padding: 8px 14px;
+    background-color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.tab.active {
+    background-color: #c1d9ff87;
+    margin-left: 20px;
+}
+.content {
+    display: none;
+    padding: 10px 20px 20px 20px;
+    background-color: #f3f3f4;
+    border-radius: 0 0 5px 5px;
+}
+.content.active {
+    display: block;
+}
+.blue-icon {
+    display: inline-block;
+    width: 5px;
+    height: 15px;
+    background-color: #4ad0db; /* 蓝色背景 */
+    margin-right: 8px; /* 可根据需要调整距离文字的间距 */
+}
+.ibox-content{
+    float: left;/* 使用 float 将容器靠左对齐 */
+    margin-right: 20px; /* 可选的右边距，用于调整图表与其他内容的间距 */
+}
+/* 添加一些样式来区分奇偶行 */
+.even-row {
+    background-color: #f2f2f2;
+}
+.odd-row {
+    background-color: #ffffff;
+}
+th {
+    text-align: center;
+}
+td {
+    text-align: center;
+}
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 5px 8px 7px 1px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    padding: 18px;
+}
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.card-icon {
+    width: 58px;
+    height: 58px;
+    margin-right: 10px;
+    border-radius: 50%; /* 添加此属性使图标变成圆形 */
+    padding: 5px; /* 可以根据需要调整内边距 */
+    /* 如果图标是图片，可以添加以下属性来使图片居中并填充整个圆形 */
+    background-size: cover;
+    background-position: center;
+}
+.card-body {
+    display: flex;
+    align-items: center;
+}
+.progress-bar {
+    height: 10px;
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin-right: 10px;
+    position: relative;
+}
+.progress {
+    height: 10px;
+
+    border-radius: 5px;
+}
+.progress-percentage {
+    font-size: 18px;
+    margin-left: 30px;
+    font-weight: bold;
+}
+.right-bar{
+    width: 195px;
+}
+.process-font{
+    width: 175px;
+}
+#third-chart {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    color:red;
+}
+hr{
+    margin:0px;
+}
+.card-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.card2 {
+    width: 150px;
+    height: 245px;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    text-align: center;
+    padding: 20px;
+    transition: all 0.3s ease-in-out; /* 修改这里，添加ease-in-out效果 */
+    border-radius: 10px; /* 可选，为卡片添加圆角 */
+    margin-left: 20px;
+    margin-top:  -25px;;
+}
+
+.card2:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    transform: translateY(-15px); /* 添加这行代码，使卡片向上移动 */
+}
+
+.card2 img {
+    width:58%;
+    height: auto;
+    border-radius :22%;
+
+}
+.card2 h4 {
+    margin-top: 20px;
+    font-size: 17px;
+    color: #333;
+}
+
+.card2 h2{
+    margin-top: 27px;
+    font-size: 15px;
+}
+.card2 h3{
+    font-size: 14px;
+    font-weight: 300;
+    margin-top: 19px;
+}
+.card2 span{
+    font-size: 18px;
+    align-content: center;
+    display: inline-block; /* 将 span 元素转换为块级元素，以便设置宽度和高度 */
+    width: 27px; /* 设置宽度 */
+    height: 27px; /* 设置高度 */
+    border-radius: 50%; /* 将边框半径设置为宽度和高度的一半 */
+}
+#deadLineChart {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    margin-left: -100px;
+    position: relative; /* 确保左边的 div 可以使用 z-index */
+    z-index: 1; /* 设置左边的 div 的层叠顺序为 1 */
+}
+#borrow-times-chart {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+}
+.carousel {
+    width: 406px;
+    height: 50px;
+    overflow: hidden;
+    position: relative;
+    background: #e6eeee36;
+    border-radius: 20px;
+}
+
+.carousel-inner {
+    align-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    animation: slideUp 9s linear infinite;
+}
+
+/*字体*/
+.carousel-item {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 修正动画时间，确保每个项目都能在视口中停留相同的时间 */
+@keyframes slideUp {
+    0%, 16.666% { /* 100% / 6 = 16.666% */
+        top: 0;
+    }
+    16.666%, 33.333% {
+        top: -50px; /* 第二条信息 */
+    }
+    33.333%, 50% {
+        top: -100px; /* 第三条信息 */
+    }
+    50%, 66.666% {
+        top: -150px; /* 第四条信息 */
+    }
+    66.666%, 83.333% {
+        top: -200px; /* 第五条信息 */
+    }
+    83.333%, 100% {
+        top: -250px; /* 回到第一条信息，如果是循环的话 */
+    }
+}
+#lbt{
+    padding-left: 25px;
+    width: 208px;
+    margin-top: 37px;
+    margin-left: -70px;
+}
+.cirCard-container {
+    left: -66px;
+    bottom: -54px;
+    width: 428px;
+    height: 145px;
+
+    display: flex;
+    justify-content: space-around;
+    margin: 22px;
+    position: relative;
+}
+.cirCard {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-color: #5cc3bc29;
+    box-shadow: 6px 7px 8px rgb(101 150 149  /26%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+.cirCard-link {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    z-index: 1;
+    transition: color 0.3s;
+}
+.cirCard::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background-color: rgb(34 158 212);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.5s, opacity 0.3s;
+    z-index: 0;
+    opacity: 0;
+}
+.cirCard:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.2;
+}
+.cirCard:hover .cirCard-link {
+    color: #555;
+}
+.cirCard:active {
+    transform: scale(0.95);
+}
+.cirCard:active .cirCard-link {
+    color: #000;
+}
+.cirCard:active::before {
+    opacity: 0.3;
+}

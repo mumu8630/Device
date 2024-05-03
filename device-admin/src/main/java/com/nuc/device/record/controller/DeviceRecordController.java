@@ -1,7 +1,7 @@
 package com.nuc.device.record.controller;
 
-import com.nuc.device.record.domin.DeviceBorrowRecord;
-import com.nuc.device.record.domin.DeviceBorrowRecordDTO;
+import com.nuc.device.record.domain.DeviceBorrowRecord;
+import com.nuc.device.record.domain.DeviceBorrowRecordDTO;
 import com.nuc.device.record.service.IDeviceRecordService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

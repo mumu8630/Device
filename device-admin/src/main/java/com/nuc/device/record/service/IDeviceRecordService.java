@@ -1,6 +1,6 @@
 package com.nuc.device.record.service;
 
-import com.nuc.device.record.domin.DeviceBorrowRecord;
+import com.nuc.device.record.domain.DeviceBorrowRecord;
 
 import java.util.List;
 
@@ -14,4 +14,5 @@ public interface IDeviceRecordService {
     List<DeviceBorrowRecord> findRecordList();
     int addRecord(DeviceBorrowRecord record);
     List<DeviceBorrowRecord> findRecentRecordList();
+
 }

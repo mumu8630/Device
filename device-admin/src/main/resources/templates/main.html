@@ -11,9 +11,9 @@
     <link href="../static/css/style.min.css" th:href="@{/css/style.min.css}" rel="stylesheet"/>
     <style>
         .card-list {
-            list-style-type: none;
-            padding: 0;
 
+            list-style-type: none;
+            padding-left:20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -135,7 +135,6 @@
                 </li>
                 <li class="card-item">
                     <a href="javascript:void(0)"  class="card" onclick="openHistoryTab()" >
-
                     <div class="card-icon">
                             <div class="icon-wrapper">
                                 <img src="../static/footprints.png" th:src="@{/footprints.png}" alt="足迹管理" class="icon" >
@@ -155,7 +154,7 @@
 			<br>
 			<div id="main-chart" style="width: 500px;height:300px;"></div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-4" style="user-select: none;">
             <div class="ibox-content" >
                 <h4>任务列表</h4>
                 <p class="small"><i class="fa fa-hand-o-up"></i> 合理的规划 自律的自己</p>
@@ -172,103 +171,6 @@
 
         </div>
 
-    </div>
-    <div class="wrapper wrapper-content">
-        <div class="row">
-            <div class="col-sm-4">
-
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>联系信息</h5>
-
-                    </div>
-                    <div class="ibox-content">
-                        <p><i class="fa fa-send-o"></i> 官网：<a href="http://www.ruoyi.vip" target="_blank">http://www.ruoyi.vip</a>
-                        </p>
-                        <p><i class="fa fa-qq"></i> QQ群：<s>满1389287</s> <s>满1679294</s> <s>满1529866</s> <s>满1772718</s> <s>满1366522</s> <s>满1382251</s> <s>满1145125</s> <s>满86752435</s> <s>满134072510</s> <s>满210336300</s> <s>满339522636</s> <s>满130035985</s> <s>满143151071</s> <s>满158781320</s> <s>满201531282</s> <s>满101526938</s> <s>满264355400</s> <s>满298522656</s> <s>满139845794</s>  <s>满185760789</s> <s>满175104288</s> <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=lqMHu_5Fskm7H2S1vNAQTtzAUokVydwc&authKey=ptw0Fpch5pbNocML3CIJKKqZBaq2DI7cusKuzIgfMNiY3t9Pvd9hP%2BA8WYx3yaY1&noverify=0&group_code=174942938" target="_blank">174942938 </a>
-                        </p>
-                        <p><i class="fa fa-weixin"></i> 微信：<a href="javascript:;">/ *若依</a>
-                        </p>
-                        <p><i class="fa fa-credit-card"></i> 支付宝：<a href="javascript:;" class="支付宝信息">/ *若依</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4" id="taskListContainer">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>项目相关</h5>
-                    </div>
-                    <div class="ibox-content no-padding">
-                        <div class="panel-body">
-                            <div class="panel-group" id="version">
-                            <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h5 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#version" href="#v477">今日公告</a>
-                                        </h5>
-                                    </div>
-                                    <div id="v477" class="panel-collapse collapse">
-                                        <div class="panel-body">
-                                            <ol>
-                                                <li>失物招领。</li>
-                                                <li>维护实验器材是每位学生和老师应尽的义务。</li>
-                                                <Li>系统将在本周二进行维护,期间无法进行借用与归还。</li>
-                                                <Li>请首次登录用户进行个人信息补充。</li>
-                                                <Li>切勿泄露个人信息，保障账号安全。</li>
-                                                <li>借用与归还实验室设备的默认期限为<span style="color: red">3</span>天。</li>
-                                                <li>更多...</li>
-
-                                            </ol>
-                                        </div>
-                                    </div>
-                                </div>
-                            <div class="panel panel-default">
-								<div class="panel-heading">
-								   <h5 class="panel-title">
-									   <a data-toggle="collapse" data-parent="#version" href="#v478">相关技术</a></code>
-								   </h5>
-								</div>
-								<div id="v478" class="panel-collapse collapse in">
-									<div class="panel-body">
-									   <ol>
-										   	<li>基本语言: Java 1.8</li>
-									        <li>项目框架: SpringBoot 3.0.0</li>
-									        <li>数据库: Mysql 8.0.19</li>
-									        <li>持久层框架: Mybatis </li>
-										    <li>数据库连接池: Druid 1.2.20</li>
-										    <li>安全框架: Apache Shiro 1.13.0</li>
-										    <li>前端框架: Bootstrap 3.3.7</li>
-										    <li>前端界面: Thymeleaf </li>
-										    <li>更多.....</li>
-										</ol>
-									</div>
-								</div>
-							</div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>捐赠</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <div class="alert alert-warning">
-                            	请作者喝杯咖啡（点击图片放大）
-                        </div>
-                        <p id="pay-qrcode">
-                            <a href="javascript:;"><img th:src="@{/img/pay.png}" width="100%" alt="请使用手机支付宝或者微信扫码支付">
-                            </a>
-                        </p>
-
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     <script th:src="@{/js/jquery.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>

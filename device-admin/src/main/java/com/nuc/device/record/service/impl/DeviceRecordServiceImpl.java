@@ -1,6 +1,6 @@
 package com.nuc.device.record.service.impl;
 
-import com.nuc.device.record.domin.DeviceBorrowRecord;
+import com.nuc.device.record.domain.DeviceBorrowRecord;
 import com.nuc.device.record.mapper.DeviceBorrowRecordMapper;
 import com.nuc.device.record.service.IDeviceRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * TODO 类描述
- *
+ * 历史记录表的服务实现类
  * @author mumu
  * @date 2024/5/1 22:04
  */
@@ -25,7 +24,7 @@ public class DeviceRecordServiceImpl implements IDeviceRecordService {
 
     @Override
     public int addRecord(DeviceBorrowRecord record) {
-        return deviceBorrowRecordMapper.insert(record);
+        return deviceBorrowRecordMapper.insertDeviceBorrowRecord(record);
     }
 
     @Override

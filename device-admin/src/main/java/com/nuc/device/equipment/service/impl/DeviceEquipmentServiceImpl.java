@@ -2,11 +2,11 @@ package com.nuc.device.equipment.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-import com.nuc.device.common.utils.DateUtils;
 import com.nuc.device.order.domain.DeviceOrder;
 import com.nuc.device.order.service.IDeviceOrderService;
-import com.nuc.device.record.domin.DeviceBorrowRecord;
+import com.nuc.device.record.domain.DeviceBorrowRecord;
 import com.nuc.device.record.service.IDeviceRecordService;
 import com.nuc.device.task.exception.RedisOperationException;
 import com.nuc.device.task.utils.RedisUtil;
@@ -120,7 +120,7 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int borrowDevice(DeviceEquipment deviceEquipment, Integer needQuantity, String needReason) {
+    public int borrowDevice(DeviceEquipment deviceEquipment, Integer needQuantity, String needReason,Date deadDate) {
         //扣缓存
         String idleKey = "device:hot:idle";
         String borrowKey = "device:hot:borrow";
@@ -154,22 +154,28 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
             deviceOrder.setUserId(getSysUser().getUserId());
             deviceOrder.setEquipmentId(deviceEquipment.getEquipmentId());
             deviceOrder.setBorrowDate(new Date());
+            deviceOrder.setDeadDate(deadDate);
             deviceOrder.setBorrowNum(needQuantity);
             deviceOrder.setReason(needReason);
             deviceOrder.setEquipmentName(deviceEquipment.getName());
             deviceOrder.setStatus("未归还");
             int j = deviceOrderService.insertDeviceOrder(deviceOrder);
+            if (j<0){
+               return 0;
+            }
+            Long orderId = deviceOrder.getOrderId();
             //加历史记录表
             DeviceBorrowRecord deviceBorrowRecord = new DeviceBorrowRecord();
+            deviceBorrowRecord.setOrderId(orderId);
             deviceBorrowRecord.setEquipmentId(device.getEquipmentId());
             deviceBorrowRecord.setEquipmentName(device.getName());
             deviceBorrowRecord.setBorrowNum(needQuantity);
-            deviceBorrowRecord.setBorrowDate(new Date());
+            deviceBorrowRecord.setBorrowDate(deviceOrder.getBorrowDate());
             deviceBorrowRecord.setBorrowUser(getSysUser().getLoginName());
             deviceBorrowRecord.setBorrowReason(needReason);
             deviceBorrowRecord.setBorrowStatus("未归还");
-            //    设置归还时间 默认归还时间为借用时间+7天
-            deviceBorrowRecord.setDeadLine(DateUtils.addDays(new Date(), 7));
+            //    设置归还时间
+            deviceBorrowRecord.setDeadLine(deadDate);
             int x = deviceRecordService.addRecord(deviceBorrowRecord);
             //    加缓存
             redisUtil.zincrby(borrowKey, deviceEquipment.getEquipmentId(), needQuantity);
@@ -181,4 +187,53 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
         }
 
     }
+
+    /**
+     * 借用数量
+     * @return
+     */
+    @Override
+    public List<Map<String,Object>> sumBorrowQuantity() {
+        return  deviceEquipmentMapper.sumBorrowQuantity();
+    }
+
+    /**
+     * 维修数量
+     * @return
+     */
+    @Override
+    public List<Map<String,Object>> sumMaintenanceQuantity() {
+        return deviceEquipmentMapper.sumMaintenanceQuantity();
+    }
+
+    /**
+     * 闲置数量
+     * @return
+     */
+    @Override
+    public List<Map<String,Object>> sumIdleQuantity() {
+        return deviceEquipmentMapper.sumIdleQuantity();
+    }
+
+    @Override
+    public Integer selectBorrowQuantity() {
+        return deviceEquipmentMapper.sumAllBorrowQuantity();
+    }
+
+    @Override
+    public Integer selectIdleQuantity() {
+        return deviceEquipmentMapper.sumAllIdleQuantity();
+    }
+
+    @Override
+    public Integer selectMaintenanceQuantity() {
+        return deviceEquipmentMapper.sumAllMaintenanceQuantity();
+    }
+
+    @Override
+    public Integer selectTotalQuantity() {
+        return deviceEquipmentMapper.sumAllQuantity();
+    }
+
+
 }

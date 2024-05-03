@@ -1,7 +1,10 @@
 package com.nuc.device.task.controller;
 
-import com.nuc.device.record.domin.DeviceBorrowRecord;
-import com.nuc.device.record.domin.DeviceBorrowRecordDTO;
+import com.nuc.device.order.domain.DeviceOrder;
+import com.nuc.device.order.mapper.DeviceOrderMapper;
+import com.nuc.device.order.service.IDeviceOrderService;
+import com.nuc.device.record.domain.DeviceBorrowRecord;
+import com.nuc.device.record.domain.DeviceBorrowRecordDTO;
 import com.nuc.device.record.service.IDeviceRecordService;
 import com.nuc.device.task.domin.DeviceUserTaskList;
 import com.nuc.device.task.enums.TaskStatusEnum;
@@ -39,6 +42,10 @@ class TaskControllerTest {
     RedisUtil redisUtil;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private DeviceOrderMapper deviceOrderMapper;
+    @Autowired
+    IDeviceOrderService deviceOrderService;
 
     @Test
     void getTaskList() {
@@ -125,5 +132,7 @@ class TaskControllerTest {
         System.out.println("=====================================");
         recordDTOList.forEach(System.out::println);
     }
+
+
 }
 

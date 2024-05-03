@@ -1,25 +1,26 @@
-package com.nuc.device.record.domin;
+package com.nuc.device.record.domain;
 
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 
 /**
- * TODO 类描述
+ * 借用历史记录对象 device_borrow_record
  * @author mumu
- * @date 2024/5/1 23:45
+ * @date 2024/5/1 21:57
  */
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeviceBorrowRecord {
+public class DeviceBorrowRecordDTO {
     /**
     * 序号
     */
-    private Integer recordId;
+    private Long recordId;
 
     /**
     * 设备号
@@ -46,23 +47,5 @@ public class DeviceBorrowRecord {
     */
     private Object borrowStatus;
 
-    /**
-    * 截至时间
-    */
-    private Date deadLine;
 
-    /**
-    * 归还时间
-    */
-    private Date returnDate;
-
-    /**
-    * 借用原因
-    */
-    private String borrowReason;
-
-    /**
-    * 借用数量
-    */
-    private Integer borrowNum;
 }

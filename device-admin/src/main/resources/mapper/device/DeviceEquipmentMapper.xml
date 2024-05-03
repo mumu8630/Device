@@ -34,6 +34,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="typeName != null  and typeName != ''"> and type_name = #{typeName}</if>
             <if test="idleQuantity != null "> and idle_quantity &gt;= #{idleQuantity}</if>
+            <if test="equipmentId != null and equipmentId != 100">
+            and equipment_id != 100
+        </if>
         </where>
     </select>
     
@@ -107,5 +110,32 @@ select name from device_equipment where equipment_id = #{equipmentId}
 </select>
 <select id="selectTypeNameByEquipmentId" resultType="java.lang.String">
 select type_name from device_equipment where equipment_id = #{equipmentId}
+</select>
+<select id="sumBorrowQuantity" resultType="java.util.Map">
+SELECT type_name, SUM(borrowed_quantity) AS count
+FROM device_equipment
+GROUP BY type_name;
+</select>
+<select id="sumMaintenanceQuantity" resultType="java.util.Map">
+SELECT type_name, SUM(maintenance_quantity) AS count
+FROM device_equipment
+GROUP BY type_name;
+</select>
+<select id="sumIdleQuantity" resultType="java.util.Map">
+SELECT type_name, SUM(idle_quantity) AS count
+FROM device_equipment
+GROUP BY type_name;
+</select>
+<select id="sumAllBorrowQuantity" resultType="java.lang.Integer">
+SELECT SUM(borrowed_quantity)  FROM device_equipment;
+</select>
+<select id="sumAllIdleQuantity" resultType="java.lang.Integer">
+SELECT SUM(idle_quantity)  FROM device_equipment;
+</select>
+<select id="sumAllMaintenanceQuantity" resultType="java.lang.Integer">
+SELECT SUM(maintenance_quantity)  FROM device_equipment;
+</select>
+<select id="sumAllQuantity" resultType="java.lang.Integer">
+SELECT SUM(total_quantity)  FROM device_equipment;
 </select>
 </mapper>
