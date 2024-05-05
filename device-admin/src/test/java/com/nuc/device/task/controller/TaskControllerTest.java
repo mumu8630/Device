@@ -1,7 +1,9 @@
 package com.nuc.device.task.controller;
 
-import com.nuc.device.record.domin.DeviceBorrowRecord;
-import com.nuc.device.record.domin.DeviceBorrowRecordDTO;
+import com.nuc.device.order.mapper.DeviceOrderMapper;
+import com.nuc.device.order.service.IDeviceOrderService;
+import com.nuc.device.record.domain.DeviceBorrowRecord;
+import com.nuc.device.record.domain.DeviceBorrowRecordDTO;
 import com.nuc.device.record.service.IDeviceRecordService;
 import com.nuc.device.task.domin.DeviceUserTaskList;
 import com.nuc.device.task.enums.TaskStatusEnum;
@@ -17,7 +19,6 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import redis.clients.jedis.Jedis;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.*;
 
