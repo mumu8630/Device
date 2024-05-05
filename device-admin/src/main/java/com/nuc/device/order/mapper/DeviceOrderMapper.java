@@ -80,4 +80,7 @@ public interface DeviceOrderMapper
     List<BorrowDateTimes> getBorrowTimes(Long userId);
 
     Long selectNewBorrowOrder(Long userId);
+
+    int returnDeviceByOrderId(Long orderId);
+
 }

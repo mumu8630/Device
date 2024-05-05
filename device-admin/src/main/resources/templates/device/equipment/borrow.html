@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <th:block th:include="include :: header('修改设备信息')" />
+    <th:block th:include="include :: header('借用设备信息')" />
     <th:block th:include="include :: datetimepicker-css" />
 </head>
 <body class="white-bg">
-
-
 <div class="wrapper wrapper-content animated fadeInRight ibox-content">
     <form class="form-horizontal m" id="form-equipment-edit" th:object="${deviceEquipment}">
         <input name="equipmentId" th:field="*{equipmentId}" type="hidden">

@@ -137,7 +137,7 @@
   <!--上半 卡片&仪表盘-->
   <div class="row card-container">
     <div class="col-sm-2">
-      <div class="card2">
+      <div class="card2" onclick="openBorrowTab()">
         <img src="../../../static/workspace/jieyong.png" alt="借用数量" th:src="@{/workspace/jieyong.png}">
         <h4>借用设备</h4>
         <h2>共计<span style="background: #39c4e040" th:text="${userBorrow.getOrderCount()}"></span>笔订单!</h2>
@@ -145,7 +145,7 @@
       </div>
     </div>
     <div class="col-sm-2">
-      <div class="card2">
+      <div class="card2" onclick="openReturnTab()">
         <img src="../../../static/workspace/guihuan.png" alt="归还数量" th:src="@{/workspace/guihuan.png}">
         <h4>归还数量</h4>
         <h2>共计<span style="background: #00f7611c" th:text="${userReturn.getOrderCount()}"></span>笔订单!</h2>
@@ -153,7 +153,7 @@
       </div>
     </div>
     <div class="col-sm-2">
-      <div class="card2">
+      <div class="card2" onclick="openOverdueTab()">
         <img src="../../../static/workspace/yuqi.png" alt="逾期数量" th:src="@{/workspace/yuqi.png}">
         <h4>逾期数量</h4>
         <h2>共计<span style="background: #f7c6001f" th:text="${userOverdue.getOrderCount()}"></span>笔订单!</h2>
@@ -161,7 +161,7 @@
       </div>
     </div>
     <div class="col-sm-2">
-      <div class="card2" style="margin-right: -62px; position: relative; z-index: 2; /* 设置右边的 div 的层叠顺序为 2，高于左边的 div */">
+      <div class="card2" onclick="openWillOverdueTab()" style="margin-right: -62px; position: relative; z-index: 2; /* 设置右边的 div 的层叠顺序为 2，高于左边的 div */">
         <img src="../../../static/workspace/xuqi.png" alt="即将到期" th:src="@{/workspace/xuqi.png}">
         <h4>即将到期</h4>
         <h2>共计<span style="background: #f824311c" th:text="${userWillOverdue.getOrderCount()}"></span>笔订单!</h2>
@@ -200,13 +200,15 @@
       </div>
       <div class="cirCard-container">
         <div class="cirCard" style="bottom: -12px;left: 23px">
-          <a href="#" class="cirCard-link">借用</a>
+            <a href="javascript:void(0)" class="cirCard-link" onclick="openDeviceTab()">借用</a>
+          </a>
         </div>
         <div class="cirCard" style="left: 15px;bottom: 60px">
-          <a href="#" class="cirCard-link">归还/续期</a>
+          <a href="javascript:void(0)" class="cirCard-link" onclick="openOrderTab()">归还/续期</a>
+            </a>
         </div>
         <div class="cirCard" style="left: 26px ;bottom: 14px">
-          <a href="#" class="cirCard-link">维护</a>
+          <a href="javascript:void(0)" class="cirCard-link" onclick="openDeviceTab()">维护</a>
         </div>
       </div>
     </div>
@@ -220,6 +222,34 @@
 </div>
 <script th:src="@{/js/echarts.min.js}"></script>
 <script th:src="@{/js/workspace.js}"></script>
+<th:block th:include="include :: footer" />
+<script type="text/javascript">
+  var prefix = ctx + "device";
+  var prefixTab = ctx + "api/workspace";
+
+  //访问接口
+  function openDeviceTab() {
+    $.modal.openTab('设备信息', prefix + "/equipment");
+  }
+  function openOrderTab() {
+    $.modal.openTab('订单信息', prefix + "/order");
+  }
+  function openHistoryTab() {
+    $.modal.openTab('用户足迹', prefix + "/history");
+  }
+  function openBorrowTab() {
+    $.modal.openTab('借用信息', prefixTab + "/borrowTab");
+  }
+  function openReturnTab() {
+    $.modal.openTab('归还信息', prefixTab + "/returnTab");
+  }
+  function openOverdueTab() {
+    $.modal.openTab('逾期信息', prefixTab + "/overdueTab");
+  }
+  function openWillOverdueTab() {
+    $.modal.openTab('临期信息', prefixTab + "/willOverdueTab");
+  }
+</script>
 
 </body>
 </html>

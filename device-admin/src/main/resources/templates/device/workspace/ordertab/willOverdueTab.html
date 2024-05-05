@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('订单信息列表')" />
-
+    <th:block th:include="include :: header('逾期设备查询')" />
 </head>
 <body class="gray-bg">
 <div class="container-div">
@@ -50,9 +49,6 @@
         </div>
 
         <div class="btn-group-sm" id="toolbar" role="group">
-            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="device:order:remove">
-                <i class="fa fa-remove"></i> 删除
-            </a>
             <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="device:order:export">
                 <i class="fa fa-download"></i> 导出
             </a>
@@ -66,23 +62,17 @@
 <script th:inline="javascript">
     var editFlag = [[${@permission.hasPermi('device:order:edit')}]];
     var removeFlag = [[${@permission.hasPermi('device:order:remove')}]];
-    var returnFlag = [[${@permission.hasPermi('device:order:return')}]];
-    var borrowFlag = [[${@permission.hasPermi('device:equipment:borrow')}]];
-    var renewFlag = [[${@permission.hasPermi('device:order:renew')}]];
     var statusDatas = [[${@dict.getType('dv_order_return_status')}]];
     var prefix = ctx + "device/order";
 
     $(function() {
         var options = {
-            url: prefix + "/list",
+            url: prefix + "/willOverdueTabList",
             createUrl: prefix + "/add",
             updateUrl: prefix + "/edit/{id}",
             removeUrl: prefix + "/remove",
-            returnUrl: prefix + "/return",
             exportUrl: prefix + "/export",
-            borrowAgainUrl: prefix + "/borrowAgain/{id}",
-            renewUrl: prefix + "/renew/{id}",
-            modalName: "订单",
+            modalName: "订单信息",
             columns: [{
                 checkbox: true
             },
@@ -129,22 +119,7 @@
                         return $.table.selectDictLabel(statusDatas, value);
                     }
                 },
-                {
-                    title: '操作',
-                    align: 'center',
-                    formatter: function(value, row, index) {
-                        var actions = [];
-                        if (row.status == '未归还') {
-                            actions.push('<a class="btn btn-success btn-xs ' + returnFlag + '" href="javascript:void(0)" onclick="$.operate.returnDevice(\'' + row.orderId + '\')"><i class="fa fa-edit"></i>归还</a>   ');
-                            actions.push('<a class="btn btn-danger btn-xs ' + renewFlag + '" href="javascript:void(0)" onclick="$.operate.renew(\'' + row.orderId + '\')"><i class="fa fa-remove"></i>续期</a>');
-                        } else if (row.status == '已归还') {
-                            // 状态为"已归还"时，可以选择不显示按钮，或者显示其他按钮
-                             actions.push('<a class="btn btn-secondary btn-xs disabled"><i class="fa fa-check"></i>已归还</a>');
-                            actions.push('<a class="btn btn-warning btn-xs ' + borrowFlag + '" href="javascript:void(0)" onclick="$.operate.borrowAgain(\'' + row.orderId + '\')"><i class="fa fa-gears"></i> 借用</a>');
-                        }
-                        return actions.join('');
-                    }
-                }]
+               ]
         };
         $.table.init(options);
     });

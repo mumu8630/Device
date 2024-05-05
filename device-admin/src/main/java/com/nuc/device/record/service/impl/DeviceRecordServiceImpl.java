@@ -31,4 +31,9 @@ public class DeviceRecordServiceImpl implements IDeviceRecordService {
     public List<DeviceBorrowRecord> findRecentRecordList() {
         return deviceBorrowRecordMapper.selectRecentList();
     }
+
+    @Override
+    public int returnDeviceByOrderId(Long orderId) {
+        return deviceBorrowRecordMapper.updateDeviceBorrowRecordByOrderId(orderId);
+    }
 }

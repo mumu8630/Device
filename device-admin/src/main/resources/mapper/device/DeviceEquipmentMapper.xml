@@ -138,4 +138,11 @@ SELECT SUM(maintenance_quantity)  FROM device_equipment;
 <select id="sumAllQuantity" resultType="java.lang.Integer">
 SELECT SUM(total_quantity)  FROM device_equipment;
 </select>
+<update id="returnDeviceByEquipmentId">
+update device_equipment set
+ borrowed_quantity = borrowed_quantity -#{borrowNum},
+ idle_quantity = idle_quantity +#{borrowNum}
+ where equipment_id = #{equipmentId}
+</update>
+
 </mapper>

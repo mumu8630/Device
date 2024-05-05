@@ -8,13 +8,18 @@ import java.util.Map;
 import com.nuc.device.common.utils.DateUtils;
 import com.nuc.device.equipment.mapper.DeviceEquipmentMapper;
 import com.nuc.device.record.domain.OrderSummary;
+import com.nuc.device.record.service.IDeviceRecordService;
 import com.nuc.device.task.domin.BorrowDateTimes;
+import com.nuc.device.task.exception.DBException;
+import com.nuc.device.task.exception.RedisOperationException;
+import com.nuc.device.task.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.nuc.device.order.mapper.DeviceOrderMapper;
 import com.nuc.device.order.domain.DeviceOrder;
 import com.nuc.device.order.service.IDeviceOrderService;
 import com.nuc.device.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 订单信息Service业务层处理
@@ -23,12 +28,17 @@ import com.nuc.device.common.core.text.Convert;
  * @date 2024-04-26
  */
 @Service
-public class DeviceOrderServiceImpl implements IDeviceOrderService 
+@Transactional(rollbackFor = Exception.class)
+public class DeviceOrderServiceImpl implements IDeviceOrderService
 {
     @Autowired
     private DeviceOrderMapper deviceOrderMapper;
     @Autowired
     private DeviceEquipmentMapper deviceEquipmentMapper;
+    @Autowired
+    RedisUtil redisUtil;
+    @Autowired
+    IDeviceRecordService deviceRecordService;
 
     /**
      * 查询订单信息
@@ -184,6 +194,66 @@ public class DeviceOrderServiceImpl implements IDeviceOrderService
         deviceOrder.setDeadDate(DateUtils.addDays(new Date(), 365));
         deviceOrderMapper.insertDeviceOrder(deviceOrder);
         return deviceOrder;
+    }
+
+    /**
+     * 归还设备
+     * 订单和历史库 更新
+     * 总设备库的 借出数量- 空闲数量+
+     * 缓存 借用排行不修改 库存排行修改
+     * @param orderIds
+     * @return
+     */
+    @Override
+    public int returnDeviceByOrderIds(String orderIds) {
+        String idleKey = "device:hot:idle";
+        //根据ids查询设备
+        String[] orderIdsArr = Convert.toStrArray(orderIds);
+        try {
+            //不存在key
+            if (!redisUtil.hasKey(idleKey)) {
+                throw new RedisOperationException("key" + idleKey + "不存在");
+            }
+            for (String orderId : orderIdsArr) {
+                DeviceOrder order = deviceOrderMapper.selectDeviceOrderByOrderId(Long.valueOf(orderId));
+                //更新设备缓存
+                Double zincrby = redisUtil.zincrby(idleKey, order.getEquipmentId(), order.getBorrowNum());
+                if (zincrby == null || zincrby < 0) {
+                    throw new RedisOperationException("归还设备-->redis增加数据【失败】");
+                }
+                //更新订单库
+                int res = deviceOrderMapper.returnDeviceByOrderId(Long.valueOf(orderId));
+                if (res < 0) {
+                   throw new DBException("归还设备-->订单数据库更新数据【失败】");
+                }
+                //更新历史库
+                int i = deviceRecordService.returnDeviceByOrderId(Long.valueOf(orderId));
+                if (i < 0) {
+                    throw new DBException("归还设备-->历史数据库更新数据【失败】");
+                }
+                //更新总设备库 借出数量- 空闲数量+
+                int j = deviceEquipmentMapper.returnDeviceByEquipmentId(order.getEquipmentId(), order.getBorrowNum());
+                if (j < 0) {
+                    throw new DBException("归还设备-->设备数据库更新数据【失败】");
+                }
+                //更新成功
+                return 1;
+            }
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * 续借
+     * @param deviceOrder
+     * @return
+     */
+    @Override
+    public int renewOrder(DeviceOrder deviceOrder) {
+        return deviceOrderMapper.updateDeviceOrder(deviceOrder);
     }
 
     private String selectTypeNameByEquipmentId(Long equipmentId) {

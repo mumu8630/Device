@@ -105,5 +105,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
           <include refid="selectDeviceBorrowRecordVo"/>
           ORDER BY borrow_date DESC limit 0,5
 </select>
+<update id="updateDeviceBorrowRecordByOrderId">
+update device_borrow_record  set borrow_status = '已归还', return_date = NOW()
+where order_id = #{orderId}
+</update>
 
 </mapper>
