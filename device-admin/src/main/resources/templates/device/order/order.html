@@ -50,9 +50,9 @@
         </div>
 
         <div class="btn-group-sm" id="toolbar" role="group">
-            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="device:order:remove">
-                <i class="fa fa-remove"></i> 删除
-            </a>
+            <!--<a class="btn btn-danger multiple disabled" onclick="$.operate.returnBack()" shiro:hasPermission="device:order:return">-->
+            <!--    <i class="fa fa-exclamation-triangle"></i> 补还-->
+            <!--</a>-->
             <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="device:order:export">
                 <i class="fa fa-download"></i> 导出
             </a>
@@ -136,11 +136,19 @@
                         var actions = [];
                         if (row.status == '未归还') {
                             actions.push('<a class="btn btn-success btn-xs ' + returnFlag + '" href="javascript:void(0)" onclick="$.operate.returnDevice(\'' + row.orderId + '\')"><i class="fa fa-edit"></i>归还</a>   ');
-                            actions.push('<a class="btn btn-danger btn-xs ' + renewFlag + '" href="javascript:void(0)" onclick="$.operate.renew(\'' + row.orderId + '\')"><i class="fa fa-remove"></i>续期</a>');
+                            actions.push('<a class="btn btn-info btn-xs ' + renewFlag + '" href="javascript:void(0)" onclick="$.operate.renew(\'' + row.orderId + '\')"><i class="fa fa-clock-o"></i>续期</a>');
                         } else if (row.status == '已归还') {
                             // 状态为"已归还"时，可以选择不显示按钮，或者显示其他按钮
                              actions.push('<a class="btn btn-secondary btn-xs disabled"><i class="fa fa-check"></i>已归还</a>');
                             actions.push('<a class="btn btn-warning btn-xs ' + borrowFlag + '" href="javascript:void(0)" onclick="$.operate.borrowAgain(\'' + row.orderId + '\')"><i class="fa fa-gears"></i> 借用</a>');
+                        }else if (row.status == '已逾期'){
+                            // actions.push('<a style="background-color: #ed5565" class="btn btn-danger btn-xs"><i class="fa fa-exclamation-triangle"></i>已逾期 去补还</a>');
+                            actions.push('<a style="border-color: #ff707fde;\n' +
+                                '    background-color: #ff707fde;"  class="btn btn-danger btn-xs' + returnFlag + '" href="javascript:void(0)" onclick="$.operate.returnDevice(\'' + row.orderId + '\')"><i class="fa fa-exclamation-triangle"></i>已逾期 去补还</a>');
+                        }else if (row.status == '逾期补还'){
+                            actions.push('<a class="btn btn-secondary btn-xs disabled"><i class="fa fa-check"></i>已补还</a>');
+                            actions.push('<a class="btn btn-warning btn-xs ' + borrowFlag + '" href="javascript:void(0)" onclick="$.operate.borrowAgain(\'' + row.orderId + '\')"><i class="fa fa-gears"></i> 借用</a>');
+
                         }
                         return actions.join('');
                     }

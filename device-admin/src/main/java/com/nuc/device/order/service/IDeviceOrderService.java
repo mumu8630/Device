@@ -84,5 +84,9 @@ public interface IDeviceOrderService
 
     int renewOrder(DeviceOrder deviceOrder);
 
+    List<DeviceOrder> getStatusList();
 
+    OrderSummary sumUnReturnQuantity(Long userId);
+
+    OrderSummary sumMaintenanceQuantity(Long userId);
 }

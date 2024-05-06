@@ -256,6 +256,38 @@ public class DeviceOrderServiceImpl implements IDeviceOrderService
         return deviceOrderMapper.updateDeviceOrder(deviceOrder);
     }
 
+    /**
+     * 查询未归还状态的订单
+     * @return
+     */
+    @Override
+    public List<DeviceOrder> getStatusList() {
+        DeviceOrder deviceOrder = new DeviceOrder();
+        deviceOrder.setStatus("未归还");
+        return deviceOrderMapper.selectDeviceOrderList(deviceOrder);
+    }
+
+    /**
+     * 查询用户未归还数量
+     * @param userId
+     * @return
+     */
+    @Override
+    public OrderSummary sumUnReturnQuantity(Long userId) {
+        return deviceOrderMapper.sumUnReturnQuantity(userId);
+    }
+
+
+    /**
+     * 查询用户维护设备数量 --->待审核
+     * @param userId
+     * @return
+     */
+    @Override
+    public OrderSummary sumMaintenanceQuantity(Long userId) {
+        return deviceOrderMapper.sumMaintenanceQuantity(userId);
+    }
+
     private String selectTypeNameByEquipmentId(Long equipmentId) {
         return deviceEquipmentMapper.selectTypeNameByEquipmentId(equipmentId);
     }

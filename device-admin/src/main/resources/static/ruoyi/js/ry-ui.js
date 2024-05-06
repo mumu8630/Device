@@ -1235,6 +1235,21 @@ var table = {
                     $.operate.submit(url, "post", "json", data);
                 });
             },
+            // //补还设备信息
+            // returnBack: function(id) {
+            //     table.set();
+            //     var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+            //     if (rows.length == 0) {
+            //         $.modal.alertWarning("请至少选择一条记录");
+            //         return;
+            //     }
+            //     $.modal.confirm("确认要补还选中的" + rows.length + "条数据吗?", function() {
+            //         var url = table.options.returnUrl;
+            //         var data = { "ids": rows.join() };
+            //         $.operate.submit(url, "post", "json", data);
+            //     });
+            //
+            // },
             // 清空信息
             clean: function() {
                 table.set();

@@ -83,4 +83,7 @@ public interface DeviceOrderMapper
 
     int returnDeviceByOrderId(Long orderId);
 
+    OrderSummary sumUnReturnQuantity(Long userId);
+
+    OrderSummary sumMaintenanceQuantity(Long userId);
 }

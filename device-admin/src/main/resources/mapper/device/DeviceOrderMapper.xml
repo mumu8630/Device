@@ -37,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="equipmentName != null  and equipmentName != ''"> and equipment_name like concat('%', #{equipmentName}, '%')</if>
             <if test="deadDate != null "> and dead_date = #{deadDate}</if>
         </where>
+        ORDER BY order_id DESC
     </select>
 
     <select id="selectDeviceOrderByOrderId" parameterType="Long" resultMap="DeviceOrderResult">
@@ -120,7 +121,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 COALESCE(SUM(borrow_num), 0) as deviceCount
         FROM device_order
         WHERE user_id = #{userId}
-        AND status = '已归还';
+        AND (status = '已归还' OR status = '逾期补还');
 </select>
 <select id="sumOverdueQuantity" resultType="com.nuc.device.record.domain.OrderSummary">
         SELECT COUNT(order_id) as orderCount,
@@ -182,8 +183,31 @@ ORDER BY
 
 
 <update id="returnDeviceByOrderId" parameterType="Long">
-update device_order set status = '已归还', return_date = NOW()
-where order_id = #{orderId}
+UPDATE device_order
+SET
+    status = CASE
+        WHEN status = '未归还' THEN '已归还'
+        WHEN status = '已逾期' THEN '逾期补还'
+        ELSE status
+    END,
+    return_date = NOW()
+WHERE order_id = #{orderId};
+
 </update>
+<select id="sumUnReturnQuantity" resultType="com.nuc.device.record.domain.OrderSummary">
+ SELECT COUNT(order_id) as orderCount,
+            COALESCE(SUM(borrow_num), 0) as deviceCount
+        FROM device_order
+        WHERE user_id = #{userId}
+        AND status = '未归还';
+</select>
+
+<select id="sumMaintenanceQuantity" resultType="com.nuc.device.record.domain.OrderSummary">
+ SELECT COUNT(order_id) as orderCount,
+            COALESCE(SUM(borrow_num), 0) as deviceCount
+        FROM device_order
+        WHERE user_id = #{userId}
+        AND status = '待审核';
+</select>
 
 </mapper>

@@ -5,6 +5,7 @@ import com.nuc.device.order.mapper.DeviceOrderMapper;
 import com.nuc.device.order.service.IDeviceOrderService;
 import com.nuc.device.record.domain.DeviceBorrowRecord;
 import com.nuc.device.record.domain.DeviceBorrowRecordDTO;
+import com.nuc.device.record.mapper.DeviceBorrowRecordMapper;
 import com.nuc.device.record.service.IDeviceRecordService;
 import com.nuc.device.task.domin.DeviceUserTaskList;
 import com.nuc.device.task.enums.TaskStatusEnum;
@@ -45,6 +46,8 @@ class TaskControllerTest {
     private DeviceOrderMapper deviceOrderMapper;
     @Autowired
     IDeviceOrderService deviceOrderService;
+    @Autowired
+    DeviceBorrowRecordMapper deviceBorrowRecordMapper;
 
     @Test
     void getTaskList() {
@@ -132,6 +135,23 @@ class TaskControllerTest {
         recordDTOList.forEach(System.out::println);
     }
 
+    /**
+     * 同步历史表和订单表
+     */
+    @Test
+    void test() {
+        List<DeviceBorrowRecord> recordList = deviceRecordService.findRecentRecordList();
+        List<DeviceOrder> orderList = deviceOrderService.selectDeviceOrderList(new DeviceOrder());
+        for (DeviceOrder order : orderList) {
+            for (DeviceBorrowRecord record : recordList) {
+                if (order.getOrderId() == record.getOrderId()) {
+                    record.setBorrowStatus(order.getStatus());
+                    deviceBorrowRecordMapper.updateDeviceBorrowRecord(record);
+                }
+            }
+
+        }
+    }
 
 }
 

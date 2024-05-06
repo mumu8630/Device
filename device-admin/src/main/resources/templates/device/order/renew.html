@@ -6,33 +6,32 @@
 </head>
 <body class="white-bg">
 <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-    <form class="form-horizontal m" id="form-equipment-edit" th:object="${order}">
+    <form class="form-horizontal m" id="form-equipment-edit" th:object="${deviceOrder}">
         <input name="orderId" th:field="*{orderId}" type="hidden">
         <div class="form-group">
             <label class="col-sm-3 control-label is-required">设备名称：</label>
             <div class="col-sm-8">
-                <input name="name"  th:field="*{equipmentName}" class="form-control" type="text" readonly>
+                <input name="equipmentName"  th:field="*{equipmentName}" class="form-control" type="text" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">借用数量：</label>
+            <div class="col-sm-8">
+                <input name="borrowNum" th:field="*{borrowNum}"   class="form-control" type="text" readonly>
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-3 control-label is-required">借用日期：</label>
             <div class="col-sm-8">
-                <input name="typeName"  th:field="*{borrowDate}"  th:value="${#temporals.format(*{borrowDate}, 'yyyy-MM-dd')}" class="form-control" type="text" readonly>
+                <input name="borrowDate" id="borrowDateInput"  th:field="*{borrowDate}"  class="form-control" type="text" readonly>
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="col-sm-3 control-label is-required">借用数量：</label>
-            <div class="col-sm-8">
-                <input name="idleQuantity" th:field="*{borrowNum}"   class="form-control" type="text" readonly>
-            </div>
-        </div>
         <div class="form-group">
             <label class="col-sm-3 control-label is-required">截至日期：</label>
             <div class="col-sm-8">
-                <input name="idleQuantity" th:field="*{deadDate}"  th:value="${#temporals.format(*{deadDate}, 'yyyy-MM-dd')}" class="form-control" type="text" readonly>
-
-                <small class="text-muted">距离归还截至日期仅剩<span style="color: #ce8483"></span>天。</small>
+                <input name="deadDate"  id="deadDateInput" th:field="*{deadDate}"   class="form-control" type="text" readonly>
+                <small class="text-muted">距离归还截至日期仅剩<span id="remainingDays" style="color: #ce8483"></span>天。</small>
             </div>
         </div>
         <div class="form-group">
@@ -79,14 +78,37 @@
         }
     };
 </script>
-<script th:inline="javascript">
-    /*<![CDATA[*/ // 获取开始日期和截至日期的时间戳
-    var startDate = new Date();
-    var deadDateStr = document.getElementById('deadDate').innerText;
-    var deadDate = new Date(deadDateStr);
-    var timeDiff = Math.abs(deadDate.getTime() - startDate.getTime()); // 将时间差转换成天数
-     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); // 将天数替换到HTML中
-    document.getElementById('daysRemaining').innerText = diffDays; /*]]>*/
+<script>
+    // 从页面中获取Thymeleaf传入的日期
+    var borrowDateValue = document.getElementById("borrowDateInput").value;
+    var deadDateValue = document.getElementById("deadDateInput").value;
+
+    // 将日期字符串转换为日期对象（使用 UTC 时间）
+    var borrowDate = new Date(borrowDateValue + " UTC");
+    var deadDate = new Date(deadDateValue + " UTC");
+
+
+    // 格式化日期为 YYYY-MM-DD
+    var formattedBorrowDate = borrowDate.toISOString().split('T')[0];
+    var formattedDeadDate = deadDate.toISOString().split('T')[0];
+
+    // 将格式化后的日期填充到输入框中
+    document.getElementById("borrowDateInput").value = formattedBorrowDate;
+    document.getElementById("deadDateInput").value = formattedDeadDate;
+
+    // 计算距离 deadDate 的天数差
+    var today = new Date();
+    var timeDiff = deadDate.getTime() - today.getTime();
+    var remainingDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    // 如果超过了截止日期，则将剩余天数设置为 0
+    if (remainingDays < 0) {
+        remainingDays = 0;
+    }
+
+    // 将剩余天数填充到页面中
+    document.getElementById("remainingDays").innerText = remainingDays ;
+
 </script>
 </body>
 </html>

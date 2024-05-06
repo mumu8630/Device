@@ -191,10 +191,10 @@
 
           </div>
           <div class="carousel-item">
-            <p>共有<span></span>台设备待归还，请注意归还日期</p>
+            <p>共有<span style="color: #8528b1" th:text="${userUnReturn.getDeviceCount()}"></span>台设备待归还，请注意归还日期</p>
           </div>
           <div class="carousel-item">
-            <p>您有<span></span>笔订单为<span style="color: #ce8483">待审核<span></span>状态,记得不定时查看</p>
+            <p>您有<span style="color: #1b6d85" th:text="${userMaintenance.getDeviceCount()}"></span>笔订单为<span style="color: #ce8483">待审核</span>状态,记得不定时查看</p>
           </div>
         </div>
       </div>

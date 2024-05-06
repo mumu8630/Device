@@ -16,4 +16,6 @@ public interface IDeviceRecordService {
     List<DeviceBorrowRecord> findRecentRecordList();
 
     int returnDeviceByOrderId(Long orderId);
+
+    int updateRecordStatus(Long orderId);
 }

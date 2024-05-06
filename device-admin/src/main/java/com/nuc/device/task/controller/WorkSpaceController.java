@@ -79,6 +79,10 @@ public class WorkSpaceController {
         //借用时长
         int diffDays = DateUtils.differentDaysByMillisecond(order.getDeadDate(), order.getBorrowDate());
         model.addAttribute("diffDays",diffDays);
+        //未归还数量
+        model.addAttribute("userUnReturn",deviceOrderService.sumUnReturnQuantity(getSysUser().getUserId()));
+        //用户维护记录
+        model.addAttribute("userMaintenance",deviceOrderService.sumMaintenanceQuantity(getSysUser().getUserId()));
         return "device/workspace/workSpace";
     }
 

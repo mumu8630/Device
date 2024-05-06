@@ -2,6 +2,7 @@ package com.nuc.device.order.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -175,7 +176,7 @@ public class DeviceOrderController extends BaseController
     public String renew(@PathVariable("orderId") Long orderId, ModelMap mmap)
     {
         DeviceOrder deviceOrder = deviceOrderService.selectDeviceOrderByOrderId(orderId);
-        mmap.put("order", deviceOrder);
+        mmap.put("deviceOrder", deviceOrder);
         return prefix+"/renew";
     }
 
@@ -186,8 +187,9 @@ public class DeviceOrderController extends BaseController
     @Log(title = "订单续期", businessType = BusinessType.UPDATE)
     @PostMapping("/renew")
     @ResponseBody
-    public AjaxResult renewOrder(DeviceOrder deviceOrder)
+    public AjaxResult renewOrder(DeviceOrder deviceOrder, Date newDeadDate)
     {
+        deviceOrder.setDeadDate(newDeadDate);
         return toAjax(deviceOrderService.renewOrder(deviceOrder));
     }
 
