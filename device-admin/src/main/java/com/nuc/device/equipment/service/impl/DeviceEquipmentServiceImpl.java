@@ -136,7 +136,7 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
             }
             //扣缓存
             Double zincrby = redisUtil.zincrby(idleKey, deviceEquipment.getEquipmentId(), -needQuantity);
-            if (zincrby < 0) {
+            if (zincrby == null || zincrby < 0) {
                 return 0;
             }
             //扣数据库

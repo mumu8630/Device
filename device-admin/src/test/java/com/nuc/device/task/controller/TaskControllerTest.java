@@ -4,6 +4,7 @@ import com.nuc.device.order.mapper.DeviceOrderMapper;
 import com.nuc.device.order.service.IDeviceOrderService;
 import com.nuc.device.record.domain.DeviceBorrowRecord;
 import com.nuc.device.record.domain.DeviceBorrowRecordDTO;
+import com.nuc.device.record.mapper.DeviceBorrowRecordMapper;
 import com.nuc.device.record.service.IDeviceRecordService;
 import com.nuc.device.task.domin.DeviceUserTaskList;
 import com.nuc.device.task.enums.TaskStatusEnum;
@@ -23,7 +24,6 @@ import redis.clients.jedis.Jedis;
 import java.util.*;
 
 /**
- * TODO 类描述
  *
  * @author mumu
  * @date 2024/4/22 16:27
@@ -44,6 +44,8 @@ class TaskControllerTest {
     private DeviceOrderMapper deviceOrderMapper;
     @Autowired
     IDeviceOrderService deviceOrderService;
+    @Autowired
+    DeviceBorrowRecordMapper deviceBorrowRecordMapper;
 
     @Test
     void getTaskList() {
@@ -131,6 +133,23 @@ class TaskControllerTest {
         recordDTOList.forEach(System.out::println);
     }
 
+    /**
+     * 同步历史表和订单表
+     */
+    @Test
+    void test() {
+        List<DeviceBorrowRecord> recordList = deviceRecordService.findRecentRecordList();
+        List<DeviceOrder> orderList = deviceOrderService.selectDeviceOrderList(new DeviceOrder());
+        for (DeviceOrder order : orderList) {
+            for (DeviceBorrowRecord record : recordList) {
+                if (order.getOrderId() == record.getOrderId()) {
+                    record.setBorrowStatus(order.getStatus());
+                    deviceBorrowRecordMapper.updateDeviceBorrowRecord(record);
+                }
+            }
+
+        }
+    }
 
 }
 

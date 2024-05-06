@@ -34,6 +34,8 @@ import java.util.*;
 @RequestMapping("/api/workspace")
 public class WorkSpaceController {
 
+    private String prefix = "device/workspace/ordertab";
+
     @Autowired
     private IDeviceEquipmentService deviceEquipmentService;
     @Autowired
@@ -77,6 +79,10 @@ public class WorkSpaceController {
         //借用时长
         int diffDays = DateUtils.differentDaysByMillisecond(order.getDeadDate(), order.getBorrowDate());
         model.addAttribute("diffDays",diffDays);
+        //未归还数量
+        model.addAttribute("userUnReturn",deviceOrderService.sumUnReturnQuantity(getSysUser().getUserId()));
+        //用户维护记录
+        model.addAttribute("userMaintenance",deviceOrderService.sumMaintenanceQuantity(getSysUser().getUserId()));
         return "device/workspace/workSpace";
     }
 
@@ -237,5 +243,38 @@ public class WorkSpaceController {
         List<BorrowDateTimes> borrowTimes = deviceOrderService.selectBorrowTimes(getSysUser().getUserId());
         return borrowTimes;
     }
+
+    /**
+     * 借用订单
+     */
+    @GetMapping("/borrowTab")
+    public String borrowTab() {
+        return prefix+"/borrowTab";
+    }
+    /**
+     * tab2标签页卡片归还订单
+     */
+    @GetMapping("returnTab")
+    public String returnTab() {
+        return prefix+"/returnTab";
+    }
+    /**
+     * tab2标签页卡片逾期订单
+     */
+    @GetMapping("overdueTab")
+    public String overdue() {
+        return prefix+"/overdueTab";
+    }
+
+    /**
+     * tab2标签页卡片临期订单
+     */
+
+    @GetMapping("willOverdueTab")
+    public String willOverdueTab() {
+        return prefix+"/willOverdueTab";
+    }
+
+
 
 }

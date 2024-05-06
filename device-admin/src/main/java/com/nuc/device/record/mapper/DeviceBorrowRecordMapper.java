@@ -64,4 +64,7 @@ public interface DeviceBorrowRecordMapper
     List<DeviceBorrowRecord> selectList();
 
     List<DeviceBorrowRecord> selectRecentList();
+
+    int updateDeviceBorrowRecordByOrderId(Long orderId);
+
 }

@@ -79,4 +79,14 @@ public interface IDeviceOrderService
     DeviceOrder selectNewBorrowOrder(Long userId);
 
     DeviceOrder initOrder(Long userId);
+
+    int returnDeviceByOrderIds(String orderIds);
+
+    int renewOrder(DeviceOrder deviceOrder);
+
+    List<DeviceOrder> getStatusList();
+
+    OrderSummary sumUnReturnQuantity(Long userId);
+
+    OrderSummary sumMaintenanceQuantity(Long userId);
 }

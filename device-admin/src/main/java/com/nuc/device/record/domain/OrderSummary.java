@@ -18,5 +18,5 @@ import java.util.List;
 public class OrderSummary {
     private Integer orderCount;
     private Integer deviceCount;
-    private List<Long> orderList;
+    private String orderList;
 }

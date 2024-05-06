@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.nuc.device.equipment.domain.DeviceEquipment;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 设备信息Mapper接口
@@ -82,4 +83,6 @@ public interface DeviceEquipmentMapper
     Integer sumAllMaintenanceQuantity();
 
     Integer sumAllQuantity();
+
+    int returnDeviceByEquipmentId(@Param("equipmentId") Long equipmentId, @Param("borrowNum") Integer borrowNum);
 }

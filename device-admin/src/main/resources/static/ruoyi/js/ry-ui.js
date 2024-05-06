@@ -1116,6 +1116,49 @@ var table = {
                     }
                 });
             },
+            //归还设备信息
+            returnDevice: function(id) {
+                table.set();
+                $.modal.confirm("确定归还该条" + table.options.modalName + "信息吗？", function() {
+                    var url = $.common.isEmpty(id) ? table.options.returnUrl : table.options.returnUrl.replace("{id}", id);
+                    if (table.options.type == table_type.bootstrapTreeTable) {
+                        $.operate.get(url);
+                    } else {
+                        var data = { "ids": id };
+                        $.operate.submit(url, "post", "json", data);
+                    }
+                });
+            },
+            //续借设备信息
+            renew: function(id) {
+                table.set();
+                if ($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+                    var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+                    if ($.common.isEmpty(row)) {
+                        $.modal.alertWarning("请至少选择一条记录");
+                        return;
+                    }
+                    var url = table.options.renewUrl.replace("{id}", row[table.options.uniqueId]);
+                    $.modal.open("续借" + table.options.modalName, url);
+                } else {
+                    $.modal.open("续借" + table.options.modalName, $.operate.renewUrl(id));
+                }
+            },
+            // 借用访问地址
+            renewUrl: function(id) {
+                var url = "/404.html";
+                if ($.common.isNotEmpty(id)) {
+                    url = table.options.renewUrl.replace("{id}", id);
+                } else {
+                    var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+                    if (id.length == 0) {
+                        $.modal.alertWarning("请至少选择一条记录");
+                        return;
+                    }
+                    url = table.options.renewUrl.replace("{id}", id);
+                }
+                return url;
+            },
             //借用信息
             borrow: function(id) {
                 table.set();
@@ -1129,6 +1172,23 @@ var table = {
                     $.modal.open("借用" + table.options.modalName, url);
                 } else {
                     $.modal.open("借用" + table.options.modalName, $.operate.borrowUrl(id));
+                }
+            },
+            //再次借用
+            borrowAgain: function(id) {
+                table.set();
+                if ($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+                    var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+                    if ($.common.isEmpty(row)) {
+                        $.modal.alertWarning("请至少选择一条记录");
+                        return;
+                    }
+                    var url = table.options.borrowAgainUrl.replace("{id}", row[table.options.uniqueId]);
+                    $.modal.open("借用" + table.options.modalName, url);
+                }else{
+                    $.modal.confirm("确定再次借用该" + table.options.modalName + "信息吗？", function() {
+                        $.modal.open("再次借用" + table.options.modalName, $.operate.borrowAgainUrl(id));
+                    });
                 }
             },
             // 借用访问地址
@@ -1146,6 +1206,21 @@ var table = {
                 }
                 return url;
             },
+            // 再次借用访问地址
+            borrowAgainUrl: function(id) {
+                var url = "/404.html";
+                if ($.common.isNotEmpty(id)) {
+                    url = table.options.borrowAgainUrl.replace("{id}", id);
+                } else {
+                    var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+                    if (id.length == 0) {
+                        $.modal.alertWarning("请至少选择一条记录");
+                        return;
+                    }
+                    url = table.options.borrowAgainUrl.replace("{id}", id);
+                }
+                return url;
+            },
             // 批量删除信息
             removeAll: function() {
                 table.set();
@@ -1160,6 +1235,21 @@ var table = {
                     $.operate.submit(url, "post", "json", data);
                 });
             },
+            // //补还设备信息
+            // returnBack: function(id) {
+            //     table.set();
+            //     var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+            //     if (rows.length == 0) {
+            //         $.modal.alertWarning("请至少选择一条记录");
+            //         return;
+            //     }
+            //     $.modal.confirm("确认要补还选中的" + rows.length + "条数据吗?", function() {
+            //         var url = table.options.returnUrl;
+            //         var data = { "ids": rows.join() };
+            //         $.operate.submit(url, "post", "json", data);
+            //     });
+            //
+            // },
             // 清空信息
             clean: function() {
                 table.set();

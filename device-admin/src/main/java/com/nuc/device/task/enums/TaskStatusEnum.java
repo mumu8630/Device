@@ -1,7 +1,7 @@
 package com.nuc.device.task.enums;
 
 /**
- * TODO 类描述
+ * 小附件 task的枚举
  *
  * @author mumu
  * @date 2024/4/22 22:17
