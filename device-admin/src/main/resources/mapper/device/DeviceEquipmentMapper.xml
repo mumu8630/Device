@@ -114,16 +114,19 @@ select type_name from device_equipment where equipment_id = #{equipmentId}
 <select id="sumBorrowQuantity" resultType="java.util.Map">
 SELECT type_name, SUM(borrowed_quantity) AS count
 FROM device_equipment
+WHERE type_name != '初始化'
 GROUP BY type_name;
 </select>
 <select id="sumMaintenanceQuantity" resultType="java.util.Map">
 SELECT type_name, SUM(maintenance_quantity) AS count
 FROM device_equipment
+WHERE type_name != '初始化'
 GROUP BY type_name;
 </select>
 <select id="sumIdleQuantity" resultType="java.util.Map">
 SELECT type_name, SUM(idle_quantity) AS count
 FROM device_equipment
+WHERE type_name != '初始化'
 GROUP BY type_name;
 </select>
 <select id="sumAllBorrowQuantity" resultType="java.lang.Integer">

@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -188,7 +187,6 @@ public class WorkSpaceController {
         for (Map<String, Object> map : dataList) {
             String typeName = (String) map.get("type_name");
             Object count =  map.get("count");
-
             // 如果结果集中已经有该type_name的记录，则更新对应状态的数量，否则新增记录
             if (resultMap.containsKey(typeName)) {
                 Map<String, Object> statusMap = resultMap.get(typeName);
@@ -275,6 +273,10 @@ public class WorkSpaceController {
         return prefix+"/willOverdueTab";
     }
 
+    @GetMapping("maintenanceTab")
+    public String maintenanceTab() {
+        return prefix+"/maintenanceTab";
+    }
 
 
 }

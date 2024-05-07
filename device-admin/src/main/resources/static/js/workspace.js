@@ -199,7 +199,6 @@ function renderThirdChart(data) {
         };
     }
     const datasetForECharts = transformData(data);
-
     // 使用获取到的数据设置 ECharts 配置项
     var option;
     option = {

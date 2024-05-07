@@ -38,14 +38,21 @@ public class DeviceRecordServiceImpl implements IDeviceRecordService {
     }
 
     @Override
-    public int updateRecordStatus(Long orderId) {
+    public int updateRecordStatus(Long orderId, String status) {
         DeviceBorrowRecord record = new DeviceBorrowRecord();
         record.setOrderId(orderId);
         List<DeviceBorrowRecord> records = deviceBorrowRecordMapper.selectDeviceBorrowRecordList(record);
         for (DeviceBorrowRecord deviceBorrowRecord : records) {
-            deviceBorrowRecord.setBorrowStatus("已逾期");
+            deviceBorrowRecord.setBorrowStatus(status);
             return deviceBorrowRecordMapper.updateDeviceBorrowRecord(deviceBorrowRecord);
         }
         return 1;
+    }
+
+
+
+    @Override
+    public int updateDeviceBorrowRecord(DeviceBorrowRecord record) {
+        return deviceBorrowRecordMapper.updateDeviceBorrowRecord(record);
     }
 }

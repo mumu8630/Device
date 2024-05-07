@@ -9,8 +9,12 @@ import java.util.stream.Collectors;
 import com.nuc.device.common.core.domain.entity.SysUser;
 import com.nuc.device.equipment.domain.DeviceEquipment;
 import com.nuc.device.equipment.service.IDeviceEquipmentService;
+import com.nuc.device.maintenance.domain.DeviceMaintenance;
+import com.nuc.device.maintenance.service.IDeviceMaintenanceService;
 import com.nuc.device.order.service.IDeviceOrderService;
+import com.nuc.device.record.domain.DeviceBorrowRecord;
 import com.nuc.device.record.domain.OrderSummary;
+import com.nuc.device.record.service.IDeviceRecordService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,6 +50,10 @@ public class DeviceOrderController extends BaseController
     private IDeviceOrderService deviceOrderService;
     @Autowired
     IDeviceEquipmentService deviceEquipmentService;
+    @Autowired
+    IDeviceMaintenanceService deviceMaintenanceService;
+    @Autowired
+    IDeviceRecordService deviceRecordService;
 
     @RequiresPermissions("device:order:view")
     @Log(title = "查询订单信息", businessType = BusinessType.QUERY)
@@ -191,6 +199,50 @@ public class DeviceOrderController extends BaseController
     {
         deviceOrder.setDeadDate(newDeadDate);
         return toAjax(deviceOrderService.renewOrder(deviceOrder));
+    }
+
+    /**
+     * 维护订单设备 界面展示
+     * @param orderId
+     * @param mmap
+     * @return
+     */
+    @RequiresPermissions("device:order:maintenance")
+    @GetMapping("/maintenance/{orderId}")
+    public String maintenance(@PathVariable("orderId") Long orderId, ModelMap mmap)
+    {
+        DeviceOrder deviceOrder = deviceOrderService.selectDeviceOrderByOrderId(orderId);
+        mmap.put("deviceOrder", deviceOrder);
+        return prefix+"/maintenanceApply";
+    }
+
+    /**
+     * 维护订单设备 提交订单
+     */
+    @RequiresPermissions("device:order:maintenance")
+    @Log(title = "维护设备申请", businessType = BusinessType.UPDATE)
+    @PostMapping("/maintenance")
+    @ResponseBody
+    public AjaxResult maintenance(DeviceOrder deviceOrder,
+                                  Integer maintenanceQuantity,
+                                  Integer returnQuantity,
+                                  String lossInfo)
+    {
+        //维修库添加维修记录
+        DeviceMaintenance deviceMaintenance = new DeviceMaintenance();
+        deviceMaintenance.setOrderId(deviceOrder.getOrderId());
+        deviceMaintenance.setEquipmentId(deviceOrder.getEquipmentId());
+        deviceMaintenance.setEquipmentName(deviceOrder.getEquipmentName());
+        deviceMaintenance.setUploadUser(getSysUser().getLoginName());
+        deviceMaintenance.setUploadDate(new Date());
+        deviceMaintenance.setLossInfo(lossInfo);
+        deviceMaintenance.setReturnNum(returnQuantity);
+        deviceMaintenance.setMaintenanceNum(maintenanceQuantity);
+        deviceMaintenance.setMaintenanceStatus("待处理");
+        deviceOrder.setStatus("待审核");
+        deviceOrderService.updateDeviceOrder(deviceOrder);
+        deviceRecordService.updateRecordStatus(deviceOrder.getOrderId(), "待审核");
+        return toAjax(deviceMaintenanceService.insertDeviceMaintenance(deviceMaintenance));
     }
 
 }

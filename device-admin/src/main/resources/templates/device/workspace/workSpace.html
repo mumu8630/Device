@@ -208,7 +208,7 @@
             </a>
         </div>
         <div class="cirCard" style="left: 26px ;bottom: 14px">
-          <a href="javascript:void(0)" class="cirCard-link" onclick="openDeviceTab()">维护</a>
+          <a href="javascript:void(0)" class="cirCard-link" onclick="openMaintenanceTab()">维护</a>
         </div>
       </div>
     </div>
@@ -248,6 +248,9 @@
   }
   function openWillOverdueTab() {
     $.modal.openTab('临期信息', prefixTab + "/willOverdueTab");
+  }
+  function openMaintenanceTab() {
+    $.modal.openTab('维护上报', prefixTab + "/maintenanceTab");
   }
 </script>
 

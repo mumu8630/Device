@@ -17,5 +17,9 @@ public interface IDeviceRecordService {
 
     int returnDeviceByOrderId(Long orderId);
 
-    int updateRecordStatus(Long orderId);
+    int updateRecordStatus(Long orderId, String status);
+
+
+
+    int updateDeviceBorrowRecord(DeviceBorrowRecord record);
 }

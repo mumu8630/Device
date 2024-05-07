@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuc.device.maintenance.mapper.DeviceMaintenanceMapper">
+    
+    <resultMap type="DeviceMaintenance" id="DeviceMaintenanceResult">
+        <result property="workId"    column="work_id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="equipmentId"    column="equipment_id"    />
+        <result property="equipmentName"    column="equipment_name"    />
+        <result property="uploadUser"    column="upload_user"    />
+        <result property="uploadDate"    column="upload_date"    />
+        <result property="lossInfo"    column="loss_info"    />
+        <result property="manageDate"    column="manage_date"    />
+        <result property="returnNum"    column="return_num"    />
+        <result property="maintenanceNum"    column="maintenance_num"    />
+        <result property="maintenanceStatus"    column="maintenance_status"    />
+        <result property="manageName"    column="manage_name"    />
+    </resultMap>
+
+    <sql id="selectDeviceMaintenanceVo">
+        select work_id, order_id, equipment_id, equipment_name, upload_user, upload_date, loss_info, manage_date, return_num, maintenance_num, maintenance_status, manage_name from device_maintenance
+    </sql>
+
+    <select id="selectDeviceMaintenanceList" parameterType="DeviceMaintenance" resultMap="DeviceMaintenanceResult">
+        <include refid="selectDeviceMaintenanceVo"/>
+        <where>  
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="equipmentName != null  and equipmentName != ''"> and equipment_name like concat('%', #{equipmentName}, '%')</if>
+            <if test="uploadUser != null  and uploadUser != ''"> and upload_user like concat('%', #{uploadUser}, '%')</if>
+            <if test="uploadDate != null "> and upload_date = #{uploadDate}</if>
+            <if test="manageDate != null "> and manage_date = #{manageDate}</if>
+            <if test="maintenanceNum != null "> and maintenance_num &gt;= #{maintenanceNum}</if>
+            <if test="maintenanceStatus != null  and maintenanceStatus != ''"> and maintenance_status = #{maintenanceStatus}</if>
+            <if test="manageName != null  and manageName != ''"> and manage_name like concat('%', #{manageName}, '%')</if>
+        </where>
+        order by work_id desc
+    </select>
+    
+    <select id="selectDeviceMaintenanceByWorkId" parameterType="Long" resultMap="DeviceMaintenanceResult">
+        <include refid="selectDeviceMaintenanceVo"/>
+        where work_id = #{workId}
+    </select>
+        
+    <insert id="insertDeviceMaintenance" parameterType="DeviceMaintenance">
+        insert into device_maintenance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="workId != null">work_id,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="equipmentId != null">equipment_id,</if>
+            <if test="equipmentName != null and equipmentName != ''">equipment_name,</if>
+            <if test="uploadUser != null and uploadUser != ''">upload_user,</if>
+            <if test="uploadDate != null">upload_date,</if>
+            <if test="lossInfo != null and lossInfo != ''">loss_info,</if>
+            <if test="manageDate != null">manage_date,</if>
+            <if test="returnNum != null">return_num,</if>
+            <if test="maintenanceNum != null">maintenance_num,</if>
+            <if test="maintenanceStatus != null and maintenanceStatus != ''">maintenance_status,</if>
+            <if test="manageName != null">manage_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="workId != null">#{workId},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="equipmentId != null">#{equipmentId},</if>
+            <if test="equipmentName != null and equipmentName != ''">#{equipmentName},</if>
+            <if test="uploadUser != null and uploadUser != ''">#{uploadUser},</if>
+            <if test="uploadDate != null">#{uploadDate},</if>
+            <if test="lossInfo != null and lossInfo != ''">#{lossInfo},</if>
+            <if test="manageDate != null">#{manageDate},</if>
+            <if test="returnNum != null">#{returnNum},</if>
+            <if test="maintenanceNum != null">#{maintenanceNum},</if>
+            <if test="maintenanceStatus != null and maintenanceStatus != ''">#{maintenanceStatus},</if>
+            <if test="manageName != null">#{manageName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDeviceMaintenance" parameterType="DeviceMaintenance">
+        update device_maintenance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="equipmentId != null">equipment_id = #{equipmentId},</if>
+            <if test="equipmentName != null and equipmentName != ''">equipment_name = #{equipmentName},</if>
+            <if test="uploadUser != null and uploadUser != ''">upload_user = #{uploadUser},</if>
+            <if test="uploadDate != null">upload_date = #{uploadDate},</if>
+            <if test="lossInfo != null and lossInfo != ''">loss_info = #{lossInfo},</if>
+            <if test="manageDate != null">manage_date = #{manageDate},</if>
+            <if test="returnNum != null">return_num = #{returnNum},</if>
+            <if test="maintenanceNum != null">maintenance_num = #{maintenanceNum},</if>
+            <if test="maintenanceStatus != null and maintenanceStatus != ''">maintenance_status = #{maintenanceStatus},</if>
+            <if test="manageName != null">manage_name = #{manageName},</if>
+        </trim>
+        where work_id = #{workId}
+    </update>
+
+    <delete id="deleteDeviceMaintenanceByWorkId" parameterType="Long">
+        delete from device_maintenance where work_id = #{workId}
+    </delete>
+
+    <delete id="deleteDeviceMaintenanceByWorkIds" parameterType="String">
+        delete from device_maintenance where work_id in 
+        <foreach item="workId" collection="array" open="(" separator="," close=")">
+            #{workId}
+        </foreach>
+    </delete>
+
+</mapper>
