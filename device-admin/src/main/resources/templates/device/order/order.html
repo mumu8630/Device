@@ -150,7 +150,9 @@
                             actions.push('<a class="btn btn-warning btn-xs ' + borrowFlag + '" href="javascript:void(0)" onclick="$.operate.borrowAgain(\'' + row.orderId + '\')"><i class="fa fa-gears"></i> 借用</a>');
 
                         }else if (row.status == '待审核'){
-                            actions.push('<a class="btn btn-warning btn-xs disabled"><i class="fa fa-spinner"></i>审核中</a>');
+                            actions.push('<a class="btn btn-secondary btn-xs disabled"><i class="fa fa-spinner"></i>审核中</a>');
+                        }else if (row.status == '已审核'){
+                            actions.push('<a class="btn btn-secondary btn-xs disabled"><i class="fa fa-check"></i>审核通过</a>');
                         }
                         return actions.join('');
                     }

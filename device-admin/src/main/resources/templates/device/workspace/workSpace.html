@@ -9,8 +9,47 @@
   <link href="../../../static/css/style.min.css" th:href="@{/css/style.min.css}" rel="stylesheet"/>
   <link href="../../../static/css/workspace.css" th:href="@{/css/workspace.css}" rel="stylesheet"/>
   <style>
+    .card3-container {
+      padding: 27px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 40px; /* 添加卡片之间的垂直间距 */
+    }
 
+    .card3 {
+      width:275px;
+      height: 145px;
+      background-color: #0a81a9db;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    .card3-content {
+      text-align: center;
+    }
+
+    .card3 h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card3-value {
+      font-size: 48px;
+      font-weight: bold;
+    }
+    #mainCountChart{
+      width:500px;
+      height:383px;
+      margin-left:-73px;
+    }
   </style>
+
 </head>
 <body class="gray-bg">
 <div class="tabs">
@@ -110,7 +149,6 @@
     </div>
     <div class="col-sm-4">
       <div class="card">
-
       <div class="card-body">
         <img src="../../../static/workspace/weixiu.png" alt="维修数量" th:src="@{/workspace/weixiu.png}" class="card-icon" style="background: aliceblue; filter: hue-rotate(256deg)  ">
         <div class="right-bar">
@@ -214,11 +252,57 @@
     </div>
     </div>
 </div>
-
 <!--选项3内容-->
 <div class="content" id="tab3">
-  <h2>选项卡 3 内容</h2>
-  <p>这是选项卡 3 的内容。</p>
+ <div class="row">
+   <div class="col-sm-4">
+     <div class="card3-container">
+       <div class="card3">
+         <div class="card3-content">
+           <h2>维修中设备数</h2>
+           <div class="card3-value">3</div>
+         </div>
+       </div>
+       <div class="card3">
+         <div class="card3-content">
+           <h2>维修工单数</h2>
+           <div class="card3-value">14</div>
+         </div>
+       </div>
+     </div>
+   </div>
+   <div class="col-sm-4">
+     <div id="mainCountChart" ></div>
+   </div>
+   <div class="col-sm-4">
+     <div class="ibox float-e-margins">
+       <div class="ibox-title" style="width: 400px">
+         <h4><span class="blue-icon"></span>设备最近借用情况统计</h4>
+       </div>
+       <div class="ibox-content">
+         <table class="borrowTable" style="width: 362px;height: 268px" >
+           <thead>
+           <tr >
+             <th>序号</th>
+             <th>设备名称</th>
+             <th>借用用户</th>
+             <th>借用时间</th>
+             <th>归还状态</th>
+           </tr>
+           </thead>
+           <tbody id="mainTableBody" >
+           <!-- 这里将使用 JavaScript 来动态添加行 -->
+           </tbody>
+         </table>
+       </div>
+     </div>
+   </div>
+ </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div id="maintenanceChart" style="width: 1200px;height: 400px;margin: 55px"></div>
+    </div>
+  </div>
 </div>
 <script th:src="@{/js/echarts.min.js}"></script>
 <script th:src="@{/js/workspace.js}"></script>
@@ -253,6 +337,127 @@
     $.modal.openTab('维护上报', prefixTab + "/maintenanceTab");
   }
 </script>
-
+<script>
+  //饼状图
+    var myChart = echarts.init(document.getElementById('mainCountChart'));
+    var option = {
+      title: {
+        text: '易损坏设备种类排行',
+        subtext: '损耗数量',
+        left: 'center',
+        top:'30px'
+      },
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        orient: 'horizontal', // 将legend从垂直改为水平
+        bottom: 30 // 将legend放在底部
+      },
+      series: [
+        {
+          name: '损坏数量',
+          type: 'pie',
+          radius: '50%',
+          data: [
+            { value: 1048, name: 'Search Engine' },
+            { value: 735, name: 'Direct' },
+            { value: 580, name: 'Email' },
+            { value: 484, name: 'Union Ads' },
+            { value: 300, name: 'Video Ads' }
+          ],
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    };
+  if (option && typeof option === 'object') {
+    myChart.setOption(option);
+  };
+  myChart.setOption({
+    // 设置不允许图表自动调整大小
+    resize: false
+  });
+  window.addEventListener('resize', myChart.resize);
+</script>
+<script>
+    //折线图
+    var maintenanceChart = echarts.init(document.getElementById('maintenanceChart'));
+    var option = {
+      title: {
+        text: 'Stacked Line'
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      legend: {
+        data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      toolbox: {
+        feature: {
+          saveAsImage: {}
+        }
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          name: 'Email',
+          type: 'line',
+          stack: 'Total',
+          data: [120, 132, 101, 134, 90, 230, 210]
+        },
+        {
+          name: 'Union Ads',
+          type: 'line',
+          stack: 'Total',
+          data: [220, 182, 191, 234, 290, 330, 310]
+        },
+        {
+          name: 'Video Ads',
+          type: 'line',
+          stack: 'Total',
+          data: [150, 232, 201, 154, 190, 330, 410]
+        },
+        {
+          name: 'Direct',
+          type: 'line',
+          stack: 'Total',
+          data: [320, 332, 301, 334, 390, 330, 320]
+        },
+        {
+          name: 'Search Engine',
+          type: 'line',
+          stack: 'Total',
+          data: [820, 932, 901, 934, 1290, 1330, 1320]
+        }
+      ]
+    };
+    if (option && typeof option === 'object') {
+        maintenanceChart.setOption(option);
+    };
+    maintenanceChart.setOption({
+        // 设置不允许图表自动调整大小
+        resize: false
+    });
+    window.addEventListener('resize', maintenanceChart.resize);
+</script>
 </body>
 </html>

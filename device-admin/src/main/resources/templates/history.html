@@ -34,6 +34,10 @@
 </div>
 <script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:inline="javascript">
+  var viewFlag = [[${@permission.hasPermi('monitor:operlog:detail')}]];
+
+</script>
 <script>
   $(document).ready(function(){
     // 定义颜色数组
@@ -102,7 +106,7 @@
           description.prepend(opername).prepend(opernameLabel); // 将opername和opernameLabel添加到description的前面
           var time = $('<span class="vertical-date" style="color: #0ba26d"></span>').text(new Date(item.time).toLocaleString());
           // 修改按钮的创建方式，添加onclick事件处理器
-          var button = $('<a class="btn btn-sm" href="javascript:void(0)" onclick="showDetails(\'' + item.operId + '\')">查看更多</a>').addClass(colors[index % 4] + ' pull-right');
+          var button = $('<a class="btn btn-sm '+viewFlag+'" href="javascript:void(0)" onclick="showDetails(\'' + item.operId + '\')">查看更多</a>').addClass(colors[index % 4] + ' pull-right');
           content.append(title);
           content.append(description);
           content.append(time);

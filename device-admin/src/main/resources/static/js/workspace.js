@@ -426,3 +426,31 @@ function renderBorrowTimesChart(data){
     });
     window.addEventListener('resize', borrowTimesEchart.resize);
 }
+//最近损坏
+fetch('/api/workspace/recentBorrow')
+    .then(response => response.json())
+    .then(data => {
+        var tableBody = document.getElementById('mainTableBody');
+        data.forEach(function(item,index) {
+            // 解析日期字符串
+            var borrowDate = new Date(item.borrowDate);
+            // 获取年月日部分
+            var formattedDate = borrowDate.getFullYear() + '-' + (borrowDate.getMonth() + 1) + '-' + borrowDate.getDate();
+            var row = document.createElement('tr');
+            row.innerHTML = '<td>' + (index + 1) + '</td>' +
+                '<td>' + item.equipmentName + '</td>' +
+                '<td>' + item.borrowUser + '</td>' +
+                '<td>' + formattedDate + '</td>' +
+                '<td style="color: ' +
+                (item.borrowStatus === '未归还' ? '#fab42e' :
+                    (item.borrowStatus === '已逾期' ? '#f80909b3'
+                        : '#31a314')) +
+                '">' + item.borrowStatus + '</td>';
+            row.className = index % 2 === 0 ? 'even-row' : 'odd-row';
+            tableBody.appendChild(row);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+
