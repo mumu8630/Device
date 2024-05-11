@@ -86,4 +86,6 @@ public interface DeviceOrderMapper
     OrderSummary sumUnReturnQuantity(Long userId);
 
     OrderSummary sumMaintenanceQuantity(Long userId);
+
+    Long selectTypeIdByEquipmentId(Long equipmentId);
 }

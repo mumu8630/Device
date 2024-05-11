@@ -91,6 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="idleQuantity != null">idle_quantity = #{idleQuantity},</if>
         </trim>
         where equipment_id = #{equipmentId}
+
     </update>
 
     <delete id="deleteDeviceEquipmentByEquipmentId" parameterType="Long">
@@ -147,5 +148,8 @@ update device_equipment set
  idle_quantity = idle_quantity +#{borrowNum}
  where equipment_id = #{equipmentId}
 </update>
+<select id="selectTypeNameByTypeId" resultType="java.lang.String">
+select type_name from device_equipment where type_id = #{typeId} limit 1
+</select>
 
 </mapper>

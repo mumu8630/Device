@@ -85,4 +85,6 @@ public interface DeviceEquipmentMapper
     Integer sumAllQuantity();
 
     int returnDeviceByEquipmentId(@Param("equipmentId") Long equipmentId, @Param("borrowNum") Integer borrowNum);
+
+    String selectTypeNameByTypeId(Long typeId);
 }

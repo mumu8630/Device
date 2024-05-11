@@ -1,9 +1,6 @@
 package com.nuc.device.order.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.nuc.device.common.core.domain.entity.SysUser;
@@ -103,7 +100,6 @@ public class DeviceOrderController extends BaseController
         return  toAjax(deviceOrderService.returnDeviceByOrderIds(ids));
     }
 
-    //TODO: 完成订单的归还 续期 以及维护
     /**
      * workspace 归还卡片相关查询
      * @param deviceOrder

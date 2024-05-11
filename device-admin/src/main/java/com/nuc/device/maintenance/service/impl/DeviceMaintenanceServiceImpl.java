@@ -5,9 +5,13 @@ import java.util.List;
 
 import com.nuc.device.equipment.domain.DeviceEquipment;
 import com.nuc.device.equipment.service.IDeviceEquipmentService;
+import com.nuc.device.maintenance.domain.MaintenanceChartDto;
 import com.nuc.device.order.domain.DeviceOrder;
 import com.nuc.device.order.service.IDeviceOrderService;
+import com.nuc.device.record.domain.DeviceBorrowRecord;
 import com.nuc.device.record.service.IDeviceRecordService;
+import com.nuc.device.task.exception.RedisOperationException;
+import com.nuc.device.task.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.nuc.device.maintenance.mapper.DeviceMaintenanceMapper;
@@ -35,6 +39,8 @@ public class DeviceMaintenanceServiceImpl implements IDeviceMaintenanceService
     @Autowired
     IDeviceEquipmentService deviceEquipmentService;
 
+    @Autowired
+    RedisUtil redisUtil;
     /**
      * 查询设备维护
      * 
@@ -131,6 +137,16 @@ public class DeviceMaintenanceServiceImpl implements IDeviceMaintenanceService
         deviceMaintenance.setEquipmentId(order.getEquipmentId());
         updateDeviceMaintenance(deviceMaintenance);
 
+        //缓存更新
+        String MaintenanceKey ="device:hot:maintenance";
+        if (!redisUtil.hasKey(MaintenanceKey)) {
+            throw new RedisOperationException("key" + MaintenanceKey + "不存在");
+        }
+        Long typeId = deviceOrderService.selectTypeIdByEquipmentId(deviceMaintenance.getEquipmentId());
+        Double zincrby = redisUtil.zincrby(MaintenanceKey, typeId, deviceMaintenance.getMaintenanceNum());
+        if (zincrby == null) {
+            throw new RedisOperationException("zincrby失败");
+        }
         //后端库存数据处理
         DeviceEquipment deviceEquipment = deviceEquipmentService.selectDeviceEquipmentByEquipmentId(deviceMaintenance.getEquipmentId());
         int returnNum = order.getBorrowNum() - deviceMaintenance.getMaintenanceNum();
@@ -138,5 +154,33 @@ public class DeviceMaintenanceServiceImpl implements IDeviceMaintenanceService
         deviceEquipment.setIdleQuantity(deviceEquipment.getIdleQuantity()+returnNum);
         deviceEquipment.setMaintenanceQuantity(deviceEquipment.getMaintenanceQuantity()+deviceMaintenance.getMaintenanceNum());
         return deviceEquipmentService.updateDeviceEquipment(deviceEquipment);
+    }
+
+    /**
+     * 维修中的设备数量
+     * @return
+     */
+    @Override
+    public Integer sumMaintenanceQuantity() {
+        return deviceMaintenanceMapper.sumMaintenanceQuantity();
+    }
+
+    /**
+     * 已维修的工单数
+     * @return
+     */
+    @Override
+    public Integer sumWorkQuantity() {
+        return deviceMaintenanceMapper.sumWorkQuantity();
+    }
+
+    @Override
+    public List<DeviceMaintenance> findRecentWork() {
+        return deviceMaintenanceMapper.selectRecentWork();
+    }
+
+    @Override
+    public List<MaintenanceChartDto> findLineMaintenanceChart() {
+        return deviceMaintenanceMapper.selectLineMaintenanceChart();
     }
 }

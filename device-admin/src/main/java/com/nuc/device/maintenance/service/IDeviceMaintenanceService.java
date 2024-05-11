@@ -2,6 +2,7 @@ package com.nuc.device.maintenance.service;
 
 import java.util.List;
 import com.nuc.device.maintenance.domain.DeviceMaintenance;
+import com.nuc.device.maintenance.domain.MaintenanceChartDto;
 
 /**
  * 设备维护Service接口
@@ -60,4 +61,12 @@ public interface IDeviceMaintenanceService
     public int deleteDeviceMaintenanceByWorkId(Long workId);
 
     int updateSolve(DeviceMaintenance deviceMaintenance);
+
+    Integer sumMaintenanceQuantity();
+
+    Integer sumWorkQuantity();
+
+    List<DeviceMaintenance> findRecentWork();
+
+    List<MaintenanceChartDto> findLineMaintenanceChart();
 }

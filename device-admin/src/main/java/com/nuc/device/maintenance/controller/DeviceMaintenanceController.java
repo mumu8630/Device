@@ -3,6 +3,7 @@ package com.nuc.device.maintenance.controller;
 import java.util.Date;
 import java.util.List;
 
+import com.nuc.device.common.annotation.DataScope;
 import com.nuc.device.order.domain.DeviceOrder;
 import com.nuc.device.order.service.IDeviceOrderService;
 import com.nuc.device.record.domain.DeviceBorrowRecord;
@@ -136,6 +137,7 @@ public class DeviceMaintenanceController extends BaseController
      */
     @RequiresPermissions("device:maintenance:solve")
     @GetMapping("/solve/{workId}")
+    @DataScope(deptAlias = "d", userAlias = "u")
     public String solve(@PathVariable("workId") Long workId, ModelMap mmap)
     {
         DeviceMaintenance deviceMaintenance = deviceMaintenanceService.selectDeviceMaintenanceByWorkId(workId);
@@ -149,9 +151,37 @@ public class DeviceMaintenanceController extends BaseController
     @Log(title = "审批设备维护", businessType = BusinessType.UPDATE)
     @PostMapping("/solve")
     @ResponseBody
+    @DataScope(deptAlias = "d", userAlias = "u")
     public AjaxResult solve(DeviceMaintenance deviceMaintenance)
     {
 
         return toAjax(deviceMaintenanceService.updateSolve(deviceMaintenance));
+    }
+    /**
+     * workspace正在维护设备列表
+     */
+    @RequiresPermissions("device:maintenance:list")
+    @PostMapping("/underMaintenanceList")
+    @ResponseBody
+    public TableDataInfo underMaintenanceList(DeviceMaintenance DeviceMaintenance)
+    {
+        startPage();
+        DeviceMaintenance.setMaintenanceStatus("待处理");
+        List<DeviceMaintenance> deviceMaintenances = deviceMaintenanceService.selectDeviceMaintenanceList(DeviceMaintenance);
+        return getDataTable(deviceMaintenances);
+    }
+
+    /**
+     * workspace已维护设备列表
+     */
+    @RequiresPermissions("device:maintenance:list")
+    @PostMapping("/alreadyMaintenanceList")
+    @ResponseBody
+    public TableDataInfo alreadyMaintenanceList(DeviceMaintenance DeviceMaintenance)
+    {
+        startPage();
+        DeviceMaintenance.setMaintenanceStatus("已处理");
+        List<DeviceMaintenance> deviceMaintenances = deviceMaintenanceService.selectDeviceMaintenanceList(DeviceMaintenance);
+        return getDataTable(deviceMaintenances);
     }
 }

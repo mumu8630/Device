@@ -18,6 +18,7 @@
     }
 
     .card3 {
+      position: relative; /* 添加相对定位 */
       width:275px;
       height: 145px;
       background-color: #0a81a9db;
@@ -28,6 +29,8 @@
       align-items: center;
       color: #fff;
       font-family: Arial, sans-serif;
+      cursor: pointer; /* 添加鼠标指针样式 */
+      overflow: hidden; /* 隐藏超出部分 */
     }
 
     .card3-content {
@@ -42,6 +45,19 @@
     .card3-value {
       font-size: 48px;
       font-weight: bold;
+    }
+    .ripple {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple-animation 0.6s linear;
+    }
+    @keyframes ripple-animation {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
     }
     #mainCountChart{
       width:500px;
@@ -257,16 +273,18 @@
  <div class="row">
    <div class="col-sm-4">
      <div class="card3-container">
-       <div class="card3">
+       <div class="card3" onclick="createRipple(event, openUnderMaintenanceTab)">
          <div class="card3-content">
            <h2>维修中设备数</h2>
-           <div class="card3-value">3</div>
+           <div class="card3-value" th:text="${workMaintenanceQuantity}"></div>
+           <span class="ripple"></span> <!-- 添加波纹效果 -->
          </div>
        </div>
-       <div class="card3">
+       <div class="card3" onclick="createRipple(event, openAlreadyMaintenanceTab)">
          <div class="card3-content">
-           <h2>维修工单数</h2>
-           <div class="card3-value">14</div>
+           <h2>已维修工单数</h2>
+           <div class="card3-value" th:text="${workQuantity}"></div>
+           <span class="ripple"></span> <!-- 添加波纹效果 -->
          </div>
        </div>
      </div>
@@ -277,7 +295,7 @@
    <div class="col-sm-4">
      <div class="ibox float-e-margins">
        <div class="ibox-title" style="width: 400px">
-         <h4><span class="blue-icon"></span>设备最近借用情况统计</h4>
+         <h4><span class="blue-icon"></span>设备最近维护情况统计</h4>
        </div>
        <div class="ibox-content">
          <table class="borrowTable" style="width: 362px;height: 268px" >
@@ -285,9 +303,9 @@
            <tr >
              <th>序号</th>
              <th>设备名称</th>
-             <th>借用用户</th>
-             <th>借用时间</th>
-             <th>归还状态</th>
+             <th>提交用户</th>
+             <th>提交时间</th>
+             <th>审批状态</th>
            </tr>
            </thead>
            <tbody id="mainTableBody" >
@@ -307,6 +325,7 @@
 <script th:src="@{/js/echarts.min.js}"></script>
 <script th:src="@{/js/workspace.js}"></script>
 <th:block th:include="include :: footer" />
+<!--卡片页面跳转-->
 <script type="text/javascript">
   var prefix = ctx + "device";
   var prefixTab = ctx + "api/workspace";
@@ -336,16 +355,31 @@
   function openMaintenanceTab() {
     $.modal.openTab('维护上报', prefixTab + "/maintenanceTab");
   }
+  //正在维护页面
+  function openUnderMaintenanceTab() {
+    $.modal.openTab('正在维护设备列表', prefixTab + "/underMaintenanceTab");
+  }
 </script>
 <script>
   //饼状图
     var myChart = echarts.init(document.getElementById('mainCountChart'));
+  // 发送 AJAX 请求获取数据
+  fetch('/api/workspace/hotMaintenance')
+          .then(response => response.json())
+          .then(data => {
+            // 渲染 ECharts
+            renderMaintenanceChart(data);
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
+  function renderMaintenanceChart(data) {
     var option = {
       title: {
         text: '易损坏设备种类排行',
         subtext: '损耗数量',
         left: 'center',
-        top:'30px'
+        top: '30px'
       },
       tooltip: {
         trigger: 'item'
@@ -359,13 +393,7 @@
           name: '损坏数量',
           type: 'pie',
           radius: '50%',
-          data: [
-            { value: 1048, name: 'Search Engine' },
-            { value: 735, name: 'Direct' },
-            { value: 580, name: 'Email' },
-            { value: 484, name: 'Union Ads' },
-            { value: 300, name: 'Video Ads' }
-          ],
+          data: data,
           emphasis: {
             itemStyle: {
               shadowBlur: 10,
@@ -376,88 +404,116 @@
         }
       ]
     };
-  if (option && typeof option === 'object') {
-    myChart.setOption(option);
-  };
-  myChart.setOption({
-    // 设置不允许图表自动调整大小
-    resize: false
-  });
-  window.addEventListener('resize', myChart.resize);
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+    ;
+    myChart.setOption({
+      // 设置不允许图表自动调整大小
+      resize: false
+    });
+    window.addEventListener('resize', myChart.resize);
+  }
 </script>
 <script>
-    //折线图
-    var maintenanceChart = echarts.init(document.getElementById('maintenanceChart'));
-    var option = {
-      title: {
-        text: 'Stacked Line'
-      },
-      tooltip: {
-        trigger: 'axis'
-      },
-      legend: {
-        data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
-      },
-      grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-      },
-      toolbox: {
-        feature: {
-          saveAsImage: {}
-        }
-      },
-      xAxis: {
-        type: 'category',
-        boundaryGap: false,
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      },
-      yAxis: {
-        type: 'value'
-      },
-      series: [
-        {
-          name: 'Email',
-          type: 'line',
-          stack: 'Total',
-          data: [120, 132, 101, 134, 90, 230, 210]
+  var maintenanceChart = echarts.init(document.getElementById('maintenanceChart'));
+    function processData(data) {
+      let dates = [...new Set(data.map(item => item.mainDate.split(' ')[0]))].sort();
+      let typeNames = [...new Set(data.map(item => item.typeName))];
+
+      let series = typeNames.map(type => ({
+        name: type,
+        type: 'line',
+        data: []
+      }));
+
+      dates.forEach(date => {
+        typeNames.forEach((type, index) => {
+          let item = data.find(item => item.mainDate.startsWith(date) && item.typeName === type);
+          series[index].data.push(item ? item.totalMaintenanceCount : 0);
+        });
+      });
+
+      return { dates, series };
+    }
+    fetch('/api/workspace/lineChart')
+            .then(response => response.json())
+            .then(data => {
+              const { dates, series } = processData(data);
+              updateChart(dates, series);
+            })
+            .catch(error => console.error('Error fetching maintenance data:', error));
+
+    function updateChart(dates, series) {
+      var option = {
+        title: {
+          text: 'Stacked Line'
         },
-        {
-          name: 'Union Ads',
-          type: 'line',
-          stack: 'Total',
-          data: [220, 182, 191, 234, 290, 330, 310]
+        tooltip: {
+          trigger: 'axis'
         },
-        {
-          name: 'Video Ads',
-          type: 'line',
-          stack: 'Total',
-          data: [150, 232, 201, 154, 190, 330, 410]
+        legend: {
+          data: series.map(s => s.name)
         },
-        {
-          name: 'Direct',
-          type: 'line',
-          stack: 'Total',
-          data: [320, 332, 301, 334, 390, 330, 320]
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
         },
-        {
-          name: 'Search Engine',
-          type: 'line',
-          stack: 'Total',
-          data: [820, 932, 901, 934, 1290, 1330, 1320]
-        }
-      ]
-    };
-    if (option && typeof option === 'object') {
-        maintenanceChart.setOption(option);
-    };
-    maintenanceChart.setOption({
-        // 设置不允许图表自动调整大小
-        resize: false
-    });
-    window.addEventListener('resize', maintenanceChart.resize);
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: dates
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: series
+      };
+
+      maintenanceChart.setOption(option, true); // 使用true来清除之前的配置
+      window.addEventListener('resize', maintenanceChart.resize);
+    }
+</script>
+<script>
+//卡片点击效果
+  function createRipple(event, callback) {
+    const card = event.currentTarget;
+    const ripple = document.createElement("span");
+    const diameter = Math.max(card.clientWidth, card.clientHeight);
+    const radius = diameter / 2;
+
+    ripple.style.width = ripple.style.height = `${diameter}px`;
+    ripple.style.left = `${event.clientX - card.offsetLeft - radius}px`;
+    ripple.style.top = `${event.clientY - card.offsetTop - radius}px`;
+    ripple.classList.add("ripple");
+
+    card.appendChild(ripple);
+
+    setTimeout(() => {
+      ripple.remove();
+      if (callback) {
+        callback(); // 执行回调函数
+      }
+    }, 600);
+  }
+
+  function openUnderMaintenanceTab() {
+    // 这里放置打开维修页面的代码
+    console.log("Opening Under Maintenance Tab...");
+    $.modal.openTab('正在维护设备列表', prefixTab + "/underMaintenanceTab");
+  }
+  function openAlreadyMaintenanceTab() {
+    // 这里放置打开维修页面的代码
+    console.log("Opening already Maintenance Tab...");
+    $.modal.openTab('正在维护设备列表', prefixTab + "/alreadyMaintenanceTab");
+  }
 </script>
 </body>
 </html>

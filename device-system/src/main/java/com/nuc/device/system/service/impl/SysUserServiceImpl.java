@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ import com.nuc.device.system.mapper.SysUserPostMapper;
 import com.nuc.device.system.mapper.SysUserRoleMapper;
 import com.nuc.device.system.service.ISysConfigService;
 import com.nuc.device.system.service.ISysUserService;
+
+import static com.nuc.device.common.utils.ShiroUtils.getSysUser;
 
 /**
  * 用户 业务层处理
@@ -233,8 +236,7 @@ public class SysUserServiceImpl implements ISysUserService
         user.setUserType(UserConstants.REGISTER_USER_TYPE);
         int res = userMapper.insertUser(user);
         Long userId = selectUserByLoginName(user.getLoginName()).getUserId();
-        insertUserRole(userId,new Long[]{2L});
-
+        insertUserRole(userId,new Long[]{3L});
         return res>0;
     }
 

@@ -49,6 +49,10 @@ public class DeviceRecordServiceImpl implements IDeviceRecordService {
         return 1;
     }
 
+    @Override
+    public List<DeviceBorrowRecord> selectDeviceBorrowRecordList(DeviceBorrowRecord deviceBorrowRecord) {
+        return deviceBorrowRecordMapper.selectDeviceBorrowRecordList(deviceBorrowRecord);
+    }
 
 
     @Override

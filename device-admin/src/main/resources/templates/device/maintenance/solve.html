@@ -30,7 +30,7 @@
                 <label class="col-sm-3 control-label">提交时间：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="uploadDate" th:value="${#dates.format(deviceMaintenance.uploadDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text" readonly>
+                        <input name="uploadDate" th:value="${#dates.format(deviceMaintenance.uploadDate, 'yyyy-MM-dd HH:mm:ss')}" class="form-control" placeholder="yyyy-MM-dd" type="text" readonly>
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>

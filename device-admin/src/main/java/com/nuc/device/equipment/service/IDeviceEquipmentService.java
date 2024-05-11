@@ -85,4 +85,6 @@ public interface IDeviceEquipmentService
     Integer selectMaintenanceQuantity();
 
     Integer selectTotalQuantity();
+
+    String selectTypeByTypeId(Long valueOf);
 }

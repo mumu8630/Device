@@ -2,6 +2,8 @@ package com.nuc.device.maintenance.mapper;
 
 import java.util.List;
 import com.nuc.device.maintenance.domain.DeviceMaintenance;
+import com.nuc.device.maintenance.domain.MaintenanceChartDto;
+import com.nuc.device.record.domain.DeviceBorrowRecord;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -60,4 +62,12 @@ public interface DeviceMaintenanceMapper
      * @return 结果
      */
     public int deleteDeviceMaintenanceByWorkIds(String[] workIds);
+
+    Integer sumMaintenanceQuantity();
+
+    Integer sumWorkQuantity();
+
+    List<DeviceMaintenance> selectRecentWork();
+
+    List<MaintenanceChartDto> selectLineMaintenanceChart();
 }
