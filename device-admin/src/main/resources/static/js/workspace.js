@@ -199,7 +199,6 @@ function renderThirdChart(data) {
         };
     }
     const datasetForECharts = transformData(data);
-
     // 使用获取到的数据设置 ECharts 配置项
     var option;
     option = {
@@ -236,8 +235,8 @@ fetch('/api/workspace/recentBorrow')
                 '<td>' + formattedDate + '</td>' +
                 '<td style="color: ' +
                 (item.borrowStatus === '未归还' ? '#fab42e' :
-                    (item.borrowStatus === '已逾期' ? '#f80909b3'
-                        : '#31a314')) +
+                    (item.borrowStatus === '已逾期' ? '#f80909b3' :
+                        (item.borrowStatus === '待审核' ? '#fab42e' : '#31a314'))) +
                 '">' + item.borrowStatus + '</td>';
             row.className = index % 2 === 0 ? 'even-row' : 'odd-row';
             tableBody.appendChild(row);
@@ -427,3 +426,30 @@ function renderBorrowTimesChart(data){
     });
     window.addEventListener('resize', borrowTimesEchart.resize);
 }
+//最近损坏
+fetch('/api/workspace/recentWork')
+    .then(response => response.json())
+    .then(data => {
+        var tableBody = document.getElementById('mainTableBody');
+        data.forEach(function(item,index) {
+            // 解析日期字符串
+            var uploadDate = new Date(item.uploadDate);
+            // 获取年月日部分
+            var formattedDate = uploadDate.getFullYear() + '-' + (uploadDate.getMonth() + 1) + '-' + uploadDate.getDate();
+            var row = document.createElement('tr');
+            row.innerHTML = '<td>' + (index + 1) + '</td>' +
+                '<td>' + item.equipmentName + '</td>' +
+                '<td>' + item.uploadUser + '</td>' +
+                '<td>' + formattedDate + '</td>' +
+                '<td style="color: ' +
+                (item.maintenanceStatus === '待处理' ? '#fab42e' :
+                         '#31a314') +
+                '">' + item.maintenanceStatus + '</td>';
+            row.className = index % 2 === 0 ? 'even-row' : 'odd-row';
+            tableBody.appendChild(row);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+

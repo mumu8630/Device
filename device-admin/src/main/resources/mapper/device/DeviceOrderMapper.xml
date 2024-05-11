@@ -209,5 +209,10 @@ WHERE order_id = #{orderId};
         WHERE user_id = #{userId}
         AND status = '待审核';
 </select>
+<select id="selectTypeIdByEquipmentId" resultType="java.lang.Long">
+    SELECT type_id
+            FROM device_equipment
+            WHERE equipment_id = #{equipmentId};
+</select>
 
 </mapper>

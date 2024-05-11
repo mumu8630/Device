@@ -99,7 +99,14 @@
     select
     <include refid="Base_Column_List" />
     from device_user_task_list
-    where user_id = #{userId}
+    WHERE user_id = #{userId}
+    ORDER BY
+    CASE
+        WHEN task_status = '未完成' THEN 0
+        ELSE 1
+    END,
+    task_id DESC;
+
 </select>
 
 </mapper>

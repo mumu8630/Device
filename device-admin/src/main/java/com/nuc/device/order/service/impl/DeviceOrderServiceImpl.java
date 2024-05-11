@@ -288,7 +288,13 @@ public class DeviceOrderServiceImpl implements IDeviceOrderService
         return deviceOrderMapper.sumMaintenanceQuantity(userId);
     }
 
-    private String selectTypeNameByEquipmentId(Long equipmentId) {
+    @Override
+    public Long selectTypeIdByEquipmentId(Long equipmentId) {
+        return deviceOrderMapper.selectTypeIdByEquipmentId(equipmentId);
+    }
+
+    public String selectTypeNameByEquipmentId(Long equipmentId) {
         return deviceEquipmentMapper.selectTypeNameByEquipmentId(equipmentId);
     }
+
 }

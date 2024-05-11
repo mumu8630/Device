@@ -41,9 +41,9 @@ public class OrderStatusScheduled {
             //判断是否逾期
             if (currentTime > endTime) {
                 //逾期
-                order.setStatus("已逾期");
+
                 deviceOrderService.updateDeviceOrder(order);
-                deviceRecordService.updateRecordStatus(order.getOrderId());
+                deviceRecordService.updateRecordStatus(order.getOrderId(), "已逾期");
             }
         }
     }

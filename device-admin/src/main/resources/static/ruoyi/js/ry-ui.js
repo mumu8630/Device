@@ -1159,6 +1159,36 @@ var table = {
                 }
                 return url;
             },
+            //维修设备申请
+            maintenanceDevice: function(id)  {
+                table.set();
+                if ($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+                    var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+                    if ($.common.isEmpty(row)) {
+                        $.modal.alertWarning("请至少选择一条记录");
+                        return;
+                    }
+                    var url = table.options.maintenanceDeviceUrl.replace("{id}", row[table.options.uniqueId]);
+                    $.modal.open("设备" +table.options.modalName+"申请", url);
+                } else {
+                    $.modal.open("设备" + table.options.modalName+"申请", $.operate.maintenanceDeviceUrl(id));
+                }
+            },
+            // 维修申请访问地址
+            maintenanceDeviceUrl: function(id) {
+                var url = "/404.html";
+                if ($.common.isNotEmpty(id)) {
+                    url = table.options.maintenanceDeviceUrl.replace("{id}", id);
+                } else {
+                    var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+                    if (id.length == 0) {
+                        $.modal.alertWarning("请至少选择一条记录");
+                        return;
+                    }
+                    url = table.options.maintenanceDeviceUrl.replace("{id}", id);
+                }
+                return url;
+            },
             //借用信息
             borrow: function(id) {
                 table.set();
@@ -1221,6 +1251,36 @@ var table = {
                 }
                 return url;
             },
+            //审批提交
+            solveUrl: function(id) {
+                var url = "/404.html";
+                if ($.common.isNotEmpty(id)) {
+                    url = table.options.solveUrl.replace("{id}", id);
+                } else {
+                    var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+                    if (id.length == 0) {
+                        $.modal.alertWarning("请至少选择一条记录");
+                        return;
+                    }
+                    url = table.options.solveUrl.replace("{id}", id);
+                }
+                return url;
+            },
+            //设备维护界面的解决按钮
+            solve: function(id) {
+                table.set();
+                if ($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+                    var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+                    if ($.common.isEmpty(row)) {
+                        $.modal.alertWarning("请至少选择一条记录");
+                        return;
+                    }
+                    var url = table.options.solveUrl.replace("{id}", row[table.options.uniqueId]);
+                    $.modal.open("审批" + table.options.modalName, url);
+                } else {
+                    $.modal.open("审批" + table.options.modalName, $.operate.solveUrl(id));
+                }
+            },
             // 批量删除信息
             removeAll: function() {
                 table.set();
@@ -1235,21 +1295,7 @@ var table = {
                     $.operate.submit(url, "post", "json", data);
                 });
             },
-            // //补还设备信息
-            // returnBack: function(id) {
-            //     table.set();
-            //     var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
-            //     if (rows.length == 0) {
-            //         $.modal.alertWarning("请至少选择一条记录");
-            //         return;
-            //     }
-            //     $.modal.confirm("确认要补还选中的" + rows.length + "条数据吗?", function() {
-            //         var url = table.options.returnUrl;
-            //         var data = { "ids": rows.join() };
-            //         $.operate.submit(url, "post", "json", data);
-            //     });
-            //
-            // },
+
             // 清空信息
             clean: function() {
                 table.set();

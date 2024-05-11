@@ -1,5 +1,6 @@
 package com.nuc.device.task.controller;
 
+import com.nuc.device.order.domain.DeviceOrder;
 import com.nuc.device.order.mapper.DeviceOrderMapper;
 import com.nuc.device.order.service.IDeviceOrderService;
 import com.nuc.device.record.domain.DeviceBorrowRecord;
@@ -20,6 +21,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import redis.clients.jedis.Jedis;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.*;
 
@@ -90,13 +92,20 @@ class TaskControllerTest {
            Jedis jedis = new Jedis("localhost");
 
             // 从数据库中查询数据
-            List<Map<String, Object>> dataList = jdbcTemplate.queryForList("SELECT * FROM device_equipment");
+            List<Map<String, Object>> dataList = jdbcTemplate.queryForList("SELECT\n" +
+                    "\tSUM( maintenance_quantity ) AS total, type_name \n" +
+                    "FROM\n" +
+                    "\tdevice_equipment \n" +
+                    "WHERE\n" +
+                    "\ttype_name != '初始化'\n" +
+                    "\tGROUP BY\n" +
+                    "\ttype_name ");
 
             // 遍历数据并存储到Redis中
             for (Map<String, Object> data : dataList) {
-                String member = String.valueOf(data.get("equipment_id")); // 适当地替换成你的数据键
-                String score = String.valueOf(data.get("borrowed_quantity")); // 适当地替换成你的数据值
-                jedis.zadd("device:hot:borrow", Double.parseDouble(score),member); // 示例使用了Redis的String类型
+                String member = String.valueOf(data.get("type_name")); // 适当地替换成你的数据键
+                String score = String.valueOf(data.get("total")); // 适当地替换成你的数据值
+                jedis.zadd("device:hot:maintenance", Double.parseDouble(score),member); // 示例使用了Redis的String类型
             }
             // 关闭Redis连接
             jedis.close();
@@ -149,6 +158,27 @@ class TaskControllerTest {
             }
 
         }
+    }
+
+    @Test
+    void deviceMaintenanceMapper(){
+        List<MaintenanceChartDto> maintenanceChartDtos = deviceMaintenanceMapper.selectLineMaintenanceChart();
+        maintenanceChartDtos.forEach(System.out::println);
+    }
+
+    @Test
+    void redisMaintenance(){
+        String key = "device:hot:maintenance";
+        List<Map<String, Object>> chartData = new ArrayList<>();
+        // 使用zrevrangeWithScores获取前5个设备
+        Set<ZSetOperations.TypedTuple<Object>> maintenances = redisUtil.zrevrangeByScoreWithScores(key, 0, 5);
+        for (ZSetOperations.TypedTuple<Object> maintenance : maintenances) {
+            Map data = new HashMap();
+            data.put("name", maintenance.getValue());
+            data.put("value", maintenance.getScore());
+            chartData.add(data);
+        }
+           System.out.println(chartData);
     }
 
 }

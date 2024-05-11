@@ -17,5 +17,15 @@ public interface IDeviceRecordService {
 
     int returnDeviceByOrderId(Long orderId);
 
-    int updateRecordStatus(Long orderId);
+    int updateRecordStatus(Long orderId, String status);
+
+    /**
+     * 查询历史借用列表
+     *
+     * @param deviceBorrowRecord 历史借用
+     * @return 历史借用集合
+     */
+    public List<DeviceBorrowRecord> selectDeviceBorrowRecordList(DeviceBorrowRecord deviceBorrowRecord);
+
+    int updateDeviceBorrowRecord(DeviceBorrowRecord record);
 }

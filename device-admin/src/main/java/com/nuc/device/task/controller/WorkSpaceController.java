@@ -5,6 +5,10 @@ import static com.nuc.device.common.utils.ShiroUtils.getSysUser;
 import com.nuc.device.common.utils.DateUtils;
 import com.nuc.device.equipment.domain.DeviceEquipment;
 import com.nuc.device.equipment.service.IDeviceEquipmentService;
+import com.nuc.device.maintenance.domain.DeviceMaintenance;
+import com.nuc.device.maintenance.domain.DeviceMaintenanceDTO;
+import com.nuc.device.maintenance.domain.MaintenanceChartDto;
+import com.nuc.device.maintenance.service.IDeviceMaintenanceService;
 import com.nuc.device.order.domain.DeviceOrder;
 import com.nuc.device.order.service.IDeviceOrderService;
 import com.nuc.device.record.domain.DeviceBorrowRecord;
@@ -12,12 +16,12 @@ import com.nuc.device.record.domain.DeviceBorrowRecordDTO;
 import com.nuc.device.record.service.IDeviceRecordService;
 import com.nuc.device.task.domin.BorrowDateTimes;
 import com.nuc.device.task.utils.RedisUtil;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -45,6 +49,8 @@ public class WorkSpaceController {
     @Autowired
     IDeviceOrderService deviceOrderService;
 
+    @Autowired
+    IDeviceMaintenanceService deviceMaintenanceService;
 
     @GetMapping()
     public String workSpace(Model model) {
@@ -70,9 +76,9 @@ public class WorkSpaceController {
         model.addAttribute("userWillOverdue",deviceOrderService.sumWillOverdueQuantity(getSysUser().getUserId()));
         //用户最新借用信息
         DeviceOrder order = deviceOrderService.selectNewBorrowOrder(getSysUser().getUserId());
-        if(order ==null){
-           order = deviceOrderService.initOrder(getSysUser().getUserId());
-        }
+        //if(order ==null){
+        //   order = deviceOrderService.initOrder(getSysUser().getUserId());
+        //}
         String borrowDate = new SimpleDateFormat("yyyy-MM-dd").format(order.getBorrowDate());
         model.addAttribute("order",order);
         model.addAttribute("borrowDate",borrowDate);
@@ -83,6 +89,11 @@ public class WorkSpaceController {
         model.addAttribute("userUnReturn",deviceOrderService.sumUnReturnQuantity(getSysUser().getUserId()));
         //用户维护记录
         model.addAttribute("userMaintenance",deviceOrderService.sumMaintenanceQuantity(getSysUser().getUserId()));
+        //维修统计数量 --->维修中的设备数量 工单
+        model.addAttribute("workMaintenanceQuantity",deviceMaintenanceService.sumMaintenanceQuantity());
+        //维修中的工单数
+        model.addAttribute("workQuantity",deviceMaintenanceService.sumWorkQuantity());
+
         return "device/workspace/workSpace";
     }
 
@@ -102,6 +113,7 @@ public class WorkSpaceController {
     @GetMapping("/hotBorrow")
     @ResponseBody
     public List<Map<String, Object>> rankBorrowQuantity() {
+        deviceOrderService.initOrder(getSysUser().getUserId());
         String key = "device:hot:borrow";
         //倒序获取前5个借阅数量的设备 zrevrangeByScoreWithScores 意味着获取key 和value
         Set<ZSetOperations.TypedTuple<Object>> devices = redisUtil.zrevrangeByScoreWithScores(key, 0, 5);
@@ -159,6 +171,21 @@ public class WorkSpaceController {
         return recordDTOList;
     }
     /**
+     * 设备最近维护情况
+     */
+    @GetMapping("/recentWork")
+    @ResponseBody
+    public List<DeviceMaintenanceDTO> recentWork() {
+        List<DeviceMaintenance> recentWorkList = deviceMaintenanceService.findRecentWork();
+        List<DeviceMaintenanceDTO> maintenanceDTOList = new ArrayList<>();
+        recentWorkList.forEach(work -> {
+            DeviceMaintenanceDTO maintenanceDTO = new DeviceMaintenanceDTO();
+            BeanUtils.copyProperties(work, maintenanceDTO);
+            maintenanceDTOList.add(maintenanceDTO);
+        });
+        return maintenanceDTOList;
+    }
+    /**
      * 柱状图数据
      * 借用 维护 闲置数量
      */
@@ -182,13 +209,42 @@ public class WorkSpaceController {
 
     return resultMap;
 }
+    /**
+     * 折线图数据
+     * 借用 维护 闲置数量
+     */
+    @GetMapping("/lineChart")
+    @ResponseBody
+    public List<MaintenanceChartDto> lineChart() {
+        List<MaintenanceChartDto> maintenanceChartDtos =deviceMaintenanceService.findLineMaintenanceChart();
+        return maintenanceChartDtos;
+    }
+    /**
+     * 易损坏设备种类排行
+     * @return
+     */
+    @GetMapping("/hotMaintenance")
+    @ResponseBody
+    public List<Map<String, Object>> rankMaintenanceQuantity() {
+        String key = "device:hot:maintenance";
+        List<Map<String, Object>> chartData = new ArrayList<>();
+        // 使用zrevrangeWithScores获取前5个设备
+        Set<ZSetOperations.TypedTuple<Object>> maintenances = redisUtil.zrevrangeByScoreWithScores(key, 0, 5);
+        for (ZSetOperations.TypedTuple<Object> maintenance : maintenances) {
+            Map data = new HashMap();
+            String typeName = deviceEquipmentService.selectTypeByTypeId(Long.valueOf(maintenance.getValue().toString()));
+            data.put("name", typeName);
+            data.put("value", maintenance.getScore());
+            chartData.add(data);
+        }
+        return chartData;
+    }
 
     // 合并数据的方法
     private static void mergeData(List<Map<String, Object>> dataList, String status, Map<String, Map<String, Object>> resultMap) {
         for (Map<String, Object> map : dataList) {
             String typeName = (String) map.get("type_name");
             Object count =  map.get("count");
-
             // 如果结果集中已经有该type_name的记录，则更新对应状态的数量，否则新增记录
             if (resultMap.containsKey(typeName)) {
                 Map<String, Object> statusMap = resultMap.get(typeName);
@@ -262,6 +318,7 @@ public class WorkSpaceController {
      * tab2标签页卡片逾期订单
      */
     @GetMapping("overdueTab")
+    @RequiresPermissions("device:order:list")
     public String overdue() {
         return prefix+"/overdueTab";
     }
@@ -271,10 +328,26 @@ public class WorkSpaceController {
      */
 
     @GetMapping("willOverdueTab")
+    @RequiresPermissions("device:order:list")
     public String willOverdueTab() {
         return prefix+"/willOverdueTab";
     }
 
 
+    @GetMapping("maintenanceTab")
+    @RequiresPermissions("device:order:list")
+    public String maintenanceTab() {
+        return prefix+"/maintenanceTab";
+    }
+
+    @GetMapping("underMaintenanceTab")
+    public String underMaintenanceTab() {
+        return prefix+"/underMaintenanceTab";
+    }
+
+    @GetMapping("alreadyMaintenanceTab")
+    public String alreadyMaintenanceTab() {
+        return prefix+"/alreadyMaintenanceTab";
+    }
 
 }

@@ -235,5 +235,10 @@ public class DeviceEquipmentServiceImpl implements IDeviceEquipmentService
         return deviceEquipmentMapper.sumAllQuantity();
     }
 
+    @Override
+    public String selectTypeByTypeId(Long typeId) {
+        return deviceEquipmentMapper.selectTypeNameByTypeId(typeId);
+    }
+
 
 }
