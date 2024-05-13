@@ -25,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectDeviceMaintenanceList" parameterType="DeviceMaintenance" resultMap="DeviceMaintenanceResult">
         <include refid="selectDeviceMaintenanceVo"/>
-        <where>  
+        <where>
             <if test="orderId != null "> and order_id = #{orderId}</if>
             <if test="equipmentName != null  and equipmentName != ''"> and equipment_name like concat('%', #{equipmentName}, '%')</if>
             <if test="uploadUser != null  and uploadUser != ''"> and upload_user like concat('%', #{uploadUser}, '%')</if>
@@ -37,7 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         order by work_id desc
     </select>
-    
+
     <select id="selectDeviceMaintenanceByWorkId" parameterType="Long" resultMap="DeviceMaintenanceResult">
         <include refid="selectDeviceMaintenanceVo"/>
         where work_id = #{workId}

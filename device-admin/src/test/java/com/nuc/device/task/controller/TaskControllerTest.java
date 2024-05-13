@@ -160,11 +160,6 @@ class TaskControllerTest {
         }
     }
 
-    @Test
-    void deviceMaintenanceMapper(){
-        List<MaintenanceChartDto> maintenanceChartDtos = deviceMaintenanceMapper.selectLineMaintenanceChart();
-        maintenanceChartDtos.forEach(System.out::println);
-    }
 
     @Test
     void redisMaintenance(){

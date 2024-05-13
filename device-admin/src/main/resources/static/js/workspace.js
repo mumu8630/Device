@@ -452,4 +452,152 @@ fetch('/api/workspace/recentWork')
     .catch(error => {
         console.error('Error fetching data:', error);
     });
+//饼状图
+var myChart = echarts.init(document.getElementById('mainCountChart'));
+// 发送 AJAX 请求获取数据
+fetch('/api/workspace/hotMaintenance')
+    .then(response => response.json())
+    .then(data => {
+        // 渲染 ECharts
+        renderMaintenanceChart(data);
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+function renderMaintenanceChart(data) {
+    var option = {
+        title: {
+            text: '易损坏设备种类排行',
+            subtext: '损耗数量',
+            left: 'center',
+            top: '30px'
+        },
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            orient: 'horizontal', // 将legend从垂直改为水平
+            bottom: 30 // 将legend放在底部
+        },
+        series: [
+            {
+                name: '损坏数量',
+                type: 'pie',
+                radius: '50%',
+                data: data,
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    if (option && typeof option === 'object') {
+        myChart.setOption(option);
+    }
+    ;
+    myChart.setOption({
+        // 设置不允许图表自动调整大小
+        resize: false
+    });
+    window.addEventListener('resize', myChart.resize);
+}
+var maintenanceChart = echarts.init(document.getElementById('maintenanceChart'));
+function processData(data) {
+    let dates = [...new Set(data.map(item => item.mainDate.split(' ')[0]))].sort();
+    let typeNames = [...new Set(data.map(item => item.typeName))];
 
+    let series = typeNames.map(type => ({
+        name: type,
+        type: 'line',
+        data: []
+    }));
+
+    dates.forEach(date => {
+        typeNames.forEach((type, index) => {
+            let item = data.find(item => item.mainDate.startsWith(date) && item.typeName === type);
+            series[index].data.push(item ? item.totalMaintenanceCount : 0);
+        });
+    });
+
+    return { dates, series };
+}
+fetch('/api/workspace/lineChart')
+    .then(response => response.json())
+    .then(data => {
+        const { dates, series } = processData(data);
+        updateChart(dates, series);
+    })
+    .catch(error => console.error('Error fetching maintenance data:', error));
+
+function updateChart(dates, series) {
+    var option = {
+        title: {
+            text: 'Stacked Line'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: series.map(s => s.name)
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: dates
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: series
+    };
+
+    maintenanceChart.setOption(option, true); // 使用true来清除之前的配置
+    window.addEventListener('resize', maintenanceChart.resize);
+}
+//卡片点击效果
+function createRipple(event, callback) {
+    const card = event.currentTarget;
+    const ripple = document.createElement("span");
+    const diameter = Math.max(card.clientWidth, card.clientHeight);
+    const radius = diameter / 2;
+
+    ripple.style.width = ripple.style.height = `${diameter}px`;
+    ripple.style.left = `${event.clientX - card.offsetLeft - radius}px`;
+    ripple.style.top = `${event.clientY - card.offsetTop - radius}px`;
+    ripple.classList.add("ripple");
+
+    card.appendChild(ripple);
+
+    setTimeout(() => {
+        ripple.remove();
+        if (callback) {
+            callback(); // 执行回调函数
+        }
+    }, 600);
+}
+
+function openUnderMaintenanceTab() {
+    // 这里放置打开维修页面的代码
+    console.log("Opening Under Maintenance Tab...");
+    $.modal.openTab('正在维护设备列表', prefixTab + "/underMaintenanceTab");
+}
+function openAlreadyMaintenanceTab() {
+    // 这里放置打开维修页面的代码
+    console.log("Opening already Maintenance Tab...");
+    $.modal.openTab('已维护设备列表', prefixTab + "/alreadyMaintenanceTab");
+}

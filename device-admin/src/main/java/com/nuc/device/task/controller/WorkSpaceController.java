@@ -113,7 +113,11 @@ public class WorkSpaceController {
     @GetMapping("/hotBorrow")
     @ResponseBody
     public List<Map<String, Object>> rankBorrowQuantity() {
-        deviceOrderService.initOrder(getSysUser().getUserId());
+        DeviceOrder order = deviceOrderService.selectNewBorrowOrder(getSysUser().getUserId());
+        if (order == null) {
+            //初始化用户借用信息
+            deviceOrderService.initOrder(getSysUser().getUserId());
+        }
         String key = "device:hot:borrow";
         //倒序获取前5个借阅数量的设备 zrevrangeByScoreWithScores 意味着获取key 和value
         Set<ZSetOperations.TypedTuple<Object>> devices = redisUtil.zrevrangeByScoreWithScores(key, 0, 5);
